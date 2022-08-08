@@ -1,5 +1,5 @@
 
-library(shiny)
+
 
 shinyUI(
   fluidPage(
@@ -9,7 +9,8 @@ shinyUI(
 
     sidebarLayout(
         sidebarPanel(
-            sliderInput()
+            # sliderInput()
+          leafletOutput("selection_map", width = "100%", height = 600)
         ),
         
         mainPanel(
