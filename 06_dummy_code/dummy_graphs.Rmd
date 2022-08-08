@@ -13,14 +13,13 @@ library(shiny)
 ```
 
 ```{r}
-hospital_beds <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/beds_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
-hospital_admissions <- read_csv('PDA_Project2/hospital_covid_data/hospital_admissions_hb_simd_20220302.csv') %>% clean_names()
-hospital_demographics <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/hospital_admissions_hscp_agesex_20220302(2).csv') %>% clean_names()
-waiting_times <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/monthly_ae_waitingtimes_202206.csv') %>% clean_names()
-hospital_specialty <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
-hospital_impatients <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv')
+hospital_beds <- read_csv('hospital_covid_data/beds_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
+hospital_admissions <- read_csv('hospital_covid_data/hospital_admissions_hb_simd_20220302.csv') %>% clean_names()
+  hospital_demographics <- read_csv('hospital_covid_data/hospital_admissions_hscp_agesex_20220302(2).csv') %>% clean_names()
+waiting_times <- read_csv('hospital_covid_data/monthly_ae_waitingtimes_202206.csv') %>% clean_names()
+hospital_specialty <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
+hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv')
 ```
-
 
 ```{r}
 bed_graph <- hospital_beds %>% 
@@ -106,6 +105,23 @@ full_wards <- hospital_beds %>%
 ```
 
 ```{r}
+bed_graph_pre_2020 <- hospital_beds %>% 
+  # group_by_key() %>% 
+  group_by(quarter) %>% 
+  filter(quarter < "2020") %>% 
+  ggplot() +
+  geom_col(aes(x = quarter, y = all_staffed_beddays, fill = specialty_name)) +
+  theme(axis.text.x = element_text(angle = 90))
+  
+```
 
+```{r}
+admission_trends <- hospital_admissions %>% 
+  select(admission_type, hb, week_ending, number_admissions) %>% 
+  group_by(hb) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = number_admissions, fill = hb)) +
+  theme(axis.text.x = element_text(angle = 0))
+admission_trends
 ```
 
