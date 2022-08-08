@@ -22,6 +22,12 @@ hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nh
 ```
 
 ```{r}
+locations <- read_csv('hospital_covid_data/current-hospital_flagged20211216.csv') %>% clean_names()
+
+full_bed_data <- left_join(locations, hospital_beds, by = c("location"))
+```
+
+```{r}
 waiting_times_update <- read_csv('hospital_covid_data/a&e_waiting_times.csv') %>% clean_names()
 ```
 
