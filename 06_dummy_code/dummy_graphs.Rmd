@@ -131,13 +131,43 @@ admission_trends
 
 ```{r}
 elective_v_emergency <- hospital_impatients %>% 
-  
+  # filter(AdmissionType == "Elective Inpatients") %>%
+  # filter(AdmissionType == "Emergency Inpatients") %>% 
   group_by(AdmissionType) %>% 
   summarise(total_admitted = n()) %>% 
+  
   ggplot() +
   geom_col(aes(x = AdmissionType, y = total_admitted)) +
   theme(axis.text.x = element_text(angle = 90))
 elective_v_emergency
+```
+
+```{r}
+mean_admissions <- hospital_demographics %>% 
+  group_by(admission_type) %>% 
+  summarise(mean_admissions = mean(number_admissions)) %>% 
+  
+  ggplot() +
+  geom_col(aes(x = admission_type, y = mean_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+mean_admissions
+
+mean_admissions_2019 <- hospital_demographics %>% 
+  group_by(admission_type) %>% 
+  summarise(mean_2019 = mean(average20182019)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, y = mean_2019)) +
+  theme(axis.text.x = element_text(angle = 90))
+mean_admissions_2019
+```
+
+```{r}
+hb_admissions <- hospital_admissions %>% 
+  group_by(hb) %>% 
+  summarise(total_admitted = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_admitted), fill = "purple") +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 ```{r}
