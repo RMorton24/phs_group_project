@@ -126,6 +126,13 @@ admission_trends
 ```
 
 ```{r}
-
+elective_v_emergency <- hospital_impatients %>% 
+  
+  group_by(AdmissionType) %>% 
+  summarise(total_admitted = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = AdmissionType, y = total_admitted)) +
+  theme(axis.text.x = element_text(angle = 90))
+elective_v_emergency
 ```
 
