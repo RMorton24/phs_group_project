@@ -1,0 +1,111 @@
+```{r}
+library(prob)
+library(tidyverse)
+library(janitor)
+library(assertr)
+library(fastGraph)
+library(tsibble)
+library(tsibbledata)
+library(e1071)
+library(leaflet)
+library(infer)
+library(shiny)
+```
+
+```{r}
+hospital_beds <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/beds_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
+hospital_admissions <- read_csv('PDA_Project2/hospital_covid_data/hospital_admissions_hb_simd_20220302.csv') %>% clean_names()
+hospital_demographics <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/hospital_admissions_hscp_agesex_20220302(2).csv') %>% clean_names()
+waiting_times <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/monthly_ae_waitingtimes_202206.csv') %>% clean_names()
+hospital_specialty <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
+hospital_impatients <- read_csv('PDA_Project2/hospital_covid_data/hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv')
+```
+
+
+```{r}
+bed_graph <- hospital_beds %>% 
+  select(quarter, all_staffed_beddays) %>% 
+  # group_by_key() %>% 
+  group_by(quarter) %>% 
+  ggplot() +
+  geom_col(aes(x = quarter, y = all_staffed_beddays), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90))
+bed_graph
+```
+
+```{r}
+demo_graph <- hospital_demographics %>% 
+  select(age_group, sex, number_admissions) %>% 
+  group_by(age_group) %>% 
+  ggplot() +
+  geom_col(aes(x = age_group, y = number_admissions, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+waiting_graph <- waiting_times %>% 
+  
+  group_by(department_type) %>% 
+  summarise(waiting_times = n()) %>% 
+  ggplot() +
+  geom_col(x = department_type, y = waiting_times) +
+  theme(axis.text.x = element_text(angle = 90))
+  
+```
+
+```{r}
+library(slider)
+rolling_data <- hospital_admissions %>% 
+  mutate(
+    admin_moving_avg = slide_dbl(
+      .x = number_admissions,
+      .f = mean(.x, na.rm = TRUE),
+      .before = 1000,
+      .after = 1000,
+      .complete = TRUE
+    )
+  )
+
+ggplot(rolling_data) +
+  geom_line(aes(x = admission_type, y = number_admissions), colour = "grey") +
+  geom_line(aes(x = admission_type, y = admin_moving_avg), colour = "green")
+
+rolling_data_2019 <- hospital_admissions %>% 
+  mutate(
+    admin_moving_avg2 = slide_dbl(
+      .x = average20182019,
+      .f = mean(.x),
+      before = 1000,
+      after = 1000,
+      .complete = TRUE
+    )
+  )
+ggplot(rolling_data_2019) +
+  geom_line(aes(x = admission_type, y = average20182019), colour = "grey") +
+  geom_line(aes(x = admission_type, y = admin_moving_avg2), colour = "blue")
+```
+
+```{r}
+specialty_graph <- hospital_specialty %>%
+  group_by_key() %>% 
+  group_by(admission_type) %>% 
+  ggplot() +
+  geom_col(x = admission_type, y = episodes, fill = location) +
+  theme(axis.text.x = element_text(angle = 90))  
+  
+```
+
+```{r}
+full_wards <- hospital_beds %>% 
+  select(location, specialty_name, quarter, percentage_occupancy) %>% 
+  filter(percentage_occupancy == "100") %>% 
+  summarise(total_full_wards = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = specialty_name, y = total_full_wards, fill = location)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+
+```
+
