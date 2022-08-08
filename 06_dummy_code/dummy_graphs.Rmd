@@ -22,6 +22,10 @@ hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nh
 ```
 
 ```{r}
+waiting_times_update <- read_csv('hospital_covid_data/a&e_waiting_times.csv') %>% clean_names()
+```
+
+```{r}
 bed_graph <- hospital_beds %>% 
   select(quarter, all_staffed_beddays) %>% 
   # group_by_key() %>% 
@@ -134,5 +138,9 @@ elective_v_emergency <- hospital_impatients %>%
   geom_col(aes(x = AdmissionType, y = total_admitted)) +
   theme(axis.text.x = element_text(angle = 90))
 elective_v_emergency
+```
+
+```{r}
+
 ```
 
