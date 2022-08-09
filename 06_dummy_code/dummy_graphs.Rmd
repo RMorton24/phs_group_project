@@ -390,7 +390,7 @@ variations <- full_demographics %>%
   select(location_name, percent_variation, admission_type, hb) %>% 
   group_by(hb) %>% 
   ggplot() +
-  geom_histogram(aes(y = percent_variation)) +
+  geom_bar(aes(y = percent_variation)) +
   theme(axis.text.x = element_text(angle = 90))
 variations
 ```
