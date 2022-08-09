@@ -51,7 +51,7 @@ The dashboard outlines our topic in terms of ...
 * Trello (planning & task allocation)
 * Git/GitHub (collaboration & version control) 
 * Powerpoint
-*
+* In person stand-ups
 
 
 
