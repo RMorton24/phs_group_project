@@ -466,8 +466,9 @@ episodes_per_specialty <- specialty_data %>%
   group_by(specialty_name) %>% 
   summarise(total_episodes = sum(episodes)) %>%
   ggplot() +
-  geom_line(aes(x = specialty_name, y = total_episodes)) +
+  geom_col(aes(x = specialtsy_name, y = total_episodes)) +
   theme(axis.text.x = element_text(angle = 90))
+episodes_per_specialty
 ```
 
 ```{r}
