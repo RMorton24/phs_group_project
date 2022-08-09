@@ -371,6 +371,14 @@ specialty_trends_community <- specialty_data %>%
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_differ <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions, percent_variation) %>% 
+  group_by(week_ending) %>% 
+  summarise(total_variation = sum(percent_variation)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_variation)) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 ```{r}
