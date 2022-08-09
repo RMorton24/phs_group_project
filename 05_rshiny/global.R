@@ -7,10 +7,7 @@ library(sf)
 # Load variables/functions for Leaflet Plots ------------------------------
 
 # Load in the region geometry
-nhs_borders <- st_read(dsn = "../01_data/geospatial_data/SG_NHS_HealthBoards_2019/", 
-                       layer = "SG_NHS_HealthBoards_2019") %>% 
-  st_simplify(dTolerance = 2500) %>% 
-  st_transform('+proj=longlat +datum=WGS84')
+nhs_borders <- st_read(dsn = here::here("02_cleaned_data/nhs_region_simple"))
 
 # Create labels for region plot
 labels_regions <- paste0(

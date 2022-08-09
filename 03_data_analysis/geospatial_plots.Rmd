@@ -168,3 +168,28 @@ leaflet(nhs_borders) %>%
   setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
 ```
 
+
+
+```{r}
+hospital_deprivation <- read_csv(here::here("01_data/hospital_activity_and_deprivation.csv"))
+```
+
+```{r}
+hospital_deprivation %>% 
+  distinct(HB) %>% 
+  mutate(is_in = HB %in% nhs_borders$HBCode)
+```
+
+```{r}
+# Load in the region geometry
+nhs_borders <- st_read(dsn = "../01_data/geospatial_data/SG_NHS_HealthBoards_2019/", 
+                       layer = "SG_NHS_HealthBoards_2019") %>% 
+  st_simplify(dTolerance = 2500) %>% 
+  st_transform('+proj=longlat +datum=WGS84')
+
+
+st_write(nhs_borders,
+         dsn = here::here("02_cleaned_data/nhs_region_simple"),
+         driver = "ESRI Shapefile")
+```
+
