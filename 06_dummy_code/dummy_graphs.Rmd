@@ -18,7 +18,7 @@ hospital_admissions <- read_csv('hospital_covid_data/hospital_admissions_hb_simd
   hospital_demographics <- read_csv('hospital_covid_data/hospital_admissions_hscp_agesex_20220302(2).csv') %>% clean_names()
 waiting_times <- read_csv('hospital_covid_data/monthly_ae_waitingtimes_202206.csv') %>% clean_names()
 hospital_specialty <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
-hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv')
+hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv') %>% clean_names()
 ```
 
 ```{r}
@@ -177,6 +177,28 @@ hb_admissions <- hospital_admissions %>%
 ```
 
 ```{r}
+full_admissions <- right_join(locations, hospital_admissions, by = c("hb"))
 
+full_impatients <- right_join(locations, hospital_impatients, by = c("hb"))
+
+full_demographics <- right_join(locations, hospital_demographics, by = c("hscp"))
+
+full_specialty <- right_join(locations, hospital_specialty, by = c("hb"))
+
+
+```
+
+```{r}
+library(shiny)
+
+ui <- fluidPage(
+  titlePanel("Impact of Covid on Hospitalisations")
+)
+
+server <- function(input, output, session) {
+  
+}
+
+shinyApp(ui, server)
 ```
 
