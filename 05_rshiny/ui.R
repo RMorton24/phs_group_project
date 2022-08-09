@@ -14,45 +14,53 @@ shinyUI(
           ),
           
           mainPanel(
-            plotOutput("distPlot"),
+            plotOutput("distPlot1"),
             
             
-            leafletOutput("heatmap1")
+            leafletOutput("heatmap1", width = "150%", height = "750px")
           )
         )
       ),
       tabPanel(
         title = "Tab 2",
         br(),
-        dropdownButton(
+        dropdown(
           
           circle = TRUE, 
           status = "info",
           icon = icon("gear"), 
-          width = "300px",
+          width = "350px",
           tooltip = tooltipOptions(title = "Click to see inputs !"),
           
           pickerInput(
-            inputId = "healthboard",
-            label = "Select/deselect Healthboard", 
-            choices = LETTERS,
+            inputId = "specialty",
+            label = "Select/deselect Specialty", 
+            choices = unique(bed_admissions$specialty),
             options = list(
               `actions-box` = TRUE), 
             multiple = TRUE
           ),
           
-          sliderInput(inputId = 'quarter',
+          pickerInput(
+            inputId = "hb",
+            label = "Select/deselect HealthBoard", 
+            choices = unique(bed_admissions$hb_name),
+            options = list(
+              `actions-box` = TRUE), 
+            multiple = TRUE
+          ),
+          
+          sliderInput(inputId = 'week_ending',
                       label = 'Time Span',
-                      value = 3,
-                      min = 1,
-                      max = 9),
-          
-          
+                      value = c(min(bed_admissions$week_ending),
+                                max(bed_admissions$week_ending)),
+                      min = min(bed_admissions$week_ending),
+                      max = max(bed_admissions$week_ending)),
           
           radioGroupButtons(
-            inputId = "sex",
-            label = "Choose Sex",
-            choices = c("Male", "Female")
+            inputId = "admission",
+            label = "Admission Type",
+            choices = c("Emergency", "Planned", "All")
           )
           
         ),
@@ -67,7 +75,7 @@ shinyUI(
       }
     ")),
     
-          leafletOutput("heatmap", width = "150%", height = "750px")
+          plotOutput("distPlot", width = "150%")
         )
         )
       )

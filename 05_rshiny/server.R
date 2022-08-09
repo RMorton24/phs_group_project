@@ -28,7 +28,7 @@ shinyServer(function(input, output) {
   })
   
   # Create heatmap plot
-  output$heatmap <- renderLeaflet({
+  output$heatmap1 <- renderLeaflet({
     leaflet(nhs_borders) %>% 
       addTiles() %>% 
       addPolygons(fillColor = ~pal(HBCode),
@@ -66,7 +66,14 @@ shinyServer(function(input, output) {
   
     output$distPlot <- renderPlot({
       
-     
+      bed_admissions %>% 
+        filter(specialty == input$specialty, 
+               hb_name == input$hb,
+               admission_type == input$admission,
+               between(week_ending, as.numeric(input$week_ending[1]), as.numeric(input$week_ending[2]))) %>%  
+        ggplot() +
+        geom_line(aes(x = week_ending, y = number_admissions)) +
+        geom_line(aes(x = week_ending, y = average20182019), colour = "red")
       
     })
 
