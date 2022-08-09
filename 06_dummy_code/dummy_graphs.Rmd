@@ -325,7 +325,7 @@ specialty_trends <- admin_specialty_data %>%
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
-specialty_trends
+
 
 specialty_trends_emergency <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
@@ -358,7 +358,7 @@ specialty_trends_cancer <- admin_specialty_data %>%
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Cancer") %>% 
   group_by(week_ending) %>% 
-  summarise(total_admissions = sum(number_admissions)) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>%  
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
@@ -367,7 +367,7 @@ specialty_trends_community <- admin_specialty_data %>%
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Community") %>% 
   group_by(week_ending) %>% 
-  summarise(total_admissions = sum(number_admissions)) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>%  
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
@@ -388,6 +388,8 @@ specialty_trends_differ2 <- admin_specialty_data %>%
   geom_line(aes(x = week_ending, y = mean_variation)) +
   theme(axis.text.x = element_text(angle = 90))
   
+
+specialty_trends_differ
 ```
 
 ```{r}
