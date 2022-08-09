@@ -312,9 +312,6 @@ m_admissions_quint_5 <- hospital_admissions %>%
 ```
 
 ```{r}
-<<<<<<< Updated upstream
-
-=======
 specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_clean.csv')
 ```
 
@@ -338,11 +335,12 @@ specialty_trends_emergency <- specialty_data %>%
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
+
+
 ```
 
 
 ```{r}
->>>>>>> Stashed changes
 ```
 
 ```{r}
@@ -356,20 +354,6 @@ variations
 ```
 
 ```{r}
-<<<<<<< Updated upstream
-library(shiny)
 
-ui <- fluidPage(
-  titlePanel("Impact of Covid on Hospitalisations")
-)
-
-server <- function(input, output, session) {
-  
-}
-
-shinyApp(ui, server)
-=======
-
->>>>>>> Stashed changes
 ```
 
