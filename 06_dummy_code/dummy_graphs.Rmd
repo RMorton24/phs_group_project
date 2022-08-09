@@ -177,6 +177,10 @@ hb_admissions <- hospital_admissions %>%
 ```
 
 ```{r}
+```
+
+
+```{r}
 full_admissions <- right_join(locations, hospital_admissions, by = c("hb"))
 
 full_impatients <- right_join(locations, hospital_impatients, by = c("hb"))
@@ -185,6 +189,43 @@ full_demographics <- right_join(locations, hospital_demographics, by = c("hscp")
 
 full_specialty <- right_join(locations, hospital_specialty, by = c("hb"))
 
+full_wait_times <- right_join(locations, waiting_times, by = c("location" = "treatment_location")) 
+  
+  # drop_na(number)
+```
+
+
+```{r}
+pre_2020_wait <- full_wait_times %>% 
+  select(month, hb, department_type, number_of_attendances_aggregate) %>% 
+  filter(month < 202001) %>%
+  group_by(hb) %>%
+  summarise(total_attendances = sum(number_of_attendances_aggregate)) %>% 
+    ggplot() +
+    geom_col(aes(x = hb, y = total_attendances)) +
+    theme(axis.text.x = element_text(angle = 90))
+pre_2020_wait    
+
+post_2020_wait <- full_wait_times %>% 
+  select(month, hb, department_type, number_of_attendances_aggregate) %>% 
+  filter(month >= 202001) %>%
+  group_by(hb) %>%
+  summarise(total_attendances = sum(number_of_attendances_aggregate)) %>% 
+    ggplot() +
+    geom_col(aes(x = hb, y = total_attendances)) +
+    theme(axis.text.x = element_text(angle = 90))
+post_2020_wait  
+```
+
+```{r}
+deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %>% clean_names
+
+deaths_by_depriv <- read_csv('hospital_covid_data/deaths_hb_simd_20220302.csv') %>% clean_names
+
+deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
+```
+
+```{r}
 
 ```
 
