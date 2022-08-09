@@ -312,7 +312,37 @@ m_admissions_quint_5 <- hospital_admissions %>%
 ```
 
 ```{r}
+<<<<<<< Updated upstream
 
+=======
+specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_clean.csv')
+```
+
+
+```{r}
+specialty_trends <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "All") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+specialty_trends
+
+specialty_trends_emergency <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Accident & Emergency") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r}
+>>>>>>> Stashed changes
 ```
 
 ```{r}
@@ -326,6 +356,7 @@ variations
 ```
 
 ```{r}
+<<<<<<< Updated upstream
 library(shiny)
 
 ui <- fluidPage(
@@ -337,5 +368,8 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+=======
+
+>>>>>>> Stashed changes
 ```
 
