@@ -1,0 +1,401 @@
+```{r}
+library(prob)
+library(tidyverse)
+library(janitor)
+library(assertr)
+library(fastGraph)
+library(tsibble)
+library(tsibbledata)
+library(e1071)
+library(leaflet)
+library(infer)
+library(shiny)
+```
+
+```{r}
+hospital_beds <- read_csv('hospital_covid_data/beds_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
+hospital_admissions <- read_csv('hospital_covid_data/hospital_admissions_hb_simd_20220302.csv') %>% clean_names()
+  hospital_demographics <- read_csv('hospital_covid_data/hospital_admissions_hscp_agesex_20220302(2).csv') %>% clean_names()
+waiting_times <- read_csv('hospital_covid_data/monthly_ae_waitingtimes_202206.csv') %>% clean_names()
+hospital_specialty <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
+hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv') %>% clean_names()
+```
+
+```{r}
+locations <- read_csv('hospital_covid_data/current-hospital_flagged20211216.csv') %>% clean_names()
+
+full_bed_data <- left_join(locations, hospital_beds, by = c("location"))
+```
+
+```{r}
+waiting_times_update <- read_csv('hospital_covid_data/a&e_waiting_times.csv') %>% clean_names()
+```
+
+```{r}
+bed_graph <- hospital_beds %>% 
+  select(quarter, all_staffed_beddays) %>% 
+  # group_by_key() %>% 
+  group_by(quarter) %>% 
+  ggplot() +
+  geom_col(aes(x = quarter, y = all_staffed_beddays), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90))
+bed_graph
+```
+
+```{r}
+demo_graph <- hospital_demographics %>% 
+  select(age_group, sex, number_admissions) %>% 
+  group_by(age_group) %>% 
+  ggplot() +
+  geom_col(aes(x = age_group, y = number_admissions, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+waiting_graph <- waiting_times %>% 
+  select(department_type) %>% 
+  group_by(department_type) %>% 
+  summarise(waiting_times = n()) %>% 
+  ggplot() +
+  geom_col(x = department_type, y = waiting_times) +
+  theme(axis.text.x = element_text(angle = 90))
+  
+```
+
+```{r}
+library(slider)
+rolling_data <- hospital_admissions %>% 
+  mutate(
+    admin_moving_avg = slide_dbl(
+      .x = number_admissions,
+      .f = ~mean(.x, na.rm = TRUE),
+      .before = 1000,
+      .after = 1000,
+      .complete = TRUE
+    )
+  )
+
+ggplot(rolling_data) +
+  geom_line(aes(x = admission_type, y = number_admissions), colour = "grey") +
+  geom_line(aes(x = admission_type, y = admin_moving_avg), colour = "green")
+
+rolling_data_2019 <- hospital_admissions %>% 
+  mutate(
+    admin_moving_avg2 = slide_dbl(
+      .x = average20182019,
+      .f = ~mean(.x),
+      before = 1000,
+      after = 1000,
+      .complete = TRUE
+    )
+  )
+ggplot(rolling_data_2019) +
+  geom_line(aes(x = admission_type, y = average20182019), colour = "grey") +
+  geom_line(aes(x = admission_type, y = admin_moving_avg2), colour = "blue")
+```
+
+```{r}
+specialty_graph <- hospital_specialty %>%
+  group_by_key() %>% 
+  group_by(admission_type) %>% 
+  ggplot() +
+  geom_col(x = admission_type, y = episodes, fill = location) +
+  theme(axis.text.x = element_text(angle = 90))  
+  
+```
+
+```{r}
+full_wards <- hospital_beds %>% 
+  select(location, specialty_name, quarter, percentage_occupancy) %>% 
+  filter(percentage_occupancy == "100") %>% 
+  summarise(total_full_wards = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = specialty_name, y = total_full_wards, fill = location)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+bed_graph_pre_2020 <- hospital_beds %>% 
+  # group_by_key() %>% 
+  group_by(quarter) %>% 
+  filter(quarter < "2020") %>% 
+  ggplot() +
+  geom_col(aes(x = quarter, y = all_staffed_beddays, fill = specialty_name)) +
+  theme(axis.text.x = element_text(angle = 90))
+  
+```
+
+```{r}
+admission_trends <- hospital_admissions %>% 
+  select(admission_type, hb, week_ending, number_admissions) %>% 
+  group_by(hb) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = number_admissions, fill = hb)) +
+  theme(axis.text.x = element_text(angle = 0))
+admission_trends
+```
+
+```{r}
+elective_v_emergency <- hospital_impatients %>% 
+  # filter(AdmissionType == "Elective Inpatients") %>%
+  # filter(AdmissionType == "Emergency Inpatients") %>% 
+  group_by(admissiontype) %>% 
+  summarise(total_admitted = n()) %>% 
+  
+  ggplot() +
+  geom_col(aes(x = admissiontype, y = total_admitted)) +
+  theme(axis.text.x = element_text(angle = 90))
+elective_v_emergency
+```
+
+```{r}
+mean_admissions <- hospital_demographics %>% 
+  group_by(admission_type) %>% 
+  summarise(mean_admissions = mean(number_admissions)) %>% 
+  
+  ggplot() +
+  geom_col(aes(x = admission_type, y = mean_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+mean_admissions
+
+mean_admissions_2019 <- hospital_demographics %>% 
+  group_by(admission_type) %>% 
+  summarise(mean_2019 = mean(average20182019)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, y = mean_2019)) +
+  theme(axis.text.x = element_text(angle = 90))
+mean_admissions_2019
+```
+
+```{r}
+hb_admissions <- hospital_admissions %>% 
+  group_by(hb) %>% 
+  summarise(total_admitted = n()) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_admitted), fill = "purple") +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+
+```
+
+
+```{r}
+full_admissions <- right_join(locations, hospital_admissions, by = c("hb"))
+
+full_impatients <- right_join(locations, hospital_impatients, by = c("hb"))
+
+full_demographics <- right_join(locations, hospital_demographics, by = c("hscp"))
+
+full_specialty <- right_join(locations, hospital_specialty, by = c("hb"))
+
+full_wait_times <- right_join(locations, waiting_times, by = c("location" = "treatment_location")) 
+  
+  # drop_na(number)
+```
+
+
+```{r}
+pre_2020_wait <- full_wait_times %>% 
+  select(month, hb, department_type, number_of_attendances_aggregate) %>% 
+  filter(month < 202001) %>%
+  group_by(hb) %>%
+  summarise(total_attendances = sum(number_of_attendances_aggregate)) %>% 
+    ggplot() +
+    geom_col(aes(x = hb, y = total_attendances)) +
+    theme(axis.text.x = element_text(angle = 90))
+pre_2020_wait    
+
+post_2020_wait <- full_wait_times %>% 
+  select(month, hb, department_type, number_of_attendances_aggregate) %>% 
+  filter(month >= 202001) %>%
+  group_by(hb) %>%
+  summarise(total_attendances = sum(number_of_attendances_aggregate)) %>% 
+    ggplot() +
+    geom_col(aes(x = hb, y = total_attendances)) +
+    theme(axis.text.x = element_text(angle = 90))
+post_2020_wait  
+```
+
+```{r}
+deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %>% clean_names
+
+deaths_by_depriv <- read_csv('hospital_covid_data/deaths_hb_simd_20220302.csv') %>% clean_names
+
+#deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
+```
+
+```{r}
+death_comp <- deaths_by_age %>% 
+  select(hb, deaths, average20152019, sex) %>% 
+  group_by(hb) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_deaths)) + 
+  theme(axis.text.x = element_text(angle = 90))
+death_comp
+
+death_comp_2019 <- deaths_by_age %>% 
+  select(hb, deaths, average20152019, sex) %>% 
+  group_by(hb) %>% 
+  summarise(total_deaths = sum(average20152019)) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_deaths)) +
+  theme(axis.text.x = element_text(angle = 90))
+death_comp_2019
+
+death_depriv <- deaths_by_depriv %>% 
+  select(simd_quintile, deaths, country) %>% 
+  group_by(simd_quintile) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = simd_quintile, y = total_deaths)) +
+  theme(axis.text.x = element_text(angle = 90))
+death_depriv
+```
+
+```{r}
+library(slider)
+hospital_trends_full_2020 <- full_demographics %>% 
+  #select(number_admissions) %>% 
+  mutate(
+    admin_moving_avg = slide_dbl(
+      .x = number_admissions,
+      .f = ~mean(.x),
+      before = 100,
+      after = 100,
+      .complete = TRUE
+    )
+  ) 
+ggplot(hospital_trends_full_2020) +
+  geom_col(aes(x = hb, y = admin_moving_avg), colour = "grey") +
+  geom_col(aes(x = hb, y = number_admissions), colour = "red") +
+  
+  
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+admissions_by_simd <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  group_by(simd_quintile) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = simd_quintile, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+admissions_quint_1 <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  filter(simd_quintile == 1) %>% 
+  group_by(admission_type) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, y = total_admissions)) 
+
+admissions_quint_5 <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  filter(simd_quintile == 5) %>% 
+  group_by(admission_type) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, total_admissions))
+  
+m_admissions_quint_5 <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  filter(simd_quintile == 5) %>% 
+  group_by(admission_type) %>% 
+  summarise(mean_admissions = mean(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, mean_admissions))  
+  
+```
+
+```{r}
+specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_clean.csv')
+```
+
+
+```{r}
+specialty_trends <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "All") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+specialty_trends
+
+specialty_trends_emergency <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Accident & Emergency") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_surgery <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Surgery") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_cardio <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Cardiology") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_cancer <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Cancer") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_community <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Community") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_differ <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions, percent_variation) %>% 
+  group_by(week_ending) %>% 
+  summarise(total_variation = sum(percent_variation)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_variation)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+
+```
+
+```{r}
+variations <- full_demographics %>% 
+  select(location_name, percent_variation, admission_type, hb) %>% 
+  group_by(hb) %>% 
+  ggplot() +
+  geom_histogram(aes(y = percent_variation)) +
+  theme(axis.text.x = element_text(angle = 90))
+variations
+```
+
+```{r}
+
+```
+
