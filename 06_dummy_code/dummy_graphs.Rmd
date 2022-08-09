@@ -223,12 +223,37 @@ deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %
 
 deaths_by_depriv <- read_csv('hospital_covid_data/deaths_hb_simd_20220302.csv') %>% clean_names
 
-deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
+#deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
 ```
 
 ```{r}
-```
+death_comp <- deaths_by_age %>% 
+  select(hb, deaths, average20152019, sex) %>% 
+  group_by(hb) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_deaths)) + 
+  theme(axis.text.x = element_text(angle = 90))
+death_comp
 
+death_comp_2019 <- deaths_by_age %>% 
+  select(hb, deaths, average20152019, sex) %>% 
+  group_by(hb) %>% 
+  summarise(total_deaths = sum(average20152019)) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_deaths)) +
+  theme(axis.text.x = element_text(angle = 90))
+death_comp_2019
+
+death_depriv <- deaths_by_depriv %>% 
+  select(simd_quintile, deaths, country) %>% 
+  group_by(simd_quintile) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = simd_quintile, y = total_deaths)) +
+  theme(axis.text.x = element_text(angle = 90))
+death_depriv
+```
 
 ```{r}
 library(slider)
@@ -247,9 +272,48 @@ ggplot(hospital_trends_full_2020) +
   geom_col(aes(x = hb, y = admin_moving_avg), colour = "grey") +
   geom_col(aes(x = hb, y = number_admissions), colour = "red") +
   
+  
   theme(axis.text.x = element_text(angle = 90))
 ```
 
+```{r}
+admissions_by_simd <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  group_by(simd_quintile) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = simd_quintile, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+admissions_quint_1 <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  filter(simd_quintile == 1) %>% 
+  group_by(admission_type) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, y = total_admissions)) 
+
+admissions_quint_5 <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  filter(simd_quintile == 5) %>% 
+  group_by(admission_type) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, total_admissions))
+  
+m_admissions_quint_5 <- hospital_admissions %>% 
+  select(simd_quintile, admission_type, hb, number_admissions) %>% 
+  filter(simd_quintile == 5) %>% 
+  group_by(admission_type) %>% 
+  summarise(mean_admissions = mean(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, mean_admissions))  
+  
+```
+
+```{r}
+
+```
 
 ```{r}
 variations <- full_demographics %>% 
