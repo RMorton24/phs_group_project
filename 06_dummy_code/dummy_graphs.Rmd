@@ -460,6 +460,17 @@ spells_trend
 ```
 
 ```{r}
+episodes_per_specialty <- specialty_data %>% 
+  select(episodes, specialty_name, hb, length_of_episode) %>% 
+  filter(episodes > 1) %>% 
+  group_by(specialty_name) %>% 
+  summarise(total_episodes = sum(episodes)) %>%
+  ggplot() +
+  geom_line(aes(x = specialty_name, y = total_episodes)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
 variations <- full_demographics %>% 
   select(location_name, percent_variation, admission_type, hb) %>% 
   group_by(hb) %>% 
@@ -469,7 +480,5 @@ variations <- full_demographics %>%
 variations
 ```
 
-```{r}
 
-```
 
