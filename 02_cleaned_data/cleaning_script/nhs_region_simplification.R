@@ -30,7 +30,7 @@
 ##
 ##
 ##    Data file require:
-##        meteorite_landings_raw.csv
+##        SG_NHS_HealthBoards_2019.shp
 ##
 ## ////////////////////////////////////////////////////////////////////////////
 
