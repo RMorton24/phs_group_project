@@ -53,7 +53,7 @@ demo_graph <- hospital_demographics %>%
 
 ```{r}
 waiting_graph <- waiting_times %>% 
-  
+  select(department_type) %>% 
   group_by(department_type) %>% 
   summarise(waiting_times = n()) %>% 
   ggplot() +
@@ -139,11 +139,11 @@ admission_trends
 elective_v_emergency <- hospital_impatients %>% 
   # filter(AdmissionType == "Elective Inpatients") %>%
   # filter(AdmissionType == "Emergency Inpatients") %>% 
-  group_by(AdmissionType) %>% 
+  group_by(admissiontype) %>% 
   summarise(total_admitted = n()) %>% 
   
   ggplot() +
-  geom_col(aes(x = AdmissionType, y = total_admitted)) +
+  geom_col(aes(x = admissiontype, y = total_admitted)) +
   theme(axis.text.x = element_text(angle = 90))
 elective_v_emergency
 ```
@@ -336,11 +336,45 @@ specialty_trends_emergency <- specialty_data %>%
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
 
+specialty_trends_surgery <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Surgery") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
 
+specialty_trends_cardio <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Cardiology") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_cancer <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Cancer") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_community <- specialty_data %>% 
+  select(week_ending, specialty, number_admissions) %>% 
+  filter(specialty == "Community") %>% 
+  group_by(week_ending) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = total_admissions)) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
-
 ```{r}
+
 ```
 
 ```{r}
