@@ -14,7 +14,11 @@ shinyUI(
         ),
         
         mainPanel(
-            plotOutput("distPlot")
+            plotOutput("distPlot"),
+            
+            tabPanel("map",
+              leafletOutput("heatmap")
+            )
         )
     )
 ))
