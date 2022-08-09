@@ -227,7 +227,10 @@ deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv'
 ```
 
 ```{r}
-
+hospital_trends_full_2020 <- full_demographics %>% 
+  mutate(
+    
+  )
 ```
 
 ```{r}
