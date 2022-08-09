@@ -68,7 +68,7 @@ rolling_data <- hospital_admissions %>%
   mutate(
     admin_moving_avg = slide_dbl(
       .x = number_admissions,
-      .f = mean(.x, na.rm = TRUE),
+      .f = ~mean(.x, na.rm = TRUE),
       .before = 1000,
       .after = 1000,
       .complete = TRUE
@@ -83,7 +83,7 @@ rolling_data_2019 <- hospital_admissions %>%
   mutate(
     admin_moving_avg2 = slide_dbl(
       .x = average20182019,
-      .f = mean(.x),
+      .f = ~mean(.x),
       before = 1000,
       after = 1000,
       .complete = TRUE
@@ -227,10 +227,38 @@ deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv'
 ```
 
 ```{r}
+```
+
+
+```{r}
+library(slider)
 hospital_trends_full_2020 <- full_demographics %>% 
+  #select(number_admissions) %>% 
   mutate(
-    
-  )
+    admin_moving_avg = slide_dbl(
+      .x = number_admissions,
+      .f = ~mean(.x),
+      before = 100,
+      after = 100,
+      .complete = TRUE
+    )
+  ) 
+ggplot(hospital_trends_full_2020) +
+  geom_col(aes(x = hb, y = admin_moving_avg), colour = "grey") +
+  geom_col(aes(x = hb, y = number_admissions), colour = "red") +
+  
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+
+```{r}
+variations <- full_demographics %>% 
+  select(location_name, percent_variation, admission_type, hb) %>% 
+  group_by(location_name) %>% 
+  ggplot() +
+  geom_histogram(aes(y = percent_variation)) +
+  theme(axis.text.x = element_text(angle = 90))
+variations
 ```
 
 ```{r}
