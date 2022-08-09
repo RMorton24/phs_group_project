@@ -11,7 +11,7 @@ library(feasts)
 
 # Load in data
 
-beds <- read_csv("01_data/beds_data/f272bb7d-5320-4491-84c1-614a2c064007.csv") %>% 
+beds <- read_csv("https://www.opendata.nhs.scot/dataset/554b0e7a-ccac-4bb6-82db-1a8b306fcb36/resource/f272bb7d-5320-4491-84c1-614a2c064007/download/beds_by_nhs_board_of_treatment_and_specialty.csv") %>% 
   clean_names()
 
 health_board <- read_csv("01_data/healt_board/health_board.csv") %>% 
@@ -41,6 +41,8 @@ beds <- beds %>%
          -id.y,
          -hb_date_enacted,
          -hb_date_archived)
+
+view(beds)
 
 # Write csv file
 
