@@ -2,6 +2,7 @@ library(shiny)
 library(leaflet)
 library(rgeos)
 library(sf)
+library(htmlwidgets)
 
 
 # Load variables/functions for Leaflet Plots ------------------------------

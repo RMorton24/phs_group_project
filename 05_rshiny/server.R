@@ -18,7 +18,13 @@ shinyServer(function(input, output) {
       setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>% 
       setView(lng = mean(bbox[1], bbox[3]), 
               lat = mean(bbox[2], bbox[4]),
-              zoom = 6)
+              zoom = 5.5) %>% 
+      onRender(
+        "function(el, x) {
+          L.control.zoom({
+            position:'bottomright'
+          }).addTo(this);
+        }")
   })
   
   # Create heatmap plot
@@ -32,7 +38,13 @@ shinyServer(function(input, output) {
                   color = "white",
                   label = labels_regions,
                   labelOptions = labelOptions()) %>% 
-      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
+      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>% 
+      onRender(
+        "function(el, x) {
+          L.control.zoom({
+            position:'bottomright'
+          }).addTo(this);
+        }")
   })
   
   # Start event if regions in the map are selected
@@ -50,7 +62,6 @@ shinyServer(function(input, output) {
                    weight = 5,
                    opacity = 1)
       
-
   })
   
     output$distPlot <- renderPlot({

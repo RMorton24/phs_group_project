@@ -1,0 +1,9 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+```{r}
+nhs_borders <- st_read(dsn = here::here("02_cleaned_data/nhs_region_simple"))
+
+```
+
