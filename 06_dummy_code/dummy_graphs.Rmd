@@ -130,7 +130,7 @@ admission_trends <- hospital_admissions %>%
   select(admission_type, hb, week_ending, number_admissions) %>% 
   group_by(hb) %>% 
   ggplot() +
-  geom_line(aes(x = week_ending, y = number_admissions, fill = hb)) +
+  geom_col(aes(x = week_ending, y = number_admissions, fill = hb)) +
   theme(axis.text.x = element_text(angle = 0))
 admission_trends
 ```
@@ -223,7 +223,7 @@ deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %
 
 deaths_by_depriv <- read_csv('hospital_covid_data/deaths_hb_simd_20220302.csv') %>% clean_names
 
-#deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
+deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
 ```
 
 ```{r}
@@ -277,12 +277,26 @@ ggplot(hospital_trends_full_2020) +
 ```
 
 ```{r}
+install.packages("wesanderson")
+```
+
+```{r}
+library(wesanderson)
+install.packages("hrbrthemes")
+install.packages("gapminder")
+install.packages("ggbump")
+library(hrbrthemes) # for plot themes
+library(gapminder) # for data
+library(ggbump)
+```
+
+```{r}
 admissions_by_simd <- hospital_admissions %>% 
   select(simd_quintile, admission_type, hb, number_admissions) %>% 
   group_by(simd_quintile) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = simd_quintile, y = total_admissions)) +
+  geom_col(aes(x = simd_quintile, y = total_admissions), colour = "black") +
   theme(axis.text.x = element_text(angle = 90))
 
 admissions_quint_1 <- hospital_admissions %>% 
@@ -291,7 +305,7 @@ admissions_quint_1 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, y = total_admissions)) 
+  geom_col(aes(x = admission_type, y = total_admissions), colour = "orange") 
 
 admissions_quint_5 <- hospital_admissions %>% 
   select(simd_quintile, admission_type, hb, number_admissions) %>% 
@@ -299,7 +313,7 @@ admissions_quint_5 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, total_admissions))
+  geom_col(aes(x = admission_type, total_admissions), colour = "purple")
   
 m_admissions_quint_5 <- hospital_admissions %>% 
   select(simd_quintile, admission_type, hb, number_admissions) %>% 
@@ -307,7 +321,8 @@ m_admissions_quint_5 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(mean_admissions = mean(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, mean_admissions))  
+  geom_col(aes(x = admission_type, mean_admissions)) +
+  scale_fill_manual(values = wes_palette("Darjeeling1", n = 5)) 
   
 ```
 
@@ -480,6 +495,31 @@ variations <- full_demographics %>%
   theme(axis.text.x = element_text(angle = 90))
 variations
 ```
+```{r}
+deaths_by_hscp %>% 
+  select(age_group, deaths, sex, hscp) %>% 
+  group_by(age_group, sex) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = age_group, y = total_deaths, fill = sex)) +
+    theme(axis.text.x = element_text(angle = 90))
 
+```
+
+```{r}
+
+```
+
+```{r}
+death_trends <- deaths_by_age %>% 
+  select(week_ending, age_group, deaths, sex, hb) %>% 
+  group_by(week_ending, hb) %>% 
+  summarise(avg_deaths = mean(deaths)) %>% 
+  ggplot(bins = 50) +
+  geom_boxplot(aes(x = week_ending, y = avg_deaths)) +
+  #scale_x_continuous(breaks = c("20200105")) +
+  theme(axis.text.x = element_text(angle = 90))
+death_trends
+```
 
 
