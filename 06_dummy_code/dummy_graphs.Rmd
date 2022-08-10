@@ -52,13 +52,13 @@ demo_graph <- hospital_demographics %>%
 ```
 
 ```{r}
-waiting_graph <- waiting_times %>% 
-  select(department_type) %>% 
-  group_by(department_type) %>% 
-  summarise(waiting_times = n()) %>% 
-  ggplot() +
-  geom_col(x = department_type, y = waiting_times) +
-  theme(axis.text.x = element_text(angle = 90))
+# waiting_graph <- waiting_times %>% 
+#   select(department_type, number_of_attendances_aggregate) %>% 
+#   group_by(department_type) %>% 
+#   summarise(total_attendances = sum(number_of_attendances_aggregate)) %>% 
+#   ggplot() +
+#   geom_col(x = department_type, y = total_attendances) +
+#   theme(axis.text.x = element_text(angle = 90))
   
 ```
 
@@ -648,7 +648,8 @@ Hospitalisation_trends <- admission_data2 %>%
   group_by(month_name) %>% 
   summarise(total_admin = sum(number_admissions)) %>% 
   ggplot() +
-  geom_line(aes(x = month_name, y = total_admin, group = 1))
+  geom_line(aes(x = month_name, y = total_admin, group = 1)) +
+  ggtitle("Trend of Admissions over the year")
 Hospitalisation_trends
 
 Hospitalisation_differ <- admission_data2 %>% 
@@ -657,7 +658,8 @@ Hospitalisation_differ <- admission_data2 %>%
   group_by(month_name) %>% 
   summarise(total_diff = sum(percent_variation)) %>% 
   ggplot() +
-  geom_line(aes(x = month_name, y = total_diff, group = 1))
+  geom_line(aes(x = month_name, y = total_diff, group = 1)) +
+  ggtitle("Trend of total variation from norm")
 Hospitalisation_differ
 
 Hospitalisation_differ2 <- admission_data2 %>% 
@@ -666,7 +668,8 @@ Hospitalisation_differ2 <- admission_data2 %>%
   group_by(month_name) %>% 
   summarise(mean_diff = mean(percent_variation)) %>% 
   ggplot() +
-  geom_line(aes(x = month_name, y = mean_diff, group = 1))
+  geom_line(aes(x = month_name, y = mean_diff, group = 1)) +
+  ggtitle("Trend of average variation from norm")
 Hospitalisation_differ2
 ```
 
