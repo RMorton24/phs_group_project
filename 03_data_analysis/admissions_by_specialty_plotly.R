@@ -13,7 +13,7 @@ admissions_by_specialty <- read_csv("02_cleaned_data/admissions_by_speciality_cl
 admissions_filter <- admissions_by_specialty %>% 
   filter(hb == "S92000003",
          specialty == "All", 
-         admission_type == "Emergency") 
+         admission_type == "All") 
 
 plot_admissions <- plot_ly(data = admissions_filter,
                            x = ~week_ending,
