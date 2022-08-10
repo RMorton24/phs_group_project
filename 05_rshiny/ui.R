@@ -124,7 +124,7 @@ shinyUI(
         )
       ),
       mainPanel(
-        leafletOutput("heatmap", width = "150%", height = "750px")
+        leafletOutput("heatmap2", width = "150%", height = "750px")
       )
     ),
     tabPanel(

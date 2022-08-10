@@ -47,7 +47,7 @@ shinyServer(function(input, output) {
   })
   
   # Create heatmap plot
-  output$heatmap1 <- renderLeaflet({
+  output$heatmap2 <- renderLeaflet({
     leaflet(nhs_borders) %>% 
       addTiles() %>% 
       addPolygons(fillColor = ~pal(HBCode),
@@ -156,7 +156,7 @@ shinyServer(function(input, output) {
     
     hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
      # browser()
-    leafletProxy("heatmap") %>% 
+    leafletProxy("heatmap2") %>% 
       clearShapes() %>% 
       clearControls() %>% 
       addPolygons(data = temp_shape,
