@@ -1769,8 +1769,305 @@ pre code {
 
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeSh0aWR5dmVyc2UpXG5cbmBgYCJ9 -->
+<pre class="r"><code>library(tidyverse)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUmVnaXN0ZXJlZCBTMyBtZXRob2RzIG92ZXJ3cml0dGVuIGJ5ICdkYnBseXInOlxuICBtZXRob2QgICAgICAgICBmcm9tXG4gIHByaW50LnRibF9sYXp5ICAgICBcbiAgcHJpbnQudGJsX3NxbCAgICAgIFxu4pSA4pSAIEF0dGFjaGluZyBwYWNrYWdlcyDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIAgdGlkeXZlcnNlIDEuMy4xIOKUgOKUgFxu4pyUIGdncGxvdDIgMy4zLjYgICAgIOKclCBwdXJyciAgIDAuMy40XG7inJQgdGliYmxlICAzLjEuNyAgICAg4pyUIGRwbHlyICAgMS4wLjlcbuKclCB0aWR5ciAgIDEuMi4wICAgICDinJQgc3RyaW5nciAxLjQuMFxu4pyUIHJlYWRyICAgMi4xLjIgICAgIOKclCBmb3JjYXRzIDAuNS4xXG7ilIDilIAgQ29uZmxpY3RzIOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgOKUgCB0aWR5dmVyc2VfY29uZmxpY3RzKCkg4pSA4pSAXG7inJYgZHBseXI6OmZpbHRlcigpIG1hc2tzIHN0YXRzOjpmaWx0ZXIoKVxu4pyWIGRwbHlyOjpsYWcoKSAgICBtYXNrcyBzdGF0czo6bGFnKClcbiJ9 -->
+<pre><code>Registered S3 methods overwritten by &#39;dbplyr&#39;:
+  method         from
+  print.tbl_lazy     
+  print.tbl_sql      
+── Attaching packages ───────────────────────────────────────────────────────────── tidyverse 1.3.1 ──
+✔ ggplot2 3.3.6     ✔ purrr   0.3.4
+✔ tibble  3.1.7     ✔ dplyr   1.0.9
+✔ tidyr   1.2.0     ✔ stringr 1.4.0
+✔ readr   2.1.2     ✔ forcats 0.5.1
+── Conflicts ──────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmhzX2JvcmRlcnMgPC0gc3RfcmVhZChkc24gPSBcIi4uLzAxX2RhdGEvZ2Vvc3BhdGlhbF9kYXRhL1NHX05IU19IZWFsdGhCb2FyZHNfMjAxOS9cIiwgbGF5ZXIgPSBcIlNHX05IU19IZWFsdGhCb2FyZHNfMjAxOVwiKVxuYGBgIn0= -->
+<pre class="r"><code>nhs_borders &lt;- st_read(dsn = &quot;../01_data/geospatial_data/SG_NHS_HealthBoards_2019/&quot;, layer = &quot;SG_NHS_HealthBoards_2019&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJvajRzdHJpbmcobmhzX2JvcmRlcnMpXG5gYGAifQ== -->
+<pre class="r"><code>proj4string(nhs_borders)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVhZmxldChuaHNfYm9yZGVycykgJT4lIFxuICBhZGRQb2x5Z29ucygpXG5gYGAifQ== -->
+<pre class="r"><code>leaflet(nhs_borders) %&gt;% 
+  addPolygons()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucHJvamVjdGlvbiA8LSAnK3Byb2o9bG9uZ2xhdCArZGF0dW09V0dTODQnXG5cblxudGVtcCA8LSBzcFRyYW5zZm9ybShuaHNfYm9yZGVycywgcHJvamVjdGlvbilcbmBgYCJ9 -->
+<pre class="r"><code>projection &lt;- &#39;+proj=longlat +datum=WGS84&#39;
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQo=</div>
+
+temp &lt;- spTransform(nhs_borders, projection)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudDIgPC0gc3RfY2FzdChuaHNfYm9yZGVycyRnZW9tZXRyeSwgXCJQT0xZR09OXCIpXG5gYGAifQ== -->
+<pre class="r"><code>t2 &lt;- st_cast(nhs_borders$geometry, &quot;POLYGON&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdCh0MilcbmBgYCJ9 -->
+<pre class="r"><code>plot(t2)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYSA8LSBzdF90cmFuc2Zvcm0obmhzX2JvcmRlcnMsIDQzMjYpXG5gYGAifQ== -->
+<pre class="r"><code>a &lt;- st_transform(nhs_borders, 4326)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVhZmxldChhKSAlPiUgXG4gIGFkZFRpbGVzKClcbiAgYWRkUG9seWdvbnMoKVxuYGBgIn0= -->
+<pre class="r"><code>leaflet(a) %&gt;% 
+  addTiles()
+  addPolygons()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZXBzZzI3NzAwIDwtIGxlYWZsZXRDUlMoY3JzQ2xhc3MgPSBcIkwuUHJvai5DUlNcIiwgY29kZSA9IFwiRVBTRzoyNzcwMFwiLFxuICAgICAgICAgICAgICAgICAgICAgICBwcm9qNGRlZiA9IFwiK3Byb2o9dG1lcmMgK2xhdF8wPTQ5ICtsb25fMD0tMiAraz0wLjk5OTYwMTI3MTcgK3hfMD00MDAwMDAgK3lfMD0tMTAwMDAwICtlbGxwcz1haXJ5ICtkYXR1bT1PU0dCMzYgK3VuaXRzPW0gK25vX2RlZnNcIixcbiAgICAgICAgICAgICAgICAgICAgICAgcmVzb2x1dGlvbnMgPSBjKDg5Ni4wLCA0NDguMCwgMjI0LjAsIDExMi4wLCA1Ni4wLCAyOC4wLCAxNC4wLCA3LjAsIDMuNSwgMS43NSksIzJeKDEzOi0xKSwgIyA4MTkyIGRvd24gdG8gMC41XG4gICAgICAgICAgICAgICAgICAgICAgIG9yaWdpbiA9IGMoLTIzODM3NS4wLCAxMzc2MjU2LjApXG4pXG5cbnRpbGVfdXJsIDwtIFwiaHR0cHM6Ly9hcGkub3MudWsvbWFwcy9yYXN0ZXIvdjEvenh5L0xlaXN1cmVfMjc3MDAve3p9L3t4fS97eX0ucG5nP2tleT1pSklnR1VYS1lGaVQyczJlakc3Y0FCMHNHdXZ0T0N5cFwiXG5gYGAifQ== -->
+<pre class="r"><code>epsg27700 &lt;- leafletCRS(crsClass = &quot;L.Proj.CRS&quot;, code = &quot;EPSG:27700&quot;,
+                       proj4def = &quot;+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000 +y_0=-100000 +ellps=airy +datum=OSGB36 +units=m +no_defs&quot;,
+                       resolutions = c(896.0, 448.0, 224.0, 112.0, 56.0, 28.0, 14.0, 7.0, 3.5, 1.75),#2^(13:-1), # 8192 down to 0.5
+                       origin = c(-238375.0, 1376256.0)
+)
+
+tile_url &lt;- &quot;https://api.os.uk/maps/raster/v1/zxy/Leisure_27700/{z}/{x}/{y}.png?key=iJIgGUXKYFiT2s2ejG7cAB0sGuvtOCyp&quot;</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVhZmxldChvcHRpb25zID0gbGVhZmxldE9wdGlvbnMoIGNycyA9IGVwc2cyNzcwMCkpICU+JVxuICBhZGRUaWxlcygpJT4lXG4gIFxuICAjIFdHUzg0IE1hcmtlcnMgYXJlIHRyYW5zZm9ybWVkIHRvIEVQU0c6Mjc3MDAgYmVoaW5kIHRoZSBzY2VuZXNcbiAgYWRkTWFya2VycygtMC4xNjM1OSwgNTEuNTA4MykgJT4lIFxuICBhZGRQb2x5Z29ucyhkYXRhID0gbmhzX2JvcmRlcnMkZ2VvbWV0cnkpXG5gYGAifQ== -->
+<pre class="r"><code>leaflet(options = leafletOptions( crs = epsg27700)) %&gt;%
+  addTiles()%&gt;%
+  
+  # WGS84 Markers are transformed to EPSG:27700 behind the scenes
+  addMarkers(-0.16359, 51.5083) %&gt;% 
+  addPolygons(data = nhs_borders$geometry)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmhzX2JvcmRlcnMgJT4lIFxuICBnZ3Bsb3QoKSArXG4gIGdlb21fc2YoKVxuYGBgIn0= -->
+<pre class="r"><code>nhs_borders %&gt;% 
+  ggplot() +
+  geom_sf()</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc2ltcGxlX25ocyA8LSBuaHNfYm9yZGVycyAlPiUgXG4gIHN0X3NpbXBsaWZ5KGRUb2xlcmFuY2UgPSAyNTAwKVxuICBcbiAgXG4gIFxuICBcbiAgZ2dwbG90KCkgK1xuICBnZW9tX3NmKClcbiAgXG4gIHN0X3dyaXRlKGRzbiA9IFwibmhzX3NpbXBsZVwiLCBsYXllciA9IFwibmhzX2JvYXJkXCIsIGRyaXZlciA9IFwiRVNSSSBTaGFwZWZpbGVcIilcbmBgYCJ9 -->
+<pre class="r"><code>simple_nhs &lt;- nhs_borders %&gt;% 
+  st_simplify(dTolerance = 2500)
+  
+  
+  
+  
+  ggplot() +
+  geom_sf()
+  
+  st_write(dsn = &quot;nhs_simple&quot;, layer = &quot;nhs_board&quot;, driver = &quot;ESRI Shapefile&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubmhzX3RyYW5zIDwtIHNpbXBsZV9uaHMgJT4lIFxuICBzdF90cmFuc2Zvcm0oJytwcm9qPWxvbmdsYXQgK2RhdHVtPVdHUzg0JylcblxuXG5gYGAifQ== -->
+<pre class="r"><code>nhs_trans &lt;- simple_nhs %&gt;% 
+  st_transform(&#39;+proj=longlat +datum=WGS84&#39;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGFsMiA8LSBjb2xvckZhY3RvcihcInZpcmlkaXNcIiwgZG9tYWluID0gbmhzX3RyYW5zJEhCQ29kZSwgbiA9IDE0KVxuXG5sYWJlbHMgPC0gcGFzdGUwKFxuICBcIjxiPlwiLCBuaHNfdHJhbnMkSEJOYW1lLCBcIjxcL2I+PGJyPlwiLCBuaHNfdHJhbnMkSEJDb2RlXG4pICU+JSBsYXBwbHkoaHRtbHRvb2xzOjpIVE1MKVxuXG5sZWFmbGV0KG5oc190cmFucykgJT4lIFxuICBhZGRUaWxlcygpICU+JSBcbiAgYWRkUG9seWdvbnMoZmlsbENvbG9yID0gfnBhbDIoSEJDb2RlKSxmaWxsT3BhY2l0eSA9IDEsXG4gICAgICAgICAgICAgIHdlaWdodCA9IDEsIFxuICAgICAgICAgICAgICBsYWJlbCA9IGxhYmVscyxcbiAgICAgICAgICAgICAgbGFiZWxPcHRpb25zID0gbGFiZWxPcHRpb25zKCkpXG5gYGAifQ== -->
+<pre class="r"><code>pal2 &lt;- colorFactor(&quot;viridis&quot;, domain = nhs_trans$HBCode, n = 14)
+
+labels &lt;- paste0(
+  &quot;&lt;b&gt;&quot;, nhs_trans$HBName, &quot;&lt;/b&gt;&lt;br&gt;&quot;, nhs_trans$HBCode
+) %&gt;% lapply(htmltools::HTML)
+
+leaflet(nhs_trans) %&gt;% 
+  addTiles() %&gt;% 
+  addPolygons(fillColor = ~pal2(HBCode),fillOpacity = 1,
+              weight = 1, 
+              label = labels,
+              labelOptions = labelOptions())</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGVhZmxldChuaHNfdHJhbnMpICU+JSBcbiAgYWRkUG9seWdvbnMoZmlsbENvbG9yID0gfnBhbDIoSEJDb2RlKSxmaWxsT3BhY2l0eSA9IDEsXG4gICAgICAgICAgICAgIHdlaWdodCA9IDEsIFxuICAgICAgICAgICAgICBjb2xvciA9IFwid2hpdGVcIixcbiAgICAgICAgICAgICAgbGFiZWwgPSBsYWJlbHMsXG4gICAgICAgICAgICAgIGxhYmVsT3B0aW9ucyA9IGxhYmVsT3B0aW9ucygpLFxuICAgICAgICAgICAgICBoaWdobGlnaHRPcHRpb25zID0gaGlnaGxpZ2h0T3B0aW9ucyhjb2xvciA9IFwiIzY2NlwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3ZWlnaHQgPSA1LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmluZ1RvRnJvbnQgPSBUUlVFKVxuICAgICAgICAgICAgICApICU+JSBcbiAgc2V0TWF4Qm91bmRzKC0zLCA1NS40LCAtMiwgNjApXG5gYGAifQ== -->
+<pre class="r"><code>leaflet(nhs_trans) %&gt;% 
+  addPolygons(fillColor = ~pal2(HBCode),fillOpacity = 1,
+              weight = 1, 
+              color = &quot;white&quot;,
+              label = labels,
+              labelOptions = labelOptions(),
+              highlightOptions = highlightOptions(color = &quot;#666&quot;,
+                                                  weight = 5,
+                                                  bringToFront = TRUE)
+              ) %&gt;% 
+  setMaxBounds(-3, 55.4, -2, 60)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucmVnaW9uX2hpZ2hsaWdodCA8LSBcdFwiUzA4MDAwMDIwXCJcbm5oc19ib3JkZXJzWzYsMV1cblxuXG5cbmxlYWZsZXQobmhzX2JvcmRlcnMpICU+JSBcbiAgYWRkUG9seWdvbnMoZmlsbENvbG9yID0gfnBhbDIoSEJDb2RlKSxcbiAgICAgICAgICAgICAgZmlsbE9wYWNpdHkgPSAxLFxuICAgICAgICAgICAgICB3ZWlnaHQgPSAxLCBcbiAgICAgICAgICAgICAgY29sb3IgPSBcIndoaXRlXCIsXG4gICAgICAgICAgICAgIGxhYmVsID0gbGFiZWxzLFxuICAgICAgICAgICAgICBsYWJlbE9wdGlvbnMgPSBsYWJlbE9wdGlvbnMoKSxcbiAgICAgICAgICAgICAgaGlnaGxpZ2h0T3B0aW9ucyA9IGhpZ2hsaWdodE9wdGlvbnMoY29sb3IgPSBcIiM2NjZcIixcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2VpZ2h0ID0gNSxcbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJpbmdUb0Zyb250ID0gVFJVRSkpICU+JSBcbiAgICAgICAgICAgICAgICBhZGRQb2x5bGluZXMoZGF0YSA9IGIsXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGxheWVySWQgPSBcImhpZ2hsaWdodFwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3ZWlnaHQgPSAxMCwgXG4gICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG9yID0gXCJyZWRcIilcbmBgYCJ9 -->
+<pre class="r"><code>region_highlight &lt;-     &quot;S08000020&quot;
+nhs_borders[6,1]
+
+
+
+leaflet(nhs_borders) %&gt;% 
+  addPolygons(fillColor = ~pal2(HBCode),
+              fillOpacity = 1,
+              weight = 1, 
+              color = &quot;white&quot;,
+              label = labels,
+              labelOptions = labelOptions(),
+              highlightOptions = highlightOptions(color = &quot;#666&quot;,
+                                                  weight = 5,
+                                                  bringToFront = TRUE)) %&gt;% 
+                addPolylines(data = b,
+                             layerId = &quot;highlight&quot;,
+                             weight = 10, 
+                             color = &quot;red&quot;)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuYmJveCA8LSBzdF9iYm94KG5oc19ib3JkZXJzKSAlPiUgXG4gIGFzLnZlY3RvcigpXG5cbmxlYWZsZXQobmhzX2JvcmRlcnMpICU+JSBcbiAgYWRkUG9seWdvbnMoZmlsbENvbG9yID0gfnBhbChIQkNvZGUpLFxuICAgICAgICAgICAgICBmaWxsT3BhY2l0eSA9IDEsXG4gICAgICAgICAgICAgIHdlaWdodCA9IDEsIFxuICAgICAgICAgICAgICBjb2xvciA9IFwid2hpdGVcIixcbiAgICAgICAgICAgICAgbGFiZWwgPSBsYWJlbHMsXG4gICAgICAgICAgICAgIGxhYmVsT3B0aW9ucyA9IGxhYmVsT3B0aW9ucygpLFxuICAgICAgICAgICAgICBoaWdobGlnaHRPcHRpb25zID0gaGlnaGxpZ2h0T3B0aW9ucyhjb2xvciA9IFwiIzY2NlwiLFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3ZWlnaHQgPSA1LFxuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmluZ1RvRnJvbnQgPSBUUlVFKSkgJT4lIFxuICBzZXRNYXhCb3VuZHMoYmJveFsxXSwgYmJveFsyXSwgYmJveFszXSwgYmJveFs0XSlcbmBgYCJ9 -->
+<pre class="r"><code>bbox &lt;- st_bbox(nhs_borders) %&gt;% 
+  as.vector()
+
+leaflet(nhs_borders) %&gt;% 
+  addPolygons(fillColor = ~pal(HBCode),
+              fillOpacity = 1,
+              weight = 1, 
+              color = &quot;white&quot;,
+              label = labels,
+              labelOptions = labelOptions(),
+              highlightOptions = highlightOptions(color = &quot;#666&quot;,
+                                                  weight = 5,
+                                                  bringToFront = TRUE)) %&gt;% 
+  setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuaG9zcGl0YWxfZGVwcml2YXRpb24gPC0gcmVhZF9jc3YoaGVyZTo6aGVyZShcIjAxX2RhdGEvaG9zcGl0YWxfYWN0aXZpdHlfYW5kX2RlcHJpdmF0aW9uLmNzdlwiKSlcblxuYGBgIn0= -->
+<pre class="r"><code>hospital_deprivation &lt;- read_csv(here::here(&quot;01_data/hospital_activity_and_deprivation.csv&quot;))
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogNDA4MjEgQ29sdW1uczogMTlcbuKUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAoMTEpOiBRdWFydGVyLCBRdWFydGVyUUYsIEhCLCBIQlFGLCBMb2NhdGlvbiwgTG9jYXRpb25RRiwgQWRtaXNzaW9uVHlwZSwgQWRtaXNzaW9uVHlwZVFGLCBTSU1ELi4uXG5kYmwgICg4KTogX2lkLCBTSU1ELCBFcGlzb2RlcywgTGVuZ3RoT2ZFcGlzb2RlLCBBdmVyYWdlTGVuZ3RoT2ZFcGlzb2RlLCBTdGF5cywgTGVuZ3RoT2ZTdGF5LCBBdmVyYS4uLlxuXG7ihLkgVXNlIGBzcGVjKClgIHRvIHJldHJpZXZlIHRoZSBmdWxsIGNvbHVtbiBzcGVjaWZpY2F0aW9uIGZvciB0aGlzIGRhdGEuXG7ihLkgU3BlY2lmeSB0aGUgY29sdW1uIHR5cGVzIG9yIHNldCBgc2hvd19jb2xfdHlwZXMgPSBGQUxTRWAgdG8gcXVpZXQgdGhpcyBtZXNzYWdlLlxuIn0= -->
+<pre><code>Rows: 40821 Columns: 19
+── Column specification ──────────────────────────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr (11): Quarter, QuarterQF, HB, HBQF, Location, LocationQF, AdmissionType, AdmissionTypeQF, SIMD...
+dbl  (8): _id, SIMD, Episodes, LengthOfEpisode, AverageLengthOfEpisode, Stays, LengthOfStay, Avera...
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-frame-begin eyJtZXRhZGF0YSI6eyJjbGFzc2VzIjpbInRibF9kZiIsInRibCIsImRhdGEuZnJhbWUiXSwibnJvdyI6MTgsIm5jb2wiOjIsInN1bW1hcnkiOnsiQSB0aWJibGUiOlsiMTggw5cgMiJdfX0sInJkZiI6Ikg0c0lBQUFBQUFBQUJwMlNUMCtETUJUQVMxMDFOSm1hK1RrZ1VOU3g2MkxNVGg2Y0pydVp5bENKV0JaZzBhT2YySTh3ZkhSOVpMNmpUVnJlKy9YOUwvYzNxMFN1SkdQc2lJMDRuQUpFSmg0ZmJvT1VXY0k4Tm1KKy8vMkM2d3NRZW5nT2UrSXVqcGZ6S0kxaXAvbExVR0RGVnhSY1V6QWxRTTJvQlFVcUlpQ2hhWldpRmhTb1N3cG9wWXBXbXRDMEtoMkFta2EyMUFITWxBWEpNSjI3S0kxamtLU2QyWDU1Lzl3SDY4L2pDS00vOHNZOURIZVFMK1o0WFRSUGhTRStmbDE5aHVnMzd1Mi80ZWk2N29jR3owcmRZSENFY3ExYkhiN1U0QS9hanJpY1ZKdTJxQXc0OGY2WEVjVFpxd2s0MjVxK2tuV1F2VzNOZTREandwYkhUcDRjeUh5ZmtuY3VsTUNCNSthMU1EbldYdXJudkhUS0tYUnNHdzQzZFdGYTdBUm9FN1pWcTlGT1psV0p4UGJHZHIvV2VVOE5LUU1BQUE9PSJ9 -->
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["HB"],"name":[1],"type":["chr"],"align":["left"]},{"label":["is_in"],"name":[2],"type":["lgl"],"align":["right"]}],"data":[{"1":"SB0801","2":"FALSE"},{"1":"S08000015","2":"TRUE"},{"1":"S08000016","2":"TRUE"},{"1":"S08000017","2":"TRUE"},{"1":"S08000029","2":"TRUE"},{"1":"S08000019","2":"TRUE"},{"1":"S08000020","2":"TRUE"},{"1":"S08000031","2":"TRUE"},{"1":"S08000022","2":"TRUE"},{"1":"S08000032","2":"TRUE"},{"1":"S08000024","2":"TRUE"},{"1":"S08000025","2":"TRUE"},{"1":"S08000026","2":"TRUE"},{"1":"S08000030","2":"TRUE"},{"1":"S08000028","2":"TRUE"},{"1":"S27000001","2":"FALSE"},{"1":"S92000003","2":"FALSE"},{"1":"SN0811","2":"FALSE"}],"options":{"columns":{"min":{},"max":[10],"total":[2]},"rows":{"min":[10],"max":[10],"total":[18]},"pages":{}}}
+  </script>
+</div>
+<!-- rnb-frame-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3Rfd3JpdGUobmhzX2JvcmRlcnMsXG4gICAgICAgICBkc24gPSBoZXJlOjpoZXJlKFwiMDJfY2xlYW5lZF9kYXRhL25oc19yZWdpb25fc2ltcGxlXCIpLFxuICAgICAgICAgZHJpdmVyID0gXCJFU1JJIFNoYXBlZmlsZVwiKVxuXG5gYGAifQ== -->
+<pre class="r"><code>st_write(nhs_borders,
+         dsn = here::here(&quot;02_cleaned_data/nhs_region_simple&quot;),
+         driver = &quot;ESRI Shapefile&quot;)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV3JpdGluZyBsYXllciBgbmhzX3JlZ2lvbl9zaW1wbGUnIHRvIGRhdGEgc291cmNlIFxuICBgQzovVXNlcnMvcGFwZXIvRG9jdW1lbnRzL0NvZGVDbGFuL3Boc19ncm91cF9wcm9qZWN0LzAyX2NsZWFuZWRfZGF0YS9uaHNfcmVnaW9uX3NpbXBsZScgdXNpbmcgZHJpdmVyIGBFU1JJIFNoYXBlZmlsZSdcbldyaXRpbmcgMTQgZmVhdHVyZXMgd2l0aCA0IGZpZWxkcyBhbmQgZ2VvbWV0cnkgdHlwZSBVbmtub3duIChhbnkpLlxuIn0= -->
+<pre><code>Writing layer `nhs_region_simple&#39; to data source 
+  `C:/Users/paper/Documents/CodeClan/phs_group_project/02_cleaned_data/nhs_region_simple&#39; using driver `ESRI Shapefile&#39;
+Writing 14 features with 4 fields and geometry type Unknown (any).</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDM0MDg4MDIyMjguODgwMDAwMTEgb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDAgbm90IHN1Y2Nlc3NmdWxseSB3cml0dGVuLiBQb3NzaWJseSBkdWUgdG8gdG9vIGxhcmdlciBudW1iZXIgd2l0aCByZXNwZWN0IHRvIGZpZWxkIHdpZHRoXG5XYXJuaW5nIGluIENQTF93cml0ZV9vZ3Iob2JqLCBkc24sIGxheWVyLCBkcml2ZXIsIGFzLmNoYXJhY3RlcihkYXRhc2V0X29wdGlvbnMpLCAgOlxuICBHREFMIE1lc3NhZ2UgMTogVmFsdWUgNDc0MjY4NDk2MC4zMDAwMDAxOSBvZiBmaWVsZCBTaGFwZV9BcmVhIG9mIGZlYXR1cmUgMSBub3Qgc3VjY2Vzc2Z1bGx5IHdyaXR0ZW4uIFBvc3NpYmx5IGR1ZSB0byB0b28gbGFyZ2VyIG51bWJlciB3aXRoIHJlc3BlY3QgdG8gZmllbGQgd2lkdGhcbldhcm5pbmcgaW4gQ1BMX3dyaXRlX29ncihvYmosIGRzbiwgbGF5ZXIsIGRyaXZlciwgYXMuY2hhcmFjdGVyKGRhdGFzZXRfb3B0aW9ucyksICA6XG4gIEdEQUwgTWVzc2FnZSAxOiBWYWx1ZSA2Njc2MzE0ODUxLjM2OTk5OTg5IG9mIGZpZWxkIFNoYXBlX0FyZWEgb2YgZmVhdHVyZSAyIG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDI3MzM2NTg3MjEuMTk5OTk5ODEgb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDMgbm90IHN1Y2Nlc3NmdWxseSB3cml0dGVuLiBQb3NzaWJseSBkdWUgdG8gdG9vIGxhcmdlciBudW1iZXIgd2l0aCByZXNwZWN0IHRvIGZpZWxkIHdpZHRoXG5XYXJuaW5nIGluIENQTF93cml0ZV9vZ3Iob2JqLCBkc24sIGxheWVyLCBkcml2ZXIsIGFzLmNoYXJhY3RlcihkYXRhc2V0X29wdGlvbnMpLCAgOlxuICBHREFMIE1lc3NhZ2UgMTogVmFsdWUgODgwMDg4NTI2Ny42NzAwMDAwOCBvZiBmaWVsZCBTaGFwZV9BcmVhIG9mIGZlYXR1cmUgNCBub3Qgc3VjY2Vzc2Z1bGx5IHdyaXR0ZW4uIFBvc3NpYmx5IGR1ZSB0byB0b28gbGFyZ2VyIG51bWJlciB3aXRoIHJlc3BlY3QgdG8gZmllbGQgd2lkdGhcbldhcm5pbmcgaW4gQ1BMX3dyaXRlX29ncihvYmosIGRzbiwgbGF5ZXIsIGRyaXZlciwgYXMuY2hhcmFjdGVyKGRhdGFzZXRfb3B0aW9ucyksICA6XG4gIEdEQUwgTWVzc2FnZSAxOiBWYWx1ZSAzMzYzNzA0NDUyMC4wOTk5OTg1IG9mIGZpZWxkIFNoYXBlX0FyZWEgb2YgZmVhdHVyZSA1IG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDE3NjA4MDQwMDUuNjUwMDAwMSBvZiBmaWVsZCBTaGFwZV9BcmVhIG9mIGZlYXR1cmUgNiBub3Qgc3VjY2Vzc2Z1bGx5IHdyaXR0ZW4uIFBvc3NpYmx5IGR1ZSB0byB0b28gbGFyZ2VyIG51bWJlciB3aXRoIHJlc3BlY3QgdG8gZmllbGQgd2lkdGhcbldhcm5pbmcgaW4gQ1BMX3dyaXRlX29ncihvYmosIGRzbiwgbGF5ZXIsIGRyaXZlciwgYXMuY2hhcmFjdGVyKGRhdGFzZXRfb3B0aW9ucyksICA6XG4gIEdEQUwgTWVzc2FnZSAxOiBWYWx1ZSAxMDg2MjEwNzcyLjE3MDAwMDA4IG9mIGZpZWxkIFNoYXBlX0FyZWEgb2YgZmVhdHVyZSA3IG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDE2NTY2MTgwMDguMjg5OTk5OTYgb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDggbm90IHN1Y2Nlc3NmdWxseSB3cml0dGVuLiBQb3NzaWJseSBkdWUgdG8gdG9vIGxhcmdlciBudW1iZXIgd2l0aCByZXNwZWN0IHRvIGZpZWxkIHdpZHRoXG5XYXJuaW5nIGluIENQTF93cml0ZV9vZ3Iob2JqLCBkc24sIGxheWVyLCBkcml2ZXIsIGFzLmNoYXJhY3RlcihkYXRhc2V0X29wdGlvbnMpLCAgOlxuICBHREFMIE1lc3NhZ2UgMTogVmFsdWUgMzI2ODQ3MzMyNi4wNzk5OTk5MiBvZiBmaWVsZCBTaGFwZV9BcmVhIG9mIGZlYXR1cmUgOSBub3Qgc3VjY2Vzc2Z1bGx5IHdyaXR0ZW4uIFBvc3NpYmx5IGR1ZSB0byB0b28gbGFyZ2VyIG51bWJlciB3aXRoIHJlc3BlY3QgdG8gZmllbGQgd2lkdGhcbldhcm5pbmcgaW4gQ1BMX3dyaXRlX29ncihvYmosIGRzbiwgbGF5ZXIsIGRyaXZlciwgYXMuY2hhcmFjdGVyKGRhdGFzZXRfb3B0aW9ucyksICA6XG4gIEdEQUwgTWVzc2FnZSAxOiBWYWx1ZSAxMzczMzMyMzk2LjM0OTk5OTkgb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDEwIG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDc2ODQzNjYxNjIuOTM5OTk5NTggb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDExIG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDExNTA3NDIyNDguMDI5OTk5OTcgb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDEyIG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuV2FybmluZyBpbiBDUExfd3JpdGVfb2dyKG9iaiwgZHNuLCBsYXllciwgZHJpdmVyLCBhcy5jaGFyYWN0ZXIoZGF0YXNldF9vcHRpb25zKSwgIDpcbiAgR0RBTCBNZXNzYWdlIDE6IFZhbHVlIDIyNDYzMzE0NDAuMzg5OTk5ODcgb2YgZmllbGQgU2hhcGVfQXJlYSBvZiBmZWF0dXJlIDEzIG5vdCBzdWNjZXNzZnVsbHkgd3JpdHRlbi4gUG9zc2libHkgZHVlIHRvIHRvbyBsYXJnZXIgbnVtYmVyIHdpdGggcmVzcGVjdCB0byBmaWVsZCB3aWR0aFxuIn0= -->
+<pre><code>Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 3408802228.88000011 of field Shape_Area of feature 0 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 4742684960.30000019 of field Shape_Area of feature 1 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 6676314851.36999989 of field Shape_Area of feature 2 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 2733658721.19999981 of field Shape_Area of feature 3 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 8800885267.67000008 of field Shape_Area of feature 4 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 33637044520.0999985 of field Shape_Area of feature 5 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 1760804005.6500001 of field Shape_Area of feature 6 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 1086210772.17000008 of field Shape_Area of feature 7 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 1656618008.28999996 of field Shape_Area of feature 8 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 3268473326.07999992 of field Shape_Area of feature 9 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 1373332396.3499999 of field Shape_Area of feature 10 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 7684366162.93999958 of field Shape_Area of feature 11 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 1150742248.02999997 of field Shape_Area of feature 12 not successfully written. Possibly due to too larger number with respect to field width
+Warning in CPL_write_ogr(obj, dsn, layer, driver, as.character(dataset_options),  :
+  GDAL Message 1: Value 2246331440.38999987 of field Shape_Area of feature 13 not successfully written. Possibly due to too larger number with respect to field width</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlIgTm90ZWJvb2siDQpvdXRwdXQ6IGh0bWxfbm90ZWJvb2sNCi0tLQ0KDQpgYGB7cn0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShyZ2VvcykNCmxpYnJhcnkobGVhZmxldCkNCmxpYnJhcnkoc2YpDQpgYGANCg0KDQpgYGB7cn0NCm5oc19ib3JkZXJzIDwtIHN0X3JlYWQoZHNuID0gIi4uLzAxX2RhdGEvZ2Vvc3BhdGlhbF9kYXRhL1NHX05IU19IZWFsdGhCb2FyZHNfMjAxOS8iLCBsYXllciA9ICJTR19OSFNfSGVhbHRoQm9hcmRzXzIwMTkiKQ0KYGBgDQoNCmBgYHtyfQ0KcHJvajRzdHJpbmcobmhzX2JvcmRlcnMpDQpgYGANCg0KYGBge3J9DQpsZWFmbGV0KG5oc19ib3JkZXJzKSAlPiUgDQogIGFkZFBvbHlnb25zKCkNCmBgYA0KDQpgYGB7cn0NCnByb2plY3Rpb24gPC0gJytwcm9qPWxvbmdsYXQgK2RhdHVtPVdHUzg0Jw0KDQoNCnRlbXAgPC0gc3BUcmFuc2Zvcm0obmhzX2JvcmRlcnMsIHByb2plY3Rpb24pDQpgYGANCg0KYGBge3J9DQp0MiA8LSBzdF9jYXN0KG5oc19ib3JkZXJzJGdlb21ldHJ5LCAiUE9MWUdPTiIpDQpgYGANCg0KYGBge3J9DQpwbG90KHQyKQ0KYGBgDQoNCmBgYHtyfQ0KYSA8LSBzdF90cmFuc2Zvcm0obmhzX2JvcmRlcnMsIDQzMjYpDQpgYGANCg0KYGBge3J9DQpsZWFmbGV0KGEpICU+JSANCiAgYWRkVGlsZXMoKQ0KICBhZGRQb2x5Z29ucygpDQpgYGANCg0KYGBge3J9DQplcHNnMjc3MDAgPC0gbGVhZmxldENSUyhjcnNDbGFzcyA9ICJMLlByb2ouQ1JTIiwgY29kZSA9ICJFUFNHOjI3NzAwIiwNCiAgICAgICAgICAgICAgICAgICAgICAgcHJvajRkZWYgPSAiK3Byb2o9dG1lcmMgK2xhdF8wPTQ5ICtsb25fMD0tMiAraz0wLjk5OTYwMTI3MTcgK3hfMD00MDAwMDAgK3lfMD0tMTAwMDAwICtlbGxwcz1haXJ5ICtkYXR1bT1PU0dCMzYgK3VuaXRzPW0gK25vX2RlZnMiLA0KICAgICAgICAgICAgICAgICAgICAgICByZXNvbHV0aW9ucyA9IGMoODk2LjAsIDQ0OC4wLCAyMjQuMCwgMTEyLjAsIDU2LjAsIDI4LjAsIDE0LjAsIDcuMCwgMy41LCAxLjc1KSwjMl4oMTM6LTEpLCAjIDgxOTIgZG93biB0byAwLjUNCiAgICAgICAgICAgICAgICAgICAgICAgb3JpZ2luID0gYygtMjM4Mzc1LjAsIDEzNzYyNTYuMCkNCikNCg0KdGlsZV91cmwgPC0gImh0dHBzOi8vYXBpLm9zLnVrL21hcHMvcmFzdGVyL3YxL3p4eS9MZWlzdXJlXzI3NzAwL3t6fS97eH0ve3l9LnBuZz9rZXk9aUpJZ0dVWEtZRmlUMnMyZWpHN2NBQjBzR3V2dE9DeXAiDQpgYGANCg0KDQpgYGB7cn0NCmxlYWZsZXQob3B0aW9ucyA9IGxlYWZsZXRPcHRpb25zKCBjcnMgPSBlcHNnMjc3MDApKSAlPiUNCiAgYWRkVGlsZXMoKSU+JQ0KICANCiAgIyBXR1M4NCBNYXJrZXJzIGFyZSB0cmFuc2Zvcm1lZCB0byBFUFNHOjI3NzAwIGJlaGluZCB0aGUgc2NlbmVzDQogIGFkZE1hcmtlcnMoLTAuMTYzNTksIDUxLjUwODMpICU+JSANCiAgYWRkUG9seWdvbnMoZGF0YSA9IG5oc19ib3JkZXJzJGdlb21ldHJ5KQ0KYGBgDQoNCmBgYHtyfQ0KbmhzX2JvcmRlcnMgJT4lIA0KICBnZ3Bsb3QoKSArDQogIGdlb21fc2YoKQ0KYGBgDQoNCg0KYGBge3J9DQpzaW1wbGVfbmhzIDwtIG5oc19ib3JkZXJzICU+JSANCiAgc3Rfc2ltcGxpZnkoZFRvbGVyYW5jZSA9IDI1MDApDQogIA0KICANCiAgDQogIA0KICBnZ3Bsb3QoKSArDQogIGdlb21fc2YoKQ0KICANCiAgc3Rfd3JpdGUoZHNuID0gIm5oc19zaW1wbGUiLCBsYXllciA9ICJuaHNfYm9hcmQiLCBkcml2ZXIgPSAiRVNSSSBTaGFwZWZpbGUiKQ0KYGBgDQoNCg0KDQoNCmBgYHtyfQ0KbmhzX3RyYW5zIDwtIHNpbXBsZV9uaHMgJT4lIA0KICBzdF90cmFuc2Zvcm0oJytwcm9qPWxvbmdsYXQgK2RhdHVtPVdHUzg0JykNCg0KDQpgYGANCg0KYGBge3J9DQpwYWwyIDwtIGNvbG9yRmFjdG9yKCJ2aXJpZGlzIiwgZG9tYWluID0gbmhzX3RyYW5zJEhCQ29kZSwgbiA9IDE0KQ0KDQpsYWJlbHMgPC0gcGFzdGUwKA0KICAiPGI+IiwgbmhzX3RyYW5zJEhCTmFtZSwgIjwvYj48YnI+IiwgbmhzX3RyYW5zJEhCQ29kZQ0KKSAlPiUgbGFwcGx5KGh0bWx0b29sczo6SFRNTCkNCg0KbGVhZmxldChuaHNfdHJhbnMpICU+JSANCiAgYWRkVGlsZXMoKSAlPiUgDQogIGFkZFBvbHlnb25zKGZpbGxDb2xvciA9IH5wYWwyKEhCQ29kZSksZmlsbE9wYWNpdHkgPSAxLA0KICAgICAgICAgICAgICB3ZWlnaHQgPSAxLCANCiAgICAgICAgICAgICAgbGFiZWwgPSBsYWJlbHMsDQogICAgICAgICAgICAgIGxhYmVsT3B0aW9ucyA9IGxhYmVsT3B0aW9ucygpKQ0KYGBgDQoNCmBgYHtyfQ0KbGVhZmxldChuaHNfdHJhbnMpICU+JSANCiAgYWRkUG9seWdvbnMoZmlsbENvbG9yID0gfnBhbDIoSEJDb2RlKSxmaWxsT3BhY2l0eSA9IDEsDQogICAgICAgICAgICAgIHdlaWdodCA9IDEsIA0KICAgICAgICAgICAgICBjb2xvciA9ICJ3aGl0ZSIsDQogICAgICAgICAgICAgIGxhYmVsID0gbGFiZWxzLA0KICAgICAgICAgICAgICBsYWJlbE9wdGlvbnMgPSBsYWJlbE9wdGlvbnMoKSwNCiAgICAgICAgICAgICAgaGlnaGxpZ2h0T3B0aW9ucyA9IGhpZ2hsaWdodE9wdGlvbnMoY29sb3IgPSAiIzY2NiIsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHdlaWdodCA9IDUsDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJyaW5nVG9Gcm9udCA9IFRSVUUpDQogICAgICAgICAgICAgICkgJT4lIA0KICBzZXRNYXhCb3VuZHMoLTMsIDU1LjQsIC0yLCA2MCkNCmBgYA0KDQoNCmBgYHtyfQ0KcmVnaW9uX2hpZ2hsaWdodCA8LSAJIlMwODAwMDAyMCINCm5oc19ib3JkZXJzWzYsMV0NCg0KDQoNCmxlYWZsZXQobmhzX2JvcmRlcnMpICU+JSANCiAgYWRkUG9seWdvbnMoZmlsbENvbG9yID0gfnBhbDIoSEJDb2RlKSwNCiAgICAgICAgICAgICAgZmlsbE9wYWNpdHkgPSAxLA0KICAgICAgICAgICAgICB3ZWlnaHQgPSAxLCANCiAgICAgICAgICAgICAgY29sb3IgPSAid2hpdGUiLA0KICAgICAgICAgICAgICBsYWJlbCA9IGxhYmVscywNCiAgICAgICAgICAgICAgbGFiZWxPcHRpb25zID0gbGFiZWxPcHRpb25zKCksDQogICAgICAgICAgICAgIGhpZ2hsaWdodE9wdGlvbnMgPSBoaWdobGlnaHRPcHRpb25zKGNvbG9yID0gIiM2NjYiLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3ZWlnaHQgPSA1LA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBicmluZ1RvRnJvbnQgPSBUUlVFKSkgJT4lIA0KICAgICAgICAgICAgICAgIGFkZFBvbHlsaW5lcyhkYXRhID0gYiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbGF5ZXJJZCA9ICJoaWdobGlnaHQiLA0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICB3ZWlnaHQgPSAxMCwgDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbG9yID0gInJlZCIpDQpgYGANCg0KYGBge3J9DQpiYm94IDwtIHN0X2Jib3gobmhzX2JvcmRlcnMpICU+JSANCiAgYXMudmVjdG9yKCkNCg0KbGVhZmxldChuaHNfYm9yZGVycykgJT4lIA0KICBhZGRQb2x5Z29ucyhmaWxsQ29sb3IgPSB+cGFsKEhCQ29kZSksDQogICAgICAgICAgICAgIGZpbGxPcGFjaXR5ID0gMSwNCiAgICAgICAgICAgICAgd2VpZ2h0ID0gMSwgDQogICAgICAgICAgICAgIGNvbG9yID0gIndoaXRlIiwNCiAgICAgICAgICAgICAgbGFiZWwgPSBsYWJlbHMsDQogICAgICAgICAgICAgIGxhYmVsT3B0aW9ucyA9IGxhYmVsT3B0aW9ucygpLA0KICAgICAgICAgICAgICBoaWdobGlnaHRPcHRpb25zID0gaGlnaGxpZ2h0T3B0aW9ucyhjb2xvciA9ICIjNjY2IiwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgd2VpZ2h0ID0gNSwNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgYnJpbmdUb0Zyb250ID0gVFJVRSkpICU+JSANCiAgc2V0TWF4Qm91bmRzKGJib3hbMV0sIGJib3hbMl0sIGJib3hbM10sIGJib3hbNF0pDQpgYGANCg0KDQoNCmBgYHtyfQ0KaG9zcGl0YWxfZGVwcml2YXRpb24gPC0gcmVhZF9jc3YoaGVyZTo6aGVyZSgiMDFfZGF0YS9ob3NwaXRhbF9hY3Rpdml0eV9hbmRfZGVwcml2YXRpb24uY3N2IikpDQpgYGANCg0KYGBge3J9DQpob3NwaXRhbF9kZXByaXZhdGlvbiAlPiUgDQogIGRpc3RpbmN0KEhCKSAlPiUgDQogIG11dGF0ZShpc19pbiA9IEhCICVpbiUgbmhzX2JvcmRlcnMkSEJDb2RlKQ0KYGBgDQoNCmBgYHtyfQ0KIyBMb2FkIGluIHRoZSByZWdpb24gZ2VvbWV0cnkNCm5oc19ib3JkZXJzIDwtIHN0X3JlYWQoZHNuID0gIi4uLzAxX2RhdGEvZ2Vvc3BhdGlhbF9kYXRhL1NHX05IU19IZWFsdGhCb2FyZHNfMjAxOS8iLCANCiAgICAgICAgICAgICAgICAgICAgICAgbGF5ZXIgPSAiU0dfTkhTX0hlYWx0aEJvYXJkc18yMDE5IikgJT4lIA0KICBzdF9zaW1wbGlmeShkVG9sZXJhbmNlID0gMjUwMCkgJT4lIA0KICBzdF90cmFuc2Zvcm0oJytwcm9qPWxvbmdsYXQgK2RhdHVtPVdHUzg0JykNCg0KDQpzdF93cml0ZShuaHNfYm9yZGVycywNCiAgICAgICAgIGRzbiA9IGhlcmU6OmhlcmUoIjAyX2NsZWFuZWRfZGF0YS9uaHNfcmVnaW9uX3NpbXBsZSIpLA0KICAgICAgICAgZHJpdmVyID0gIkVTUkkgU2hhcGVmaWxlIikNCmBgYA0KDQo=</div>
 
 
 
