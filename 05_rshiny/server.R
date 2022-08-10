@@ -1,20 +1,20 @@
 
 # Define server logic required to draw a histogram
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
   
   demographic_filter <- reactive({
     
     activity_patient_demographics %>%
       filter(!is.na(hb_name),
-        age %in% input$demo_age,
-        hb_name %in% input$demo_hb,
-        admission_type %in% input$demo_admission_type,
-        location_name %in% input$demo_location) %>%
-    group_by(sex, year, age) %>%
-    summarise(nr_episodes          = sum(episodes),
-              nr_stays             = sum(stays))
-  
-   })
+             age %in% input$demo_age,
+             hb_name %in% input$demo_hb,
+             admission_type %in% input$demo_admission_type,
+             location_name %in% input$demo_location) %>%
+      group_by(sex, year, age) %>%
+      summarise(nr_episodes          = sum(episodes),
+                nr_stays             = sum(stays))
+    
+  })
   # observe({
   #   print(paste0(input$demo_age,
   #                input$demo_hb_name,
@@ -83,7 +83,7 @@ shinyServer(function(input, output) {
     
   })
   
-
+  
   output$distPlot <- renderPlot({
     
     specialty_admissions %>% 
@@ -122,15 +122,64 @@ shinyServer(function(input, output) {
   #   )
   # })
   
-
-
+  
+  key_domain <- reactiveVal()
+  
+  observeEvent(input$data_select_geo,{
+    
+    if(input$data_select_geo == "beds"){
+      updateSelectInput(session,
+                        inputId = "variable_to_plot_geo",
+                        label = "Select Variable to plot",
+                        choices = beds_variables_selection)
+      
+      updateSelectInput(session,
+                        inputId = "speciality_geo",
+                        label = "Select Speciality",
+                        choices = sort(unique(beds$specialty_name)))
+      
+      # updateSliderTextInput(session,
+      #                       
+      #                       inputId = "year_quarter_geo",
+      #                       label = "Select Year and Quarter:",
+      #                       choices = sort(unique(beds$year_quarter)),
+      #                       selected = c(sort(unique(beds$year_quarter))[1],
+      #                                    sort(unique(beds$year_quarter))[3])
+      # )
+      
+      key_domain("specialty_name")
+                            
+    }else{
+      updateSelectInput(session,
+                        inputId = "variable_to_plot_geo",
+                        label = "Select Variable to Plot",
+                        choices = activity_dep_variables)
+      
+      updateSelectInput(session,
+                        inputId = "speciality_geo",
+                        label = "Select Admission Type",
+                        choices = sort(unique(activity_deprivation$admission_type)))
+      
+      # updateSliderTextInput(session,
+      #                       inputId = "year_quarter_geo",
+      #                       label = "Select Year and Quarter:",
+      #                       choices = sort(unique(activity_deprivation$year_quarter)),
+      #                       selected = c(sort(unique(activity_deprivation$year_quarter))[1],
+      #                                    sort(unique(activity_deprivation$year_quarter))[3])
+      # )
+      key_domain("admission_type")
+      
+    }
+    
+  })
+  
   quarter_filter <- reactive({
-    beds %>% 
+    eval(as.name(input$data_select_geo)) %>% 
       filter(year_quarter >= yearquarter(input$year_quarter_geo[1]) &
                year_quarter <= yearquarter(input$year_quarter_geo[2]),
-             specialty_name == input$speciality_geo) %>% 
+             !!as.name(key_domain()) == input$speciality_geo) %>% 
       group_by(HBCode = hb) %>% 
-      select(!!as.name(input$variable_to_plot_geo)) %>% 
+      select(!!as.name(input$variable_to_plot_geo), HBCode) %>% 
       summarise(plot_this = mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
   })
   
@@ -139,15 +188,23 @@ shinyServer(function(input, output) {
   # })
   
   
-  observeEvent(quarter_filter(),{
+  observeEvent(c(input$year_quarter_geo, input$variable_to_plot_geo,
+                 input$speciality_geo),{
     
-    
+   
     temp_shape <- sp::merge(nhs_borders, quarter_filter(), by = c("HBCode" = "HBCode"))
     
+    factor_number <- 10^ceiling(log10(temp_shape$plot_this)-2)
     
-    range <- c(min(temp_shape$plot_this), max(temp_shape$plot_this)) 
+    range <- c(significance_round(min(temp_shape$plot_this), round_up = FALSE, 2), 
+               significance_round(max(temp_shape$plot_this), round_up = TRUE, 2))
     
-    bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9)
+    if(any(is.na(range))){
+      bins <- c(1:9)
+    }else{
+      bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9) %>% 
+        signif(3)
+    }
     
     # Create labels for region plot
     labels_heat <- paste0(
@@ -155,7 +212,7 @@ shinyServer(function(input, output) {
     ) %>% lapply(htmltools::HTML)
     
     hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
-     # browser()
+    # browser()
     leafletProxy("heatmap2") %>% 
       clearShapes() %>% 
       clearControls() %>% 
@@ -171,17 +228,18 @@ shinyServer(function(input, output) {
                 values = temp_shape$plot_this, title = input$variable_to_plot_geo,
                 position = "bottomright") %>% 
       setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
-
+    
   })
   
   
   
-    # output$table_test <- renderTable({
-    #   quarter_filter() %>% 
-    #     distinct(as.character(year_quarter))
-    #  
-    #   
-    # })
-
+  
+  # output$table_test <- renderTable({
+  #   quarter_filter() %>% 
+  #     distinct(as.character(year_quarter))
+  #  
+  #   
+  # })
+  
 })
 

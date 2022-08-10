@@ -65,6 +65,10 @@ nhs_borders <- st_read(dsn = "../01_data/geospatial_data/SG_NHS_HealthBoards_201
 ```
 
 ```{r}
+temp_select <- beds %>% 
+  select(contains(c("bed", "occup"))) %>%  names()
+
+
 input <- list(year_quarter = c("2019 Q3", "2019 Q4"),
               speciality_name = "All Specialties",
               variable_to_plot = temp_select[1])
@@ -84,12 +88,9 @@ heatmap_data <- beds %>%
 
 a_shape <- sp::merge(nhs_borders, heatmap_data, by = c("HBCode" = "HBCode"))
 
-range <- c(min(a_shape$plot_this), max(a_shape$plot_this)) 
+range <- c(signif(min(a_shape$plot_this),1), 
+           ceiling(max(a_shape$plot_this)/10^ceiling(log10(max(a_shape$plot_this))-2)) *10^ceiling(log10(max(a_shape$plot_this))-2)) 
            
-  #          %>% 
-  # summarise(across(.cols = plot_this, 
-  #                  .fns = list(min = min, 
-  #                              max = max), .names = "{.fn}"))
 
 bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9)
 
@@ -154,5 +155,90 @@ beds %>%
     TRUE ~ sum(!!as.name(input$variable_to_plot))
   )
   )
+```
+
+```{r}
+beds %>% select(contains(c("bed", "occup"))) %>%  names()
+```
+
+```{r}
+beds %>% 
+  select(contains(c("bed", "occup"))) %>%  
+  names() %>% 
+  lapply()
+```
+
+```{r}
+activity_deprivation
+```
+
+```{r}
+eval(as.name("beds"))$hb
+
+
+```
+
+```{r}
+bb
+log10(bb)
+10^ceiling(log10(bb))
+signif(bb, 1)
+```
+
+```{r}
+bb <- c(range[1], range[2])
+bb
+signif(bb, 1)
+c(signif(range[1], 1), range[2])
+
+ceiling(range[2]/10^ceiling(log10(range[2])-2)) *10^ceiling(log10(range[2])-2)
+```
+
+```{r}
+bb <- 4850
+signif(bb, 1)
+floor(bb/10^ceiling(log10(bb)-2)) *10^ceiling(log10(bb)-2)
+
+
+
+significance_round(bb, round_up = FALSE, 2)
+```
+
+```{r}
+significance_round <- function(x, round_up = TRUE, digits = 1){
+  
+  if(round_up){
+    ceiling(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)- digits)
+  }else{
+    floor(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)-digits)
+  }
+  
+}
+```
+
+```{r}
+
+significance_round(c(0.458, 1526), round_up = FALSE, digits = 2)
+```
+
+```{r}
+activity_deprivation %>% 
+  mutate(year_quarter = make_yearquarter(year, quarter), .after = quarter)
+```
+
+```{r}
+activity_dep_variables <- activity_deprivation %>% 
+  select(contains(c("episode", "stay"))) %>%  names()
+
+names(activity_dep_variables) <- str_to_title(
+  str_replace_all(
+    str_replace(
+      str_replace(activity_dep_variables, 
+                  "^e", "number of e"), "^s", "number of s"), "_", " "))
+```
+
+```{r}
+inpute <- list(data_select_geo = "activity_deprivation")
+eval(as.name(inpute$data_select_geo))
 ```
 
