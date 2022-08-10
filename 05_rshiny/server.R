@@ -53,10 +53,65 @@ shinyServer(function(input, output) {
 
   })
   
-    output$distPlot <- renderPlot({
-      
-     
-      
-    })
+  quarter_filter <- reactive({
+    beds %>% 
+      filter(year_quarter >= yearquarter(input$year_quarter[1]) &
+               year_quarter <= yearquarter(input$year_quarter[2]),
+             specialty_name == input$speciality) %>% 
+      group_by(HBCode = hb) %>% 
+      select(!!as.name(input$variable_to_plot)) %>% 
+      summarise(plot_this = sum(!!as.name(input$variable_to_plot)))
+  })
+  
+  # observeEvent(input$year_quarter,{
+  #   print(paste(input$year_quarter, class(input$year_quarter)))
+  # })
+  
+  
+  observeEvent(quarter_filter(),{
+    
+    
+    temp_shape <- sp::merge(nhs_borders, quarter_filter(), by = c("HBCode" = "HBCode"))
+    
+    range <- quarter_filter() %>% 
+      summarise(across(.cols = plot_this, 
+                       .fns = list(min = min, 
+                                   max = max), .names = "{.fn}"))
+    
+    bins <- seq(from = range$min, to = range$max, by = (range$max - range$min)/9)
+    
+    # Create labels for region plot
+    labels_heat <- paste0(
+      "<b>", temp_shape$HBName, "</b><br>", temp_shape$plot_this
+    ) %>% lapply(htmltools::HTML)
+    
+    hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
+     # browser()
+    leafletProxy("heatmap") %>% 
+      clearShapes() %>% 
+      clearControls() %>% 
+      addPolygons(data = temp_shape,
+                  fillColor = hot_colour(temp_shape$plot_this),
+                  fillOpacity = 1,
+                  weight = 1, 
+                  color = "white",
+                  dash = 4,
+                  label = labels_heat,
+                  labelOptions = labelOptions()) %>% 
+      addLegend(pal = hot_colour,
+                values = temp_shape$plot_this, title = input$variable_to_plot,
+                position = "bottomright") %>% 
+      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
+
+  })
+  
+  
+  
+    # output$table_test <- renderTable({
+    #   quarter_filter() %>% 
+    #     distinct(as.character(year_quarter))
+    #  
+    #   
+    # })
 
 })
