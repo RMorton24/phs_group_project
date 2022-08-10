@@ -333,7 +333,6 @@ m_admissions_quint_5 <- hospital_admissions %>%
 admin_specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_clean.csv')
 ```
 
-
 ```{r}
 specialty_trends <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
@@ -576,13 +575,11 @@ admission_data
 
 Updated_admission_trends_winter <- admission_data2 %>% 
   select(year, hb_name, number_admissions, age_group, month_name, day) %>% 
-  filter(month_name == "January", 
-         month_name == "February", 
-         month_name == "March") %>% 
+  filter(month_name %in% c("January", "February", "December"))%>% 
   group_by(month_name) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = month_name, y = total_admissions))
+  geom_col(aes(x = month_name, y = total_admissions), fill = "#56B4E9")
 Updated_admission_trends_winter  
 ```
 
@@ -628,6 +625,16 @@ stays_per_location <- demographic_activity %>%
   ggplot() +
   geom_col(aes(x = location_name, y = total_stays, fill = year)) +
   theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+demographic_trends <- demographic_activity %>% 
+  select(admission_type, year, location, age, stays, location_name) %>% 
+  group_by(year) %>% 
+  summarise(avg_stays = mean(stays)) %>% 
+  ggplot() +
+  geom_line(aes(x = year, y = avg_stays)) 
+  
 ```
 
 ```{r}
