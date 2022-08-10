@@ -60,7 +60,7 @@ shinyServer(function(input, output) {
              specialty_name == input$speciality) %>% 
       group_by(HBCode = hb) %>% 
       select(!!as.name(input$variable_to_plot)) %>% 
-      summarise(plot_this = sum(!!as.name(input$variable_to_plot)))
+      summarise(plot_this = mean(!!as.name(input$variable_to_plot), na.rm = TRUE))
   })
   
   # observeEvent(input$year_quarter,{
@@ -73,12 +73,10 @@ shinyServer(function(input, output) {
     
     temp_shape <- sp::merge(nhs_borders, quarter_filter(), by = c("HBCode" = "HBCode"))
     
-    range <- quarter_filter() %>% 
-      summarise(across(.cols = plot_this, 
-                       .fns = list(min = min, 
-                                   max = max), .names = "{.fn}"))
     
-    bins <- seq(from = range$min, to = range$max, by = (range$max - range$min)/9)
+    range <- c(min(temp_shape$plot_this), max(temp_shape$plot_this)) 
+    
+    bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9)
     
     # Create labels for region plot
     labels_heat <- paste0(
@@ -93,8 +91,8 @@ shinyServer(function(input, output) {
       addPolygons(data = temp_shape,
                   fillColor = hot_colour(temp_shape$plot_this),
                   fillOpacity = 1,
-                  weight = 1, 
-                  color = "white",
+                  weight = 3, 
+                  color = "#7fcdbb",
                   dash = 4,
                   label = labels_heat,
                   labelOptions = labelOptions()) %>% 

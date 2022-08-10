@@ -34,4 +34,4 @@ beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>%
   mutate(year_quarter = yearquarter(year_quarter))
 
 variables_selection <- beds %>% 
-  select(contains("beds"), contains("occup")) %>%  names()
+  select(contains(c("bed", "occup"))) %>%  names()

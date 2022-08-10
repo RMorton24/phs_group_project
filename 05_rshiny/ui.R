@@ -32,7 +32,7 @@ shinyUI(
             selectInput(
               inputId = "speciality",
               label = "Select Speciality",
-              choices = unique(beds$specialty_name))
+              choices = sort(unique(beds$specialty_name)))
           ),
           column(
             width = 3,
@@ -43,7 +43,7 @@ shinyUI(
             )
           )
         ),
-        leafletOutput("heatmap")
+        leafletOutput("heatmap", height = 600)
       )
     )
   )

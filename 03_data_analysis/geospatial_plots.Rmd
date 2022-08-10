@@ -67,7 +67,7 @@ nhs_borders <- st_read(dsn = "../01_data/geospatial_data/SG_NHS_HealthBoards_201
 ```{r}
 input <- list(year_quarter = c("2019 Q3", "2019 Q4"),
               speciality_name = "All Specialties",
-              variable_to_plot = "all_staffed_beddays")
+              variable_to_plot = temp_select[1])
 
 # region_selected <- input$region$id
 
@@ -78,27 +78,31 @@ heatmap_data <- beds %>%
          specialty_name == input$speciality_name) %>% 
   group_by(HBCode = hb) %>% 
   select(!!as.name(input$variable_to_plot)) %>% 
-  summarise(plot_this = sum(!!as.name(input$variable_to_plot)))
+  summarise(plot_this = mean(!!as.name(input$variable_to_plot), na.rm = TRUE))
 
 
 
 a_shape <- sp::merge(nhs_borders, heatmap_data, by = c("HBCode" = "HBCode"))
 
-range <- heatmap_data %>% 
-  summarise(across(.cols = plot_this, 
-                   .fns = list(min = min, 
-                               max = max), .names = "{.fn}"))
+range <- c(min(a_shape$plot_this), max(a_shape$plot_this)) 
+           
+  #          %>% 
+  # summarise(across(.cols = plot_this, 
+  #                  .fns = list(min = min, 
+  #                              max = max), .names = "{.fn}"))
 
-bins <- seq(from = range$min, to = range$max, by = (range$max - range$min)/9)
+bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9)
 
 hot_colour <- colorBin(palette = "YlOrRd", domain = a_shape$plot_this, bins = bins)
+
+hot_colour(a_shape$plot_this)
 
 leaflet(a_shape) %>% 
   addTiles() %>% 
   addPolygons(fillColor = ~hot_colour(plot_this),
               fillOpacity = 1,
               weight = 1, 
-              color = "white",
+              color = "black",
               dash = 4) %>% 
   addLegend(pal = hot_colour,
             values = ~plot_this, title = input$variable_to_plot,
@@ -110,6 +114,8 @@ leaflet(a_shape) %>%
 
 
 ```{r}
+
+
 
 leaflet(nhs_borders) %>% 
   addPolygons(fillColor = ~pal(HBCode),
@@ -129,17 +135,24 @@ leaflet(nhs_borders) %>%
 
 
 ```{r}
-beds %>% 
-  select(contains("beds"), contains("occup")) %>%  names()
-```
+temp_select <- beds %>% 
+  select(contains(c("bed", "occup"))) %>%  names()
 
-```{r}
+
+input <- list(year_quarter = c("2019 Q3", "2019 Q4"),
+              speciality_name = "All Specialties",
+              variable_to_plot = temp_select[1])
+
 beds %>% 
   filter(year_quarter >= yearquarter(input$year_quarter[1]) &
            year_quarter <= yearquarter(input$year_quarter[2]),
          specialty_name == input$speciality_name) %>% 
   group_by(HBCode = hb) %>% 
   select(!!as.name(input$variable_to_plot)) %>% 
-  summarise(plot_this = sum(!!as.name(input$variable_to_plot)))
+  summarise( case_when(
+    str_detect(input$variable_to_plot, "percent") ~ mean(!!as.name(input$variable_to_plot)),
+    TRUE ~ sum(!!as.name(input$variable_to_plot))
+  )
+  )
 ```
 
