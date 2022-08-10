@@ -32,7 +32,7 @@ Chris Glenshaw, George Salisbury, João Neto, Kate Stallibrass & Ross Morton
 
 Our dashboard contains ...
 
-Our topic is ...
+Our topic is the impact of Covid on hospitalisations and other relevant information, and the trends of hospitalizations following 2020.  ...
 
 The dashboard outlines our topic in terms of ...
 
@@ -52,6 +52,7 @@ The dashboard outlines our topic in terms of ...
 * Git/GitHub (collaboration & version control) 
 * PowerPoint
 * In person stand-ups
+* RStudio
 
 
 
