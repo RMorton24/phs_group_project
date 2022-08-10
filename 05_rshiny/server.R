@@ -1,7 +1,26 @@
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
+  
+ # demographic_filter <- reactive({
 
+ #   activity_patient_demographics %>% 
+      # filter(#!is.na(hb_name),
+             # age %in% input$demo_age,
+             # hb_name %in% input$demo_hb_name) %>%
+             #admission_type %in% input$demo_admission_type,
+             #location_name %in% input$demo_location_name) %>%
+      # group_by(sex, year, age) %>%
+      # summarise(nr_episodes          = sum(episodes),
+      #           nr_stays             = sum(stays))
+
+#  })
+# observe({
+#   print(paste0(input$demo_age,
+#                input$demo_hb_name,
+#                input$demo_admission_type,
+#                input$demo_location_name))
+# })
   # Create Leaflet output (selection map)
   output$selection_map <- renderLeaflet({
     leaflet(nhs_borders) %>% 
@@ -70,25 +89,36 @@ shinyServer(function(input, output) {
         filter(specialty == input$specialty, 
                hb_name == input$hb,
                admission_type == input$admission,
-               between(week_ending, as.numeric(input$week_ending[1]), as.numeric(input$week_ending[2]))) %>%  
+               between(week_ending, as.numeric(input$week_ending[1]), 
+                       as.numeric(input$week_ending[2]))) %>%  
         ggplot() +
         geom_line(aes(x = week_ending, y = number_admissions)) +
         geom_line(aes(x = week_ending, y = average20182019), colour = "red")
+
+    })
+    
+    output$demographics_output <- renderTable({
       
-    })
+      activity_patient_demographics
+     #  demographic_filter() %>% 
+      # ggplot() + 
+      # aes(x = age, y = nr_episodes, fill = sex) +
+      # geom_col(position = "dodge") + 
+      # theme_minimal()
     
-    output$progressBox <- renderValueBox({
-      valueBox(
-        paste0(25 + input$count, "%"), "Progress", icon = icon("list"),
-        color = "purple"
-      )
     })
-    
-    output$approvalBox <- renderValueBox({
-      valueBox(
-        "80%", "Approval", icon = icon("fa-solid fa-bed-pulse", lib = "font-awesome"),
-        color = "yellow"
-      )
-    })
+    # output$progressBox <- renderValueBox({
+    #   valueBox(
+    #     paste0(25 + input$count, "%"), "Progress", icon = icon("list"),
+    #     color = "purple"
+    #   )
+    # })
+    # 
+    # output$approvalBox <- renderValueBox({
+    #   valueBox(
+    #     "80%", "Approval", icon = icon("fa-solid fa-bed-pulse", lib = "font-awesome"),
+    #     color = "yellow"
+    #   )
+    # })
 
 })

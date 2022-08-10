@@ -6,11 +6,17 @@ library(sf)
 library(htmlwidgets)
 library(shinydashboard)
 library(shinyWidgets)
+library(bslib)
 
 
 # Load relevant data sets
 
+activity_patient_demographics <- read_csv(here::here("02_cleaned_data/activity_patient_demographics.csv")) 
+
+
 specialty_admissions <- read_csv(here::here("02_cleaned_data/admissions_by_speciality_clean.csv"))
+
+activity_deprivation <- read_csv(here::here("02_cleaned_data/activity_deprivation.csv"))
 
 # Load variables/functions for Leaflet Plots ------------------------------
 
