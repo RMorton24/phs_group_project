@@ -133,3 +133,13 @@ beds %>%
   select(contains("beds"), contains("occup")) %>%  names()
 ```
 
+```{r}
+beds %>% 
+  filter(year_quarter >= yearquarter(input$year_quarter[1]) &
+           year_quarter <= yearquarter(input$year_quarter[2]),
+         specialty_name == input$speciality_name) %>% 
+  group_by(HBCode = hb) %>% 
+  select(!!as.name(input$variable_to_plot)) %>% 
+  summarise(plot_this = sum(!!as.name(input$variable_to_plot)))
+```
+
