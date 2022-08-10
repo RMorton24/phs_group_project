@@ -177,11 +177,6 @@ hb_admissions <- hospital_admissions %>%
 ```
 
 ```{r}
-
-```
-
-
-```{r}
 full_admissions <- right_join(locations, hospital_admissions, by = c("hb"))
 
 full_impatients <- right_join(locations, hospital_impatients, by = c("hb"))
@@ -507,7 +502,80 @@ deaths_by_hscp %>%
 ```
 
 ```{r}
+admission_data <- read_csv('hospital_covid_data/covid_admission_age_sex.csv')
 
+demographic_activity <- read_csv('hospital_covid_data/activity_patient_demographics.csv')
+
+deprivation_activity <- read_csv('hospital_covid_data/activity_deprivation.csv')
+```
+
+```{r}
+Updated_admission_trends <- admission_data %>% 
+  select(year, hb_name, number_admissions, age_group) %>% 
+  group_by(year) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = year, y = total_admissions))
+Updated_admission_trends
+
+Updated_admission_trends_2020 <- admission_data %>% 
+  select(year, hb_name, number_admissions, age_group, month) %>% 
+  filter(year == 2020) %>% 
+  group_by(month) %>% 
+  summarise(avg_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = month, y = avg_admissions))
+Updated_admission_trends_2020
+
+Updated_admission_trends_2021 <- admission_data %>% 
+  select(year, hb_name, number_admissions, age_group, month) %>% 
+  filter(year == 2021) %>% 
+  group_by(month) %>% 
+  summarise(sum_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = month, y = sum_admissions))
+Updated_admission_trends_2021
+
+Updated_admission_trends_2022 <- admission_data %>% 
+  select(year, hb_name, number_admissions, age_group, month) %>% 
+  filter(year == 2022) %>% 
+  group_by(month) %>% 
+  summarise(sum_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = month, y = sum_admissions))
+Updated_admission_trends_2022
+library(lubridate)
+
+admission_data2 <- admission_data %>% 
+  mutate(month_name = month(month, label = TRUE, abbr = FALSE))
+
+admission_data
+
+# admission_data2 <- admission_data %>% 
+#   mutate(month_name = recode(month,
+#                              1 = "January",
+#                              2 = "February",
+#                              3 = "March", 
+#                              4 = "April",
+#                              5 = "May", 
+#                              6 = "June",
+#                              7 = "July",
+#                              8 = "August", 
+#                              9 = "September",
+#                              10 = "October",
+#                              11 = "November",
+#                              12 = "December"))
+
+Updated_admission_trends_winter <- admission_data2 %>% 
+  select(year, hb_name, number_admissions, age_group, month_name, day) %>% 
+  filter(month_name == "January", 
+         month_name == "February", 
+         month_name == "March") %>% 
+  group_by(month_name) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = total_admissions))
+Updated_admission_trends_winter  
 ```
 
 ```{r}
@@ -522,4 +590,25 @@ death_trends <- deaths_by_age %>%
 death_trends
 ```
 
+```{r}
+depriv_trends <- deprivation_activity %>% 
+  select(year, location, stays, admission_type, simd) %>% 
+  group_by(year, simd) %>% 
+  drop_na(simd) %>% 
+  summarise(total_stays = sum(stays)) %>% 
+  ggplot() +
+  geom_col(aes(x = year, y = total_stays, fill = simd))
+depriv_trends
+```
+
+```{r}
+stays_per_admissiontype <- demographic_activity %>% 
+  select(sex, episodes, age, year, admission_type, location, length_of_stay) %>% 
+  group_by(admission_type, age) %>% 
+  summarise(total_staylength = sum(length_of_stay)) %>% 
+  ggplot() +
+  geom_col(aes(x = admission_type, total_staylength, fill = age)) %>% 
+  theme(axis.text.x = element_text(angle = 90))
+stays_per_admissiontype  
+```
 
