@@ -117,22 +117,33 @@ shinyUI(
         icon = icon("gear"),
         width = "350px",
         tooltip = tooltipOptions(title = "Click to see inputs !"),
-
-        pickerInput(
-          inputId = "demo_age",
-          label = "Select/deselect Age Group", 
-          selected = "All",
-          choices = unique(activity_patient_demographics$age),
-          options = list(
-            `actions-box` = TRUE), 
-          multiple = TRUE
-        ),
+        animate = TRUE,
         
         pickerInput(
           inputId = "demo_hb",
           label = "Select/deselect HealthBoard",
           selected = head(activity_patient_demographics$hb_name),
           choices = unique(activity_patient_demographics$hb_name),
+          options = list(
+            `actions-box` = TRUE), 
+          multiple = TRUE
+        ),
+        
+        pickerInput(
+          inputId = "demo_location",
+          label = "Select/deselect Location", 
+          selected = "All",
+          choices = unique(activity_patient_demographics$location_name),
+          options = list(
+            `actions-box` = TRUE), 
+          multiple = TRUE
+        ),
+
+        pickerInput(
+          inputId = "demo_age",
+          label = "Select/deselect Age Group", 
+          selected = "All",
+          choices = unique(activity_patient_demographics$age),
           options = list(
             `actions-box` = TRUE), 
           multiple = TRUE
@@ -148,23 +159,13 @@ shinyUI(
           multiple = TRUE
         ),
         
-        pickerInput(
-          inputId = "demo_location",
-          label = "Select/deselect Location", 
-          selected = "All",
-          choices = unique(activity_patient_demographics$location_name),
-          options = list(
-            `actions-box` = TRUE), 
-          multiple = TRUE
-        ),
-     
       ),
       mainPanel(
         column(
           width = 10,
           offset = 1,
         
-        tableOutput("demographics_output")
+        plotOutput("demographics_output")
       )
     )
       )
