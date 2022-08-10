@@ -1,7 +1,10 @@
 library(shiny)
+library(tidyverse)
 library(leaflet)
 library(rgeos)
 library(sf)
+library(tsibble)
+library(shinyWidgets)
 
 
 # Load variables/functions for Leaflet Plots ------------------------------
@@ -21,3 +24,14 @@ pal <- colorFactor("viridis", domain = nhs_borders$HBCode,
 # Create the view box for the leaflet
 bbox <- st_bbox(nhs_borders) %>% 
   as.vector()
+
+
+
+
+# Beds data ---------------------------------------------------------------
+
+beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
+  mutate(year_quarter = yearquarter(year_quarter))
+
+variables_selection <- beds %>% 
+  select(contains(c("bed", "occup"))) %>%  names()
