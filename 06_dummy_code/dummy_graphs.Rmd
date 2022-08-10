@@ -130,7 +130,7 @@ admission_trends <- hospital_admissions %>%
   select(admission_type, hb, week_ending, number_admissions) %>% 
   group_by(hb) %>% 
   ggplot() +
-  geom_line(aes(x = week_ending, y = number_admissions, fill = hb)) +
+  geom_col(aes(x = week_ending, y = number_admissions, fill = hb)) +
   theme(axis.text.x = element_text(angle = 0))
 admission_trends
 ```
@@ -223,7 +223,7 @@ deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %
 
 deaths_by_depriv <- read_csv('hospital_covid_data/deaths_hb_simd_20220302.csv') %>% clean_names
 
-#deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
+deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
 ```
 
 ```{r}
@@ -277,12 +277,26 @@ ggplot(hospital_trends_full_2020) +
 ```
 
 ```{r}
+install.packages("wesanderson")
+```
+
+```{r}
+library(wesanderson)
+install.packages("hrbrthemes")
+install.packages("gapminder")
+install.packages("ggbump")
+library(hrbrthemes) # for plot themes
+library(gapminder) # for data
+library(ggbump)
+```
+
+```{r}
 admissions_by_simd <- hospital_admissions %>% 
   select(simd_quintile, admission_type, hb, number_admissions) %>% 
   group_by(simd_quintile) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = simd_quintile, y = total_admissions)) +
+  geom_col(aes(x = simd_quintile, y = total_admissions), colour = "black") +
   theme(axis.text.x = element_text(angle = 90))
 
 admissions_quint_1 <- hospital_admissions %>% 
@@ -291,7 +305,7 @@ admissions_quint_1 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, y = total_admissions)) 
+  geom_col(aes(x = admission_type, y = total_admissions), colour = "orange") 
 
 admissions_quint_5 <- hospital_admissions %>% 
   select(simd_quintile, admission_type, hb, number_admissions) %>% 
@@ -299,7 +313,7 @@ admissions_quint_5 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, total_admissions))
+  geom_col(aes(x = admission_type, total_admissions), colour = "purple")
   
 m_admissions_quint_5 <- hospital_admissions %>% 
   select(simd_quintile, admission_type, hb, number_admissions) %>% 
@@ -307,17 +321,18 @@ m_admissions_quint_5 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(mean_admissions = mean(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, mean_admissions))  
+  geom_col(aes(x = admission_type, mean_admissions)) +
+  scale_fill_manual(values = wes_palette("Darjeeling1", n = 5)) 
   
 ```
 
 ```{r}
-specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_clean.csv')
+admin_specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_clean.csv')
 ```
 
 
 ```{r}
-specialty_trends <- specialty_data %>% 
+specialty_trends <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "All") %>% 
   group_by(week_ending) %>% 
@@ -325,9 +340,9 @@ specialty_trends <- specialty_data %>%
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
-specialty_trends
 
-specialty_trends_emergency <- specialty_data %>% 
+
+specialty_trends_emergency <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Accident & Emergency") %>% 
   group_by(week_ending) %>% 
@@ -336,7 +351,7 @@ specialty_trends_emergency <- specialty_data %>%
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
 
-specialty_trends_surgery <- specialty_data %>% 
+specialty_trends_surgery <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Surgery") %>% 
   group_by(week_ending) %>% 
@@ -345,7 +360,7 @@ specialty_trends_surgery <- specialty_data %>%
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
 
-specialty_trends_cardio <- specialty_data %>% 
+specialty_trends_cardio <-admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Cardiology") %>% 
   group_by(week_ending) %>% 
@@ -354,35 +369,121 @@ specialty_trends_cardio <- specialty_data %>%
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
 
-specialty_trends_cancer <- specialty_data %>% 
+specialty_trends_cancer <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Cancer") %>% 
   group_by(week_ending) %>% 
-  summarise(total_admissions = sum(number_admissions)) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>%  
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
 
-specialty_trends_community <- specialty_data %>% 
+specialty_trends_community <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
   filter(specialty == "Community") %>% 
   group_by(week_ending) %>% 
-  summarise(total_admissions = sum(number_admissions)) %>% 
+  summarise(total_admissions = sum(number_admissions)) %>%  
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
   theme(axis.text.x = element_text(angle = 90))
 
-specialty_trends_differ <- specialty_data %>% 
+specialty_trends_differ <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions, percent_variation) %>% 
   group_by(week_ending) %>% 
   summarise(total_variation = sum(percent_variation)) %>% 
   ggplot() +
   geom_line(aes(x = week_ending, y = total_variation)) +
   theme(axis.text.x = element_text(angle = 90))
+
+specialty_trends_differ2 <- admin_specialty_data %>% 
+  select(week_ending, specialty, number_admissions, percent_variation) %>% 
+  group_by(week_ending) %>% 
+  summarise(mean_variation = mean(percent_variation)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = mean_variation)) +
+  theme(axis.text.x = element_text(angle = 90))
+  
+
+specialty_trends_differ
 ```
 
 ```{r}
+bed_data <- read_csv('../02_cleaned_data/bed_clean.csv')
 
+specialty_data <- read_csv('../02_cleaned_data/specialty_clean.csv')
+```
+
+```{r}
+bed_trends <- bed_data %>% 
+  select(year_quarter, location, shb_name, 
+         percentage_occupancy, total_occupied_beddays) %>% 
+  group_by(year_quarter) %>% 
+  summarise(average_beddays = mean(total_occupied_beddays)) %>% 
+  ggplot() +
+  geom_col(aes(x = year_quarter, y = average_beddays), fill = "violet") +
+    theme(axis.text.x = element_text(angle = 90))
+  
+bed_trends  
+
+bed_trends_occu <- bed_data %>% 
+    select(year_quarter, location, shb_name, 
+         percentage_occupancy, total_occupied_beddays) %>% 
+  group_by(year_quarter) %>% 
+  summarise(average_occupancy = mean(percentage_occupancy)) %>%
+  drop_na(average_occupancy) %>% 
+  ggplot() +
+  geom_col(aes(x = year_quarter, y = average_occupancy)) +
+    theme(axis.text.x = element_text(angle = 90))
+
+bed_trends_occu  
+```
+
+```{r}
+admin_trends <- specialty_data %>% 
+  select(year, hb, admission_type, specialty_name, episodes, spells) %>% 
+  group_by(year) %>% 
+  summarise(total_episodes = sum(episodes)) %>% 
+  ggplot() +
+  geom_line(aes(x = year, y = total_episodes)) +
+  theme(axis.text.x = element_text(angle = 90))
+admin_trends
+
+admin_trends_spell <- specialty_data %>% 
+  select(year, hb, admission_type, specialty_name, spells) %>% 
+  group_by(year) %>% 
+  summarise(total_spells = sum(spells)) %>% 
+  ggplot() +
+  geom_line(aes(x = year, y = total_spells)) 
+ # theme(axis.text.x = element_text(angle = 90))
+admin_trends_spell
+
+length_per_specialty <- specialty_data %>% 
+  select(year, hb, admission_type, average_length_of_episode, spells, specialty_name) %>% 
+  group_by(specialty_name) %>% 
+  drop_na(average_length_of_episode) %>% 
+  ggplot() +
+  geom_col(aes(x = specialty_name, y = average_length_of_episode)) +
+  theme(axis.text.x = element_text(angle = 90))
+length_per_specialty
+spells_trend <- specialty_data %>% 
+  select(year_quarter, year, location, hb, episodes, length_of_spell, spells) %>% 
+  group_by(year_quarter) %>% 
+  ggplot() +
+  geom_col(aes(x = year_quarter, y = spells)) +
+  theme(axis.text.x = element_text(angle = 90))
+spells_trend
+```
+
+```{r}
+episodes_per_specialty <- specialty_data %>% 
+  select(episodes, specialty_name, hb, length_of_episode) %>% 
+  filter(episodes > 1) %>% 
+  group_by(specialty_name) %>% 
+  summarise(total_episodes = sum(episodes)) %>%
+  ggplot() +
+  geom_col(aes(x = specialtsy_name, y = total_episodes)) +
+  theme(axis.text.x = element_text(angle = 90))
+episodes_per_specialty
 ```
 
 ```{r}
@@ -394,8 +495,31 @@ variations <- full_demographics %>%
   theme(axis.text.x = element_text(angle = 90))
 variations
 ```
+```{r}
+deaths_by_hscp %>% 
+  select(age_group, deaths, sex, hscp) %>% 
+  group_by(age_group, sex) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = age_group, y = total_deaths, fill = sex)) +
+    theme(axis.text.x = element_text(angle = 90))
+
+```
 
 ```{r}
 
 ```
+
+```{r}
+death_trends <- deaths_by_age %>% 
+  select(week_ending, age_group, deaths, sex, hb) %>% 
+  group_by(week_ending, hb) %>% 
+  summarise(avg_deaths = mean(deaths)) %>% 
+  ggplot(bins = 50) +
+  geom_boxplot(aes(x = week_ending, y = avg_deaths)) +
+  #scale_x_continuous(breaks = c("20200105")) +
+  theme(axis.text.x = element_text(angle = 90))
+death_trends
+```
+
 

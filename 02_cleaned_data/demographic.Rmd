@@ -1,0 +1,260 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+library(tidyverse)
+library(janitor)
+library(lubridate)
+library(ggplot2)
+library(stringr)
+```
+
+
+# read data
+## hospital activity
+```{r}
+ hospital_ativity_and_patient_demographics <- 
+    read_csv("01_data/hospital_ativity_and_patient_demographics.csv") %>% 
+    clean_names()
+  # remove_empty(c("rows", "cols"))
+  
+  hospital_activity_and_deprivation <- read_csv("01_data/hospital_activity_and_deprivation.csv") %>% 
+    clean_names()
+```
+
+## admission by covid
+```{r}
+# by health_board
+covid_admission_hb_age_sex <-
+  read_csv("01_data/hospitalisations_due_to_covid_19/admissions_by_health_board_age_and_sex.csv") %>% 
+  clean_names()
+
+covid_admission_hb_deprivation <- 
+  read_csv("01_data/hospitalisations_due_to_covid_19/admissions_by_health_board_and_deprivation.csv") %>% 
+  clean_names()
+```
+
+##extra data set
+```{r}
+hospitals <- read_csv(("01_data/healt_board/hospitals.csv")) %>% 
+  clean_names()
+
+hb <- read_csv("01_data/healt_board/health_board.csv") %>% 
+  clean_names()
+
+shb <- read_csv("01_data/healt_board/special_health_boards.csv") %>% 
+  clean_names()
+
+```
+
+
+# age_sex -------------------------------------------------------------------
+
+### hospital_ativity_and_patient_demographics
+```{r}
+activity_patient_demographics <- hospital_ativity_and_patient_demographics %>% 
+  mutate(year    = str_sub(quarter, 1, 4), .after = id,
+         year    = as.numeric(year),
+         quarter = str_sub(quarter, 6), 
+         quarter = as.numeric(quarter),
+         shb      = if_else(nchar(hb) == 6, hb, NA_character_),
+         hb       = if_else(nchar(hb) == 9 & str_detect(hb, '^S08'), hb, NA_character_),
+         location = if_else(nchar(location) == 5, location, NA_character_),
+         age = str_remove(age, pattern = " years")) %>%
+  left_join(x = .,
+            y = hb, 
+            by = "hb", 
+            suffix = c("", "_hb_suffix")) %>% 
+  left_join(x = .,
+            y = shb, 
+            by = "shb", 
+            suffix = c("", "_shb_suffix")) %>%
+  left_join(x = .,
+            y = hospitals, 
+            by = "location", 
+            suffix = c("", "_hospital_suffix")) %>% 
+  select(!ends_with(c("_suffix", "qf"))) %>% 
+  relocate(c(20:23, 28:29), .after = 16) %>% 
+  select(c(1:22))
+```
+
+```{r}
+activity_patient_demographics %>% 
+  write.csv("../02_cleaned_data/activity_patient_demographics.csv")
+```
+
+
+```{r}
+activity_patient_demographics %>% 
+  # filter(sex == "") %>% 
+  # filter(age == "20-29") %>% 
+  filter(admission_type == "Transfers") %>% 
+  filter(hb_name == "NHS Fife") %>% 
+  group_by(sex, year, age) %>% 
+  summarise(nr_episodes          = sum(episodes), 
+             nr_stays             = sum(stays)) %>% 
+  #           count_length_episode = sum(length_of_episode),
+  #           count_length_stays   = sum(length_of_stay)) %>% 
+  ggplot() + 
+  aes(x = age, y = nr_episodes, fill = sex) +
+   geom_col(position = "dodge") + 
+  geom_smooth(show.legend = FALSE, size = 1) +
+  theme_minimal()
+```
+
+
+### hospital_ativity_and_deprivation
+```{r}
+activity_deprivation <- hospital_activity_and_deprivation %>% 
+  mutate(year    = str_sub(quarter, 1, 4), .after = id,
+         year    = as.numeric(year),
+         quarter = str_sub(quarter, 6), 
+         quarter = as.numeric(quarter),
+         shb      = if_else(nchar(hb) == 6, hb, NA_character_),
+         hb       = if_else(nchar(hb) == 9 & str_detect(hb, '^S08'), hb, NA_character_),
+         location = if_else(nchar(location) == 5, location, NA_character_)) %>%  
+  left_join(x = .,
+            y = hb, 
+            by = "hb", 
+            suffix = c("", "_hb_suffix")) %>% 
+  left_join(x = .,
+            y = shb, 
+            by = "shb", 
+            suffix = c("", "_shb_suffix")) %>%
+  left_join(x = .,
+            y = hospitals, 
+            by = "location", 
+            suffix = c("", "_hospital_suffix")) %>% 
+  select(!ends_with(c("_suffix", "qf"))) %>% 
+  relocate(c(19:22, 27:28), .after = 15) %>% 
+  select(c(1:21))
+```
+
+
+
+```{r}
+activity_deprivation %>% 
+  write.csv("../02_cleaned_data/activity_deprivation.csv")
+```
+
+
+```{r}
+activity_deprivation %>% 
+  mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>% 
+  filter(!is.na(simd)) %>% 
+  filter(admission_type == "Transfers") %>% 
+  filter(hb_name == "NHS Fife") %>% 
+  group_by(year, simd) %>% 
+  summarise(nr_episodes = sum(episodes)) %>% 
+  ggplot() + 
+  aes(x = year, y = nr_episodes, fill = simd) +
+  geom_col(position = "dodge") + 
+  labs(title = "Activity by Board of Treatment and Deprivation",
+       subtitle = "1 - Most deprived | 5 - least deprived",
+       x = NULL
+       ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2016, 2021, 1)) +
+     theme(legend.title = element_blank(),
+           legend.position = "bottom",
+           panel.grid.minor.x = element_blank(),
+           panel.grid.minor.y = element_blank())
+```
+```{r}
+activity_deprivation %>% 
+  mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>% 
+  filter(!is.na(simd)) %>% 
+  filter(admission_type == "Elective Inpatients") %>% 
+  filter(hb_name == "NHS Ayrshire and Arran") %>% 
+  group_by(year, simd, location_name) %>% 
+  summarise(nr_episodes = sum(episodes)) %>% 
+  slice_max(nr_episodes, n = 10) %>% 
+  ggplot() + 
+  aes(x = year, y = nr_episodes, fill = simd) +
+  geom_col(position = "dodge") + 
+  labs(title = "Activity by Board of Treatment and Deprivation",
+       subtitle = "1 - Most deprived | 5 - least deprived",
+       x = NULL
+       ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2016, 2021, 1)) +
+     theme(legend.title = element_blank(),
+           legend.position = "bottom",
+           panel.grid.minor.x = element_blank(),
+           panel.grid.minor.y = element_blank()) +
+  facet_wrap(~location_name, nrow = 5, ncol = 1)
+```
+
+```{r}
+activity_deprivation %>%   
+mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>% 
+  filter(!is.na(simd)) %>% 
+  filter(admission_type == "Elective Inpatients") %>% 
+  filter(hb_name == "NHS Ayrshire and Arran") %>% 
+  filter(location_name == "University Hospital Ayr") %>% 
+  group_by(year, simd, location_name) %>% 
+  summarise(nr_episodes = sum(episodes)) %>% 
+  ggplot() + 
+  aes(x = year, y = nr_episodes, fill = simd) +
+  geom_col(position = "dodge") + 
+  labs(title = "Activity by Board of Treatment and Deprivation",
+       subtitle = "1 - Most deprived | 5 - least deprived",
+       x = NULL
+       ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2016, 2021, 1)) +
+     theme(legend.title = element_blank(),
+           legend.position = "bottom",
+           panel.grid.minor.x = element_blank(),
+           panel.grid.minor.y = element_blank()) +
+  facet_wrap(~location_name)
+```
+
+
+
+
+Do people have longer lengths of stay from elective or emergency admissions?
+Are there any demographic groups that are driving the activity?
+How significant is deprivation as a driver of hospital activity?
+
+
+
+## covid_admission_hb_age_sex
+```{r}
+covid_admission_age_sex <- covid_admission_hb_age_sex %>% 
+  mutate(date    = ymd(week_ending), .before = 1,
+         year    = year(date),     
+         month   = month(date),   
+         day     = day(date),     
+         quarter = quarter(date),
+         hb       = if_else(nchar(hb) == 9 & str_detect(hb, '^S08'), hb, NA_character_)) %>% 
+  left_join(x = .,
+            y = hb, 
+            by = "hb", 
+            suffix = c("", "_hb_suffix")) %>% 
+  relocate(hb_name, .after = hb) %>% 
+  select(!ends_with("qf"), -week_ending) %>% 
+  select(c(1:"percent_variation"))
+```
+
+
+```{r}
+covid_admission_age_sex %>% 
+  write.csv("../02_cleaned_data/covid_admission_age_sex.csv")
+```
+
+
+
+Do people have longer lengths of stay from elective or emergency admissions?
+Are there any demographic groups that are driving the activity?
+How significant is deprivation as a driver of hospital activity?
+
+
+
+```{r}
+
+```
+
