@@ -52,13 +52,13 @@ demo_graph <- hospital_demographics %>%
 ```
 
 ```{r}
-waiting_graph <- waiting_times %>% 
-  select(department_type) %>% 
-  group_by(department_type) %>% 
-  summarise(waiting_times = n()) %>% 
-  ggplot() +
-  geom_col(x = department_type, y = waiting_times) +
-  theme(axis.text.x = element_text(angle = 90))
+# waiting_graph <- waiting_times %>% 
+#   select(department_type, number_of_attendances_aggregate) %>% 
+#   group_by(department_type) %>% 
+#   summarise(total_attendances = sum(number_of_attendances_aggregate)) %>% 
+#   ggplot() +
+#   geom_col(x = department_type, y = total_attendances) +
+#   theme(axis.text.x = element_text(angle = 90))
   
 ```
 
