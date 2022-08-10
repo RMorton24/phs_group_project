@@ -638,6 +638,19 @@ demographic_trends <- demographic_activity %>%
 ```
 
 ```{r}
+admission_data2 %>% 
+  distinct(admission_type)
+Hospitalisation_trends <- admission_data2 %>% 
+  select(month_name, hb_name, year, admission_type, quarter) %>% 
+  filter(admission_type == "Emergency", year >= 2020) %>% 
+  group_by(quarter) %>% 
+  summarise(total_deaths = sum(number_admissions)) %>% 
+  ggplot() +
+  geom_line(aes(x = quarter, y = total_deaths))
 
+Hospitalisation_differ <- admission_data2 %>% 
+  select(month_name, hb_name, year, admission_type) %>% 
+  filter(year >= 2020) %>% 
+  group_by()
 ```
 
