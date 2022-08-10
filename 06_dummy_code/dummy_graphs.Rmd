@@ -250,7 +250,12 @@ death_depriv <- deaths_by_depriv %>%
 death_depriv
 
 death_trends2 <- deaths_by_age %>% 
-  select(hb, deaths, sex, week_ending)
+  select(hb, deaths, sex, week_ending, average20152019, percent_variation) %>% 
+  group_by(week_ending) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = week_ending, y = total_deaths)) +
+  theme(axis.text.x = element_text(angle = 90))
 ```
 
 ```{r}
