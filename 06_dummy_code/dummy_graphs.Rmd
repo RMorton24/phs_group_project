@@ -248,6 +248,9 @@ death_depriv <- deaths_by_depriv %>%
   geom_col(aes(x = simd_quintile, y = total_deaths)) +
   theme(axis.text.x = element_text(angle = 90))
 death_depriv
+
+death_trends2 <- deaths_by_age %>% 
+  select(hb, deaths, sex, week_ending)
 ```
 
 ```{r}
@@ -584,7 +587,7 @@ death_trends <- deaths_by_age %>%
   group_by(week_ending, hb) %>% 
   summarise(avg_deaths = mean(deaths)) %>% 
   ggplot(bins = 50) +
-  geom_boxplot(aes(x = week_ending, y = avg_deaths)) +
+  geom_col(aes(x = week_ending, y = avg_deaths)) +
   #scale_x_continuous(breaks = c("20200105")) +
   theme(axis.text.x = element_text(angle = 90))
 death_trends
@@ -607,8 +610,22 @@ stays_per_admissiontype <- demographic_activity %>%
   group_by(admission_type, age) %>% 
   summarise(total_staylength = sum(length_of_stay)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, total_staylength, fill = age)) %>% 
+  geom_col(aes(x = admission_type, y = total_staylength, fill = age)) + 
   theme(axis.text.x = element_text(angle = 90))
 stays_per_admissiontype  
+```
+
+```{r}
+stays_per_location <- demographic_activity %>% 
+  select(location, stays, admission_type, sex, year, location_name) %>% 
+  group_by(location_name, year) %>% 
+  summarise(total_stays = sum(stays)) %>% 
+  ggplot() +
+  geom_col(aes(x = location_name, y = total_stays, fill = year)) +
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+```{r}
+
 ```
 
