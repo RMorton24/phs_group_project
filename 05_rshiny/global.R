@@ -1,18 +1,19 @@
 library(shiny)
 library(tidyverse)
 library(leaflet)
-library(rgeos)
 library(sf)
 library(htmlwidgets)
 library(shinydashboard)
 library(shinyWidgets)
 library(bslib)
+library(tsibble)
+
+
 
 
 # Load relevant data sets
 
 activity_patient_demographics <- read_csv(here::here("02_cleaned_data/activity_patient_demographics.csv")) 
-
 
 specialty_admissions <- read_csv(here::here("02_cleaned_data/admissions_by_speciality_clean.csv"))
 
@@ -35,3 +36,14 @@ pal <- colorFactor("viridis", domain = nhs_borders$HBCode,
 # Create the view box for the leaflet
 bbox <- st_bbox(nhs_borders) %>% 
   as.vector()
+
+
+
+
+# Beds data ---------------------------------------------------------------
+
+beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
+  mutate(year_quarter = yearquarter(year_quarter))
+
+variables_selection <- beds %>% 
+  select(contains(c("bed", "occup"))) %>%  names()
