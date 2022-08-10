@@ -18,7 +18,7 @@ Chris Glenshaw, George Salisbury, João Neto, Kate Stallibrass & Ross Morton
 
 **Chris** worked on ...
 
-**George** worked on ...
+**George** worked on dummy graphs which were chunks of draft data that were intended to suggest ways of visualising the data.  They were not necessarily intended to be in the final application but were meant to reduce the workload for those working on Shiny.  Once he'd provided the team with a code that they were happy enough with, they could tweak it if required to further fit the needs of the final report.  He also produced some trend graphs were meant to show the impact of Covid on hospital admission over the course of several months.
 
 **João** worked on ...
 
@@ -50,7 +50,7 @@ The dashboard outlines our topic in terms of ...
 
 * Trello (planning & task allocation)
 * Git/GitHub (collaboration & version control) 
-* Powerpoint
+* PowerPoint
 * In person stand-ups
 
 
