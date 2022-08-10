@@ -1,7 +1,26 @@
 
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
-
+  
+  demographic_filter <- reactive({
+    
+    activity_patient_demographics %>%
+      filter(!is.na(hb_name),
+        age %in% input$demo_age,
+        hb_name %in% input$demo_hb,
+        admission_type %in% input$demo_admission_type,
+        location_name %in% input$demo_location) %>%
+    group_by(sex, year, age) %>%
+    summarise(nr_episodes          = sum(episodes),
+              nr_stays             = sum(stays))
+  
+   })
+  # observe({
+  #   print(paste0(input$demo_age,
+  #                input$demo_hb_name,
+  #                input$demo_admission_type,
+  #                input$demo_location_name))
+  # })
   # Create Leaflet output (selection map)
   output$selection_map <- renderLeaflet({
     leaflet(nhs_borders) %>% 
@@ -18,11 +37,17 @@ shinyServer(function(input, output) {
       setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>% 
       setView(lng = mean(bbox[1], bbox[3]), 
               lat = mean(bbox[2], bbox[4]),
-              zoom = 6)
+              zoom = 5.5) %>% 
+      onRender(
+        "function(el, x) {
+          L.control.zoom({
+            position:'bottomright'
+          }).addTo(this);
+        }")
   })
   
   # Create heatmap plot
-  output$heatmap <- renderLeaflet({
+  output$heatmap2 <- renderLeaflet({
     leaflet(nhs_borders) %>% 
       addTiles() %>% 
       addPolygons(fillColor = ~pal(HBCode),
@@ -32,7 +57,13 @@ shinyServer(function(input, output) {
                   color = "white",
                   label = labels_regions,
                   labelOptions = labelOptions()) %>% 
-      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
+      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>% 
+      onRender(
+        "function(el, x) {
+          L.control.zoom({
+            position:'bottomright'
+          }).addTo(this);
+        }")
   })
   
   # Start event if regions in the map are selected
@@ -49,18 +80,58 @@ shinyServer(function(input, output) {
                    color = "yellow",
                    weight = 5,
                    opacity = 1)
-      
-
+    
   })
   
+
+  output$distPlot <- renderPlot({
+    
+    specialty_admissions %>% 
+      filter(specialty == input$specialty, 
+             hb_name == input$hb,
+             admission_type == input$admission,
+             between(week_ending, as.numeric(input$week_ending[1]), 
+                     as.numeric(input$week_ending[2]))) %>%  
+      ggplot() +
+      geom_line(aes(x = week_ending, y = number_admissions)) +
+      geom_line(aes(x = week_ending, y = average20182019), colour = "red")
+    
+  })
+  
+  output$demographics_output <- renderPlot({
+    # browser()
+    # activity_patient_demographics
+    demographic_filter() %>%
+      ggplot() +
+      aes(x = age, y = nr_episodes, fill = sex) +
+      geom_col(position = "dodge") +
+      theme_minimal()
+    
+  })
+  # output$progressBox <- renderValueBox({
+  #   valueBox(
+  #     paste0(25 + input$count, "%"), "Progress", icon = icon("list"),
+  #     color = "purple"
+  #   )
+  # })
+  # 
+  # output$approvalBox <- renderValueBox({
+  #   valueBox(
+  #     "80%", "Approval", icon = icon("fa-solid fa-bed-pulse", lib = "font-awesome"),
+  #     color = "yellow"
+  #   )
+  # })
+  
+
+
   quarter_filter <- reactive({
     beds %>% 
-      filter(year_quarter >= yearquarter(input$year_quarter[1]) &
-               year_quarter <= yearquarter(input$year_quarter[2]),
-             specialty_name == input$speciality) %>% 
+      filter(year_quarter >= yearquarter(input$year_quarter_geo[1]) &
+               year_quarter <= yearquarter(input$year_quarter_geo[2]),
+             specialty_name == input$speciality_geo) %>% 
       group_by(HBCode = hb) %>% 
-      select(!!as.name(input$variable_to_plot)) %>% 
-      summarise(plot_this = mean(!!as.name(input$variable_to_plot), na.rm = TRUE))
+      select(!!as.name(input$variable_to_plot_geo)) %>% 
+      summarise(plot_this = mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
   })
   
   # observeEvent(input$year_quarter,{
@@ -85,7 +156,7 @@ shinyServer(function(input, output) {
     
     hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
      # browser()
-    leafletProxy("heatmap") %>% 
+    leafletProxy("heatmap2") %>% 
       clearShapes() %>% 
       clearControls() %>% 
       addPolygons(data = temp_shape,
@@ -97,7 +168,7 @@ shinyServer(function(input, output) {
                   label = labels_heat,
                   labelOptions = labelOptions()) %>% 
       addLegend(pal = hot_colour,
-                values = temp_shape$plot_this, title = input$variable_to_plot,
+                values = temp_shape$plot_this, title = input$variable_to_plot_geo,
                 position = "bottomright") %>% 
       setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
 
@@ -113,3 +184,4 @@ shinyServer(function(input, output) {
     # })
 
 })
+
