@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
   
     output$distPlot <- renderPlot({
       
-      bed_admissions %>% 
+      specialty_admissions %>% 
         filter(specialty == input$specialty, 
                hb_name == input$hb,
                admission_type == input$admission,
@@ -75,6 +75,20 @@ shinyServer(function(input, output) {
         geom_line(aes(x = week_ending, y = number_admissions)) +
         geom_line(aes(x = week_ending, y = average20182019), colour = "red")
       
+    })
+    
+    output$progressBox <- renderValueBox({
+      valueBox(
+        paste0(25 + input$count, "%"), "Progress", icon = icon("list"),
+        color = "purple"
+      )
+    })
+    
+    output$approvalBox <- renderValueBox({
+      valueBox(
+        "80%", "Approval", icon = icon("fa-solid fa-bed-pulse", lib = "font-awesome"),
+        color = "yellow"
+      )
     })
 
 })

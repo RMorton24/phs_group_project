@@ -4,7 +4,7 @@ output: html_notebook
 ---
 ```{r}
 
-bed_admissions <- read_csv("/Users/anominity/Desktop/CodeClan/gitgroup/phs_group_project/02_cleaned_data/admissions_by_speciality_clean.csv")
+specialty_admissions <- read_csv("/Users/anominity/Desktop/CodeClan/gitgroup/phs_group_project/02_cleaned_data/admissions_by_speciality_clean.csv")
 
 bed_admissions %>% 
   filter(hb_name == "NHS Ayrshire and Arran",

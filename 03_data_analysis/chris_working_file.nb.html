@@ -1770,24 +1770,19 @@ pre code {
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuXG5iZWRfYWRtaXNzaW9ucyA8LSByZWFkX2NzdihcIi9Vc2Vycy9hbm9taW5pdHkvRGVza3RvcC9Db2RlQ2xhbi9naXRncm91cC9waHNfZ3JvdXBfcHJvamVjdC8wMl9jbGVhbmVkX2RhdGEvYWRtaXNzaW9uc19ieV9zcGVjaWFsaXR5X2NsZWFuLmNzdlwiKVxuXG5iZWRfYWRtaXNzaW9ucyAlPiUgXG4gIGZpbHRlcihoYl9uYW1lID09IFwiTkhTIEF5cnNoaXJlIGFuZCBBcnJhblwiLFxuICAgICAgICAgc3BlY2lhbHR5ID09IFwiQWxsXCIpICU+JSBcbiAgZ2dwbG90KCkgK1xuICBhZXMoeCA9IHdlZWtfZW5kaW5nLCB5ID0gbnVtYmVyX2FkbWlzc2lvbnMpICtcbiAgZ2VvbV9saW5lKGFlcyhjb2xvdXIgPSBoYl9uYW1lKSwgc2hvdy5sZWdlbmQgPSBGQUxTRSlcbiAgXG5cblxuYmVkX2FkbWlzc2lvbnMgJT4lIFxuICBmaWx0ZXIoaGJfbmFtZSA9PSBcIk5IUyBBeXJzaGlyZSBhbmQgQXJyYW5cIixcbiAgICAgICAgIHNwZWNpYWx0eSA9PSBcIkFsbFwiKSAlPiUgXG4gIHN1bW1hcmlzZShuKCkpXG5gYGAifQ== -->
-<pre class="r"><code>
-bed_admissions &lt;- read_csv(&quot;/Users/anominity/Desktop/CodeClan/gitgroup/phs_group_project/02_cleaned_data/admissions_by_speciality_clean.csv&quot;)
-
-bed_admissions %&gt;% 
-  filter(hb_name == &quot;NHS Ayrshire and Arran&quot;,
-         specialty == &quot;All&quot;) %&gt;% 
-  ggplot() +
-  aes(x = week_ending, y = number_admissions) +
-  geom_line(aes(colour = hb_name), show.legend = FALSE)
-  
-
-
-bed_admissions %&gt;% 
-  filter(hb_name == &quot;NHS Ayrshire and Arran&quot;,
-         specialty == &quot;All&quot;) %&gt;% 
-  summarise(n())</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuc3BlY2lhbHR5X2FkbWlzc2lvbnMgPC0gcmVhZF9jc3YoXCIvVXNlcnMvYW5vbWluaXR5L0Rlc2t0b3AvQ29kZUNsYW4vZ2l0Z3JvdXAvcGhzX2dyb3VwX3Byb2plY3QvMDJfY2xlYW5lZF9kYXRhL2FkbWlzc2lvbnNfYnlfc3BlY2lhbGl0eV9jbGVhbi5jc3ZcIilcblxuYGBgIn0= -->
+<pre class="r"><code>specialty_admissions &lt;- read_csv(&quot;/Users/anominity/Desktop/CodeClan/gitgroup/phs_group_project/02_cleaned_data/admissions_by_speciality_clean.csv&quot;)
+</code></pre>
 <!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiUm93czogMzg4MjEgQ29sdW1uczogOeKUgOKUgCBDb2x1bW4gc3BlY2lmaWNhdGlvbiDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBcbkRlbGltaXRlcjogXCIsXCJcbmNociAgKDUpOiBoYiwgYWRtaXNzaW9uX3R5cGUsIHNwZWNpYWx0eSwgaGJfbmFtZSwgY291bnRyeVxuZGJsICAoMyk6IG51bWJlcl9hZG1pc3Npb25zLCBhdmVyYWdlMjAxODIwMTksIHBlcmNlbnRfdmFyaWF0aW9uXG5kYXRlICgxKTogd2Vla19lbmRpbmdcbuKEuSBVc2UgYHNwZWMoKWAgdG8gcmV0cmlldmUgdGhlIGZ1bGwgY29sdW1uIHNwZWNpZmljYXRpb24gZm9yIHRoaXMgZGF0YS5cbuKEuSBTcGVjaWZ5IHRoZSBjb2x1bW4gdHlwZXMgb3Igc2V0IGBzaG93X2NvbF90eXBlcyA9IEZBTFNFYCB0byBxdWlldCB0aGlzIG1lc3NhZ2UuXG4ifQ== -->
+<pre><code>Rows: 38821 Columns: 9── Column specification ──────────────────────────────────────────────────────────
+Delimiter: &quot;,&quot;
+chr  (5): hb, admission_type, specialty, hb_name, country
+dbl  (3): number_admissions, average20182019, percent_variation
+date (1): week_ending
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
@@ -1799,7 +1794,7 @@ bed_admissions %&gt;%
 <!-- rnb-text-begin -->
 <!-- rnb-text-end -->
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpgYGB7cn0KCmJlZF9hZG1pc3Npb25zIDwtIHJlYWRfY3N2KCIvVXNlcnMvYW5vbWluaXR5L0Rlc2t0b3AvQ29kZUNsYW4vZ2l0Z3JvdXAvcGhzX2dyb3VwX3Byb2plY3QvMDJfY2xlYW5lZF9kYXRhL2FkbWlzc2lvbnNfYnlfc3BlY2lhbGl0eV9jbGVhbi5jc3YiKQoKYmVkX2FkbWlzc2lvbnMgJT4lIAogIGZpbHRlcihoYl9uYW1lID09ICJOSFMgQXlyc2hpcmUgYW5kIEFycmFuIiwKICAgICAgICAgc3BlY2lhbHR5ID09ICJBbGwiKSAlPiUgCiAgZ2dwbG90KCkgKwogIGFlcyh4ID0gd2Vla19lbmRpbmcsIHkgPSBudW1iZXJfYWRtaXNzaW9ucykgKwogIGdlb21fbGluZShhZXMoY29sb3VyID0gaGJfbmFtZSksIHNob3cubGVnZW5kID0gRkFMU0UpCiAgCgoKYmVkX2FkbWlzc2lvbnMgJT4lIAogIGZpbHRlcihoYl9uYW1lID09ICJOSFMgQXlyc2hpcmUgYW5kIEFycmFuIiwKICAgICAgICAgc3BlY2lhbHR5ID09ICJBbGwiKSAlPiUgCiAgc3VtbWFyaXNlKG4oKSkKYGBgCgpgYGB7cn0KYmVkX2FkbWlzc2lvbnMgJT4lIAogIGZpbHRlcihzcGVjaWFsdHkgPT0gIkFsbCIsIAogICAgICAgICBoYiA9PSAiUzA4MDAwMDE1IiwKICAgICAgICAgYWRtaXNzaW9uX3R5cGUgPT0gIkFsbCIsCiAgICAgICAgIGJldHdlZW4od2Vla19lbmRpbmcsIG1pbih3ZWVrX2VuZGluZyksIG1heCh3ZWVrX2VuZGluZykpKSAlPiUgIAogIGdncGxvdCgpICsKICBnZW9tX2xpbmUoYWVzKHggPSB3ZWVrX2VuZGluZywgeSA9IG51bWJlcl9hZG1pc3Npb25zKSkgKwogIGdlb21fbGluZShhZXMoeCA9IHdlZWtfZW5kaW5nLCBhdmVyYWdlMjAxODIwMTksIGNvbG91ciA9ICJyZWQiKSkKCmNsYXNzKGJlZF9hZG1pc3Npb25zJHdlZWtfZW5kaW5nKQp1bmlxdWUoYmVkX2FkbWlzc2lvbnMkc3BlY2lhbHR5KQp1bmlxdWUoYmVkX2FkbWlzc2lvbnMkYWRtaXNzaW9uX3R5cGUpCmBgYAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUiBOb3RlYm9vayIKb3V0cHV0OiBodG1sX25vdGVib29rCi0tLQpgYGB7cn0KCnNwZWNpYWx0eV9hZG1pc3Npb25zIDwtIHJlYWRfY3N2KCIvVXNlcnMvYW5vbWluaXR5L0Rlc2t0b3AvQ29kZUNsYW4vZ2l0Z3JvdXAvcGhzX2dyb3VwX3Byb2plY3QvMDJfY2xlYW5lZF9kYXRhL2FkbWlzc2lvbnNfYnlfc3BlY2lhbGl0eV9jbGVhbi5jc3YiKQoKYmVkX2FkbWlzc2lvbnMgJT4lIAogIGZpbHRlcihoYl9uYW1lID09ICJOSFMgQXlyc2hpcmUgYW5kIEFycmFuIiwKICAgICAgICAgc3BlY2lhbHR5ID09ICJBbGwiKSAlPiUgCiAgZ2dwbG90KCkgKwogIGFlcyh4ID0gd2Vla19lbmRpbmcsIHkgPSBudW1iZXJfYWRtaXNzaW9ucykgKwogIGdlb21fbGluZShhZXMoY29sb3VyID0gaGJfbmFtZSksIHNob3cubGVnZW5kID0gRkFMU0UpCiAgCgoKYmVkX2FkbWlzc2lvbnMgJT4lIAogIGZpbHRlcihoYl9uYW1lID09ICJOSFMgQXlyc2hpcmUgYW5kIEFycmFuIiwKICAgICAgICAgc3BlY2lhbHR5ID09ICJBbGwiKSAlPiUgCiAgc3VtbWFyaXNlKG4oKSkKYGBgCgpgYGB7cn0KYmVkX2FkbWlzc2lvbnMgJT4lIAogIGZpbHRlcihzcGVjaWFsdHkgPT0gIkFsbCIsIAogICAgICAgICBoYiA9PSAiUzA4MDAwMDE1IiwKICAgICAgICAgYWRtaXNzaW9uX3R5cGUgPT0gIkFsbCIsCiAgICAgICAgIGJldHdlZW4od2Vla19lbmRpbmcsIG1pbih3ZWVrX2VuZGluZyksIG1heCh3ZWVrX2VuZGluZykpKSAlPiUgIAogIGdncGxvdCgpICsKICBnZW9tX2xpbmUoYWVzKHggPSB3ZWVrX2VuZGluZywgeSA9IG51bWJlcl9hZG1pc3Npb25zKSkgKwogIGdlb21fbGluZShhZXMoeCA9IHdlZWtfZW5kaW5nLCBhdmVyYWdlMjAxODIwMTksIGNvbG91ciA9ICJyZWQiKSkKCmNsYXNzKGJlZF9hZG1pc3Npb25zJHdlZWtfZW5kaW5nKQp1bmlxdWUoYmVkX2FkbWlzc2lvbnMkc3BlY2lhbHR5KQp1bmlxdWUoYmVkX2FkbWlzc2lvbnMkYWRtaXNzaW9uX3R5cGUpCmBgYAoK</div>
 
 
 
