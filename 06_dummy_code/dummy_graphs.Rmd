@@ -324,8 +324,8 @@ m_admissions_quint_5 <- hospital_admissions %>%
   group_by(admission_type) %>% 
   summarise(mean_admissions = mean(number_admissions)) %>% 
   ggplot() +
-  geom_col(aes(x = admission_type, mean_admissions)) +
-  scale_fill_manual(values = wes_palette("Darjeeling1", n = 5)) 
+  geom_col(aes(x = admission_type, mean_admissions)) 
+  #scale_fill_manual(values = wes_palette("Darjeeling1", n = 5)) 
   
 ```
 
@@ -407,6 +407,7 @@ specialty_trends_differ2 <- admin_specialty_data %>%
   
 
 specialty_trends_differ
+specialty_trends_differ2
 ```
 
 ```{r}
@@ -422,7 +423,7 @@ bed_trends <- bed_data %>%
   group_by(year_quarter) %>% 
   summarise(average_beddays = mean(total_occupied_beddays)) %>% 
   ggplot() +
-  geom_col(aes(x = year_quarter, y = average_beddays), fill = "violet") +
+  geom_line(aes(x = year_quarter, y = average_beddays, group = 1)) +
     theme(axis.text.x = element_text(angle = 90))
   
 bed_trends  
@@ -434,7 +435,7 @@ bed_trends_occu <- bed_data %>%
   summarise(average_occupancy = mean(percentage_occupancy)) %>%
   drop_na(average_occupancy) %>% 
   ggplot() +
-  geom_col(aes(x = year_quarter, y = average_occupancy)) +
+  geom_line(aes(x = year_quarter, y = average_occupancy, group = 1)) +
     theme(axis.text.x = element_text(angle = 90))
 
 bed_trends_occu  
@@ -483,7 +484,7 @@ episodes_per_specialty <- specialty_data %>%
   group_by(specialty_name) %>% 
   summarise(total_episodes = sum(episodes)) %>%
   ggplot() +
-  geom_col(aes(x = specialtsy_name, y = total_episodes)) +
+  geom_col(aes(x = specialty_name, y = total_episodes)) +
   theme(axis.text.x = element_text(angle = 90))
 episodes_per_specialty
 ```
@@ -640,17 +641,36 @@ demographic_trends <- demographic_activity %>%
 ```{r}
 admission_data2 %>% 
   distinct(admission_type)
+
 Hospitalisation_trends <- admission_data2 %>% 
-  select(month_name, hb_name, year, admission_type, quarter) %>% 
-  filter(admission_type == "Emergency", year >= 2020) %>% 
-  group_by(quarter) %>% 
-  summarise(total_deaths = sum(number_admissions)) %>% 
+  select(month_name, hb_name, year, admission_type, month_name, number_admissions) %>% 
+  #filter(admission_type == "Emergency") %>% 
+  group_by(month_name) %>% 
+  summarise(total_admin = sum(number_admissions)) %>% 
   ggplot() +
-  geom_line(aes(x = quarter, y = total_deaths))
+  geom_line(aes(x = month_name, y = total_admin, group = 1))
+Hospitalisation_trends
 
 Hospitalisation_differ <- admission_data2 %>% 
-  select(month_name, hb_name, year, admission_type) %>% 
-  filter(year >= 2020) %>% 
-  group_by()
+  select(month_name, hb_name, year, admission_type, percent_variation) %>% 
+  #filter(admission_type == "Emergency") %>% 
+  group_by(month_name) %>% 
+  summarise(total_diff = sum(percent_variation)) %>% 
+  ggplot() +
+  geom_line(aes(x = month_name, y = total_diff, group = 1))
+Hospitalisation_differ
+
+Hospitalisation_differ2 <- admission_data2 %>% 
+  select(month_name, hb_name, year, admission_type, percent_variation) %>% 
+  #filter(admission_type == "Emergency") %>% 
+  group_by(month_name) %>% 
+  summarise(mean_diff = mean(percent_variation)) %>% 
+  ggplot() +
+  geom_line(aes(x = month_name, y = mean_diff, group = 1))
+Hospitalisation_differ2
+```
+
+```{r}
+
 ```
 
