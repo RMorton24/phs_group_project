@@ -147,7 +147,7 @@ shinyServer(function(input, output, session) {
       layout(title = "Number of Admissions per Week by Health Board, Specialty and Admission Type", 
              xaxis = list(title = "Month", type = "date", tickformat = "%B"),
              yaxis = list(title = "Number of Admissions"),
-             legend = list(title = list(text="<br> Year </br>")),
+             legend = list(title = list(text="<br> Year </br>"), orientation = "h"),
              shapes = list(vline_1("2020-03-29"), vline_1("2021-01-10"), 
                            vline_2("2020-07-12"), vline_2("2021-05-02")),
              annotations = list(annotation_1, annotation_2, annotation_3, annotation_4))
