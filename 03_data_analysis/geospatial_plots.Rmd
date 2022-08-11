@@ -105,6 +105,7 @@ leaflet(a_shape) %>%
               weight = 1, 
               color = "black",
               dash = 4) %>% 
+  addMarkers(layerId = "Scotland",lng = -7 ,lat = 58.7) %>% 
   addLegend(pal = hot_colour,
             values = ~plot_this, title = input$variable_to_plot,
             position = "bottomright") %>% 
@@ -283,5 +284,12 @@ seq(from = range[1], to = range[2], by = (range[2] - range[1])/9) %>%
 ```{r}
 names(activity_dep_variables[str_which()])
 
+```
+
+
+
+```{r}
+specialty_admissions %>% 
+  distinct(hb_name, hb)
 ```
 

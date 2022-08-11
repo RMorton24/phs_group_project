@@ -20,6 +20,8 @@ shinyServer(function(input, output, session) {
     leaflet(nhs_borders, options = leafletOptions(zoomControl = FALSE,
                                                   minZoom = 5.8,
                                                   maxZoom = 5.8)) %>% 
+      addMarkers(layerId = "Scotland",lng = -7 ,lat = 58.7,
+                 label = label_scotland, labelOptions = labelOptions(noHide = TRUE, textsize = "15px", direction = "left")) %>% 
       addPolygons(fillColor = ~pal(HBCode),
                   layerId = ~HBCode,
                   fillOpacity = 1,
@@ -66,16 +68,31 @@ shinyServer(function(input, output, session) {
   
   nhs_region_select <- reactiveVal()
   
+  observeEvent(input$selection_map_marker_click$id,{
+    nhs_region_select("S92000003")
+    
+    leafletProxy("selection_map") %>%
+      removeShape(layerId = c("highlight",nhs_borders$HBName)) %>%
+      addPolylines(data = nhs_borders,
+                   layerId = nhs_borders$HBName,
+                   color = "yellow",
+                   weight = 5,
+                   opacity = 1)
+    
+  })
+  
   # Start event if regions in the map are selected
   observeEvent(input$selection_map_shape_click$id, {
+    
     # Prepare the shape to be highlighted
     poly_region <- which(nhs_borders$HBCode == input$selection_map_shape_click$id)
     region_highlight <- nhs_borders[poly_region, 1]
     nhs_region_select(input$selection_map_shape_click$id)
     
+    
     # Highlight the region on map
     leafletProxy("selection_map") %>%
-      removeShape(layerId = "highlight") %>%
+      removeShape(layerId = c("highlight",nhs_borders$HBName)) %>%
       addPolylines(data = region_highlight,
                    layerId = "highlight",
                    color = "yellow",

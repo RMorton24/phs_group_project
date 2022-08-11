@@ -52,7 +52,9 @@ pal <- colorFactor("viridis", domain = nhs_borders$HBCode,
 bbox <- st_bbox(nhs_borders) %>% 
   as.vector()
 
-
+label_scotland <- paste0(
+  "<b>", "Click Marker For", "</b><br>", "NHS Scotland"
+) %>% lapply(htmltools::HTML)
 
 
 # Beds data ---------------------------------------------------------------
