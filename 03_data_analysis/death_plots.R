@@ -20,6 +20,8 @@ health_board <- read_csv("01_data/healt_board/health_board.csv") %>%
 deaths_by_deprivation <- deaths_by_deprivation %>% 
   mutate(week_ending = ymd(week_ending)) 
 
+write_csv(deaths_by_deprivation, "02_cleaned_data/deaths_by_deprivation.csv")
+
 deaths_by_age_sex <- deaths_by_age_sex %>% 
   mutate(week_ending = ymd(week_ending)) %>% 
   left_join(health_board, by = "hb") %>%
