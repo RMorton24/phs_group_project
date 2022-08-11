@@ -16,10 +16,31 @@
 #' 
 significance_round <- function(x, round_up = TRUE, digits = 1){
   
-  if(round_up){
-    ceiling(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)- digits)
+  if(x < 0){
+    
+    x <- abs(x)
+    
+    neg_multiplier <- -1
+    
+    if(round_up){
+      x <- floor(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)- digits)
+    }else{
+      x <- ceiling(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)-digits)
+    }
+    
+    x <- x * neg_multiplier
+    
   }else{
-    floor(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)-digits)
+    
+    if(round_up){
+      x <- ceiling(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)- digits)
+    }else{
+      x <- floor(x/10^ceiling(log10(x)- digits)) *10^ceiling(log10(x)-digits)
+    }
+    
   }
+  
+  return(x)
+  
   
 }

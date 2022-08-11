@@ -151,7 +151,10 @@ beds %>%
   group_by(HBCode = hb) %>% 
   select(!!as.name(input$variable_to_plot)) %>% 
   summarise( case_when(
-    str_detect(input$variable_to_plot, "percent") ~ mean(!!as.name(input$variable_to_plot)),
+    str_detect(input$variable_to_plot, "_beds") ~ mean(!!as.name(input$variable_to_plot)),
+    str_detect(input$variable_to_plot, "th_of_st") ~ sum(stays)/sum(length_of_stay)*100,
+    str_detect(input$variable_to_plot, "th_of_ep") ~ sum(episodes)/sum(length_of_episode)*100,
+    str_detect(input$variable_to_plot, "percent_occ") ~ 100*sum(total_occupied_beddays)/sum(all_staffed_beddays),
     TRUE ~ sum(!!as.name(input$variable_to_plot))
   )
   )
@@ -159,7 +162,29 @@ beds %>%
 
 ```{r}
 beds %>% select(contains(c("bed", "occup"))) %>%  names()
+activity_dep_variables
 ```
+
+
+```{r}
+beds %>% select(contains(c("bed", "occup"))) %>% 
+  mutate(new_percent = 100*total_occupied_beddays/all_staffed_beddays) %>% 
+  mutate(test = percentage_occupancy - new_percent) %>% 
+  slice_max(test)
+```
+
+
+```{r}
+activity_deprivation %>% 
+  mutate(new_av_stays = length_of_stay/stays,
+         new_av_episode = length_of_episode/episodes,
+         test1_ep = new_av_episode - average_length_of_episode,
+         test2_stay = new_av_stays - average_length_of_stay) %>% 
+  select(test1_ep, test2_stay) %>% 
+  slice_max(test2_stay)
+```
+
+
 
 ```{r}
 beds %>% 
@@ -240,5 +265,23 @@ names(activity_dep_variables) <- str_to_title(
 ```{r}
 inpute <- list(data_select_geo = "activity_deprivation")
 eval(as.name(inpute$data_select_geo))
+```
+
+```{r}
+significance_round(-500.52, round_up = TRUE , 2)
+```
+
+
+
+```{r}
+range <- c(0,0)
+
+seq(from = range[1], to = range[2], by = (range[2] - range[1])/9) %>% 
+        signif(3)
+```
+
+```{r}
+names(activity_dep_variables[str_which()])
+
 ```
 

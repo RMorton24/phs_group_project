@@ -178,9 +178,15 @@ shinyServer(function(input, output, session) {
       filter(year_quarter >= yearquarter(input$year_quarter_geo[1]) &
                year_quarter <= yearquarter(input$year_quarter_geo[2]),
              !!as.name(key_domain()) == input$speciality_geo) %>% 
-      group_by(HBCode = hb) %>% 
-      select(!!as.name(input$variable_to_plot_geo), HBCode) %>% 
-      summarise(plot_this = mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
+      group_by(HBCode = hb)
+      #select(!!as.name(input$variable_to_plot_geo), HBCode) %>% 
+      # summarise(plot_this = case_when(
+      #   str_detect(input$variable_to_plot_geo, "_beds") ~ mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE),
+      #   str_detect(input$variable_to_plot_geo, "th_of_st") ~ sum(stays, na.rm = TRUE)/sum(length_of_stay, na.rm = TRUE)*100,
+      #   str_detect(input$variable_to_plot_geo, "th_of_ep") ~ sum(episodes, na.rm = TRUE)/sum(length_of_episode, na.rm = TRUE)*100,
+      #   str_detect(input$variable_to_plot_geo, "percent_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
+      #   TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
+      #   )
   })
   
   # observeEvent(input$year_quarter,{
@@ -190,9 +196,26 @@ shinyServer(function(input, output, session) {
   
   observeEvent(c(input$year_quarter_geo, input$variable_to_plot_geo,
                  input$speciality_geo),{
+                   
+    if(input$data_select_geo == "beds"){
+      geo_data <- quarter_filter() %>% 
+        summarise(plot_this = case_when(
+          str_detect(input$variable_to_plot_geo, "_beds") ~ mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE),
+          str_detect(input$variable_to_plot_geo, "percent_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
+          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
+        )
+    }else{
+      geo_data <- quarter_filter() %>% 
+        summarise(plot_this = case_when(
+          str_detect(input$variable_to_plot_geo, "th_of_st") ~ sum(stays, na.rm = TRUE)/sum(length_of_stay, na.rm = TRUE)*100,
+          str_detect(input$variable_to_plot_geo, "th_of_ep") ~ sum(episodes, na.rm = TRUE)/sum(length_of_episode, na.rm = TRUE)*100,
+          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
+        )
+    }              
     
+          
    
-    temp_shape <- sp::merge(nhs_borders, quarter_filter(), by = c("HBCode" = "HBCode"))
+    temp_shape <- sp::merge(nhs_borders, geo_data, by = c("HBCode" = "HBCode"))
     
     factor_number <- 10^ceiling(log10(temp_shape$plot_this)-2)
     
@@ -204,6 +227,9 @@ shinyServer(function(input, output, session) {
     }else{
       bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9) %>% 
         signif(3)
+      if(length(bins) == 1){
+        bins <- c(bins, bins)
+      }
     }
     
     # Create labels for region plot
@@ -225,7 +251,8 @@ shinyServer(function(input, output, session) {
                   label = labels_heat,
                   labelOptions = labelOptions()) %>% 
       addLegend(pal = hot_colour,
-                values = temp_shape$plot_this, title = input$variable_to_plot_geo,
+                values = temp_shape$plot_this, 
+                title = input$variable_to_plot_geo,
                 position = "bottomright") %>% 
       setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
     
