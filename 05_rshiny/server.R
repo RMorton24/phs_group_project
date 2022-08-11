@@ -3,10 +3,15 @@
 shinyServer(function(input, output, session) {
   
   admissions_filter <- reactive({
+    if(is.null(nhs_region_select())){
+      region <- ""
+    }else{
+      region <- nhs_region_select()
+    }
     
     specialty_admissions %>% 
       filter(specialty == input$specialty, 
-             hb_name == input$hb,
+             hb == region,
              admission_type == input$admission)
     
   })
@@ -59,11 +64,14 @@ shinyServer(function(input, output, session) {
         }")
   })
   
+  nhs_region_select <- reactiveVal()
+  
   # Start event if regions in the map are selected
   observeEvent(input$selection_map_shape_click$id, {
     # Prepare the shape to be highlighted
     poly_region <- which(nhs_borders$HBCode == input$selection_map_shape_click$id)
     region_highlight <- nhs_borders[poly_region, 1]
+    nhs_region_select(input$selection_map_shape_click$id)
     
     # Highlight the region on map
     leafletProxy("selection_map") %>%
