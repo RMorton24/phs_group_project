@@ -65,7 +65,7 @@ plot_admissions <- plot_ly(data = admissions_filter,
                            textposition = "auto",
                            hoverinfo = "text") %>% 
   layout(title = "Number of Admissions per Week by Health Board, Specialty and Admission Type", 
-         xaxis = list(title = "Week Ending", type = "date", tickformat = "%B"),
+         xaxis = list(title = "Month", type = "date", tickformat = "%B"),
          yaxis = list(title = "Number of Admissions"),
          legend = list(title = list(text="<br> Year </br>")),
          shapes = list(vline_1("2020-03-29"), vline_1("2021-01-10"), 

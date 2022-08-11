@@ -12,81 +12,46 @@ shinyUI(
         
         
         tabPanel(
-          title = "Tab 1",
+          title = "Admissions Data of NHS HB",
           sidebarLayout(
             sidebarPanel(
               width = 4,
-              leafletOutput("selection_map", width = "100%", height = 475)
+              "Select NHS Health Board",
+              leafletOutput("selection_map", width = "100%", height = 475),
+              
+              pickerInput(
+                inputId = "specialty",
+                label = "Select/deselect Specialty", 
+                selected = "All",
+                choices = unique(specialty_admissions$specialty),
+                options = list(
+                  `actions-box` = TRUE), 
+                multiple = FALSE
+              ),
+              
+              radioGroupButtons(
+                inputId = "admission",
+                label = "Admission Type",
+                choices = c("Emergency", "Planned", "All"),
+                selected = "All"
+              )
             ),
             mainPanel(
-              plotOutput("distPlot1"),
+              plotlyOutput("katePlot", width = "100%")
+              
             )
           )
         ),
         
         # Admissions trend tab--------------------------------------------------------
         
-        tabPanel(
-          title = "Admissions Trend",
-          br(),
-          dropdown(
-            
-            circle = TRUE, 
-            status = "info",
-            icon = icon("gear"), 
-            width = "350px",
-            tooltip = tooltipOptions(title = "Click to see inputs !"),
-            
-            pickerInput(
-              inputId = "specialty",
-              label = "Select/deselect Specialty", 
-              selected = "All",
-              choices = unique(specialty_admissions$specialty),
-              options = list(
-                `actions-box` = TRUE), 
-              multiple = FALSE
-            ),
-            
-            pickerInput(
-              inputId = "hb",
-              label = "Select/deselect HealthBoard",
-              selected = head(specialty_admissions$hb_name),
-              choices = unique(specialty_admissions$hb_name),
-              options = list(
-                `actions-box` = TRUE), 
-              multiple = FALSE
-            ),
-            
-            radioGroupButtons(
-              inputId = "admission",
-              label = "Admission Type",
-              choices = c("Emergency", "Planned", "All")
-            )
-            
-          ),
-          br(),
-          mainPanel(
-            column(
-              offset = 1,
-              11,
-              tags$style(HTML("
-      .leaflet-left .leaflet-control{
-        visibility: hidden;
-      }
-    ")),
-    
-    # plotOutput("distPlot", width = "150%"),
-    
-    plotlyOutput("katePlot", width = "150%")
-            )
-          )
-        ),
+
     
     # Geo map -----------------------------------------------------------------
     
     
     tabPanel(
-      title = "HB Map",
+      title = "Health Board Activity",
       br(),
       fluidRow(
         
