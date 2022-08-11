@@ -97,12 +97,12 @@ ggplot(rolling_data_2019) +
 ```
 
 ```{r}
-specialty_graph <- hospital_specialty %>%
-  group_by_key() %>% 
-  group_by(admission_type) %>% 
-  ggplot() +
-  geom_col(x = admission_type, y = episodes, fill = location) +
-  theme(axis.text.x = element_text(angle = 90))  
+# specialty_graph <- hospital_specialty %>%
+#   group_by_key() %>% 
+#   group_by(admission_type) %>% 
+#   ggplot() +
+#   geom_col(x = admission_type, y = episodes, fill = location) +
+#   theme(axis.text.x = element_text(angle = 90))  
   
 ```
 
@@ -649,8 +649,8 @@ demographic_trends <- demographic_activity %>%
 ```
 
 ```{r}
-admission_data2 %>% 
-  distinct(admission_type)
+# admission_data2 %>% 
+#   distinct(admission_type)
 
 Hospitalisation_trends <- admission_data2 %>% 
   select(month_name, hb_name, year, admission_type, month_name, number_admissions) %>% 
@@ -684,6 +684,16 @@ Hospitalisation_differ2
 ```
 
 ```{r}
+library(lubridate)
+deaths_by_depriv2 <- deaths_by_depriv %>% 
+  mutate(month_name = month(month))
+```
 
+```{r}
+Final_death_graph1 <- deaths_by_depriv %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  filter(simd_quintile == 1) %>% 
+  mutate()
+  group_by(week_ending)
 ```
 
