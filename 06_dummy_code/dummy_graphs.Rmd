@@ -882,6 +882,47 @@ deaths_by_age2 %>%
 ```
 
 ```{r}
+deaths_by_age2 %>% 
+  select(percent_variation, year, month_name, age_group, hb, sex) %>% 
+  group_by(month_name, percent_variation, sex) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = percent_variation, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of death variation")
+```
 
+```{r}
+deaths_by_hscp2 %>% 
+  select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
+  group_by(month_name, sex, hscp) %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Mean deaths by month")
+```
+
+```{r}
+deaths_by_hscp2 %>% 
+  select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
+  group_by(month_name, sex, hscp) %>% 
+  filter(sex == "Female") %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Mean deaths by month - Female")
+```
+
+```{r}
+deaths_by_hscp2 %>% 
+  select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
+  group_by(month_name, sex, hscp) %>% 
+  filter(sex == "Male") %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Mean deaths by month")
 ```
 
