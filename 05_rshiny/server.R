@@ -2,20 +2,6 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   
-  demographic_filter <- reactive({
-    
-    activity_patient_demographics %>%
-      filter(!is.na(hb_name),
-             age %in% input$demo_age,
-             hb_name %in% input$demo_hb,
-             admission_type %in% input$demo_admission_type,
-             location_name %in% input$demo_location) %>%
-      group_by(sex, year, age) %>%
-      summarise(nr_episodes          = sum(episodes),
-                nr_stays             = sum(stays))
-    
-  })
-  
   admissions_filter <- reactive({
     
     specialty_admissions %>% 
@@ -90,6 +76,10 @@ shinyServer(function(input, output, session) {
     
   })
 
+
+
+# Admissions plotly plot --------------------------------------------------
+
   
   output$katePlot <- renderPlotly({
     
@@ -117,6 +107,8 @@ shinyServer(function(input, output, session) {
       )
     }
     
+    # Adding lines denoting lockdowns
+    
     annotation_1 <- list(yref = "paper", xref = "x", y = 0.6, x = "2020-03-29", 
                          text = "First Lockdown", xanchor = "left", showarrow = F, 
                          font = list(size = 14), textangle = 90)
@@ -132,7 +124,8 @@ shinyServer(function(input, output, session) {
     annotation_4 <- list(yref = "paper", xref = "x", y = 0.05, x = "2021-05-02", 
                          text = "Restrictions Eased", xanchor = "left", showarrow = F, 
                          font = list(size = 14), textangle = 90)
-    
+
+# Main Plot    
     plot_admissions <- plot_ly(data = admissions_filter(),
                                x = ~week_ending,
                                y = ~number_admissions,
@@ -167,29 +160,143 @@ shinyServer(function(input, output, session) {
     )
   })
   
-  output$distPlot <- renderPlot({
+
+# Demographic plots --------------------------------------------------------
+
+  # Activity demographic filter
+  
+  demographic_filter <- reactive({
     
-    specialty_admissions %>% 
-      filter(specialty == input$specialty, 
-             hb_name == input$hb,
-             admission_type == input$admission,
-             between(week_ending, as.numeric(input$week_ending[1]), 
-                     as.numeric(input$week_ending[2]))) %>%  
-      ggplot() +
-      geom_line(aes(x = week_ending, y = number_admissions)) +
-      geom_line(aes(x = week_ending, y = average20182019), colour = "red")
-    
+    activity_patient_demographics %>%
+      filter(!is.na(hb_name)) %>% 
+      filter(age %in% input$demo_age,
+             hb_name %in% input$demo_hb,
+             admission_type %in% input$demo_admission_type) %>% 
+      group_by(sex, year, age) %>%
+      summarise(avg_stay = mean(average_length_of_stay, na.rm = TRUE))
     
   })
+  # SIMD 
+  demographic_simd_filter <- reactive({
+    
+    activity_deprivation %>%
+      filter(!is.na(hb_name)) %>% 
+      mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>%
+      filter(hb_name %in% input$demo_hb,
+             admission_type %in% input$demo_admission_type) %>% 
+      group_by(year, simd) %>% 
+      summarise(avg_length_stays = mean(average_length_of_stay, na.rm = TRUE))
+    
+  })
+  
+  covid_age_filter <- reactive({
+    
+    covid_admission_age_sex %>%
+      filter(admission_type == input$demo_admission_type_covid_age,
+             hb_name        == input$demo_hb_covid_age) %>% 
+      mutate(ym = yearquarter(date),
+             age_group =  case_when(
+               age_group == "Under 5" ~  "0 - 04",
+               age_group == "5 - 14" ~  "05 - 14",
+               TRUE ~ age_group)) %>% 
+      filter(!age_group == "All ages") %>% 
+      group_by(age_group, ym, number_admissions) %>% 
+      summarise(nr_admissions = sum(number_admissions))
+    
+  })
+  # Activity demographic plot 1 (Age / Sex)
   
   output$demographics_output <- renderPlot({
  
     demographic_filter() %>%
       ggplot() +
-      aes(x = age, y = nr_episodes, fill = sex) +
+      aes(x = age, y = avg_stay, fill = sex) +
       geom_col(position = "dodge") +
-      theme_minimal()
+      theme_minimal() +
+      labs(title = "Activity by Gender and Age Group",
+           x = NULL,
+           y = "Average Stay Length", 
+           fill = "Sex") +
+      theme(legend.position = "right")
     
+  })
+  
+  # Activity demographic plot 2 (SIMD rating)
+  
+  output$demographics_simd_output <- renderPlot({
+    
+    demographic_simd_filter() %>%
+      ggplot() + 
+      aes(x = year, y = avg_length_stays, fill = simd) +
+      geom_col(position = "dodge") + 
+      labs(title = "Activity by Board of Treatment and Deprivation",
+           subtitle = "1 - Most deprived | 5 - least deprived",
+           x = NULL) +
+      theme_minimal() +
+      scale_x_continuous(breaks = seq(2016, 2021, 1)) +
+      theme(
+        legend.position = "right",
+        panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        legend.direction = "horizontal") +
+      scale_fill_brewer(palette = "OrRd", direction = -1) +
+      labs(y = "Average Stay Length")
+    
+  })
+  
+  # Covid demographic plot gender
+  
+  output$demographics_output_covid <- renderPlot({
+    
+    covid_admission_age_sex %>%
+      filter(!sex == "All",
+             admission_type == input$demo_admission_type_covid,
+             hb_name        == input$demo_hb_covid) %>% 
+      mutate(year_month = yearmonth(date)) %>% 
+      group_by(year_month, 
+               sex) %>% 
+      summarise(nr_admissions = sum(number_admissions)) %>% 
+      ggplot() + 
+      aes(x = year_month,
+          y = nr_admissions, 
+          fill = sex, 
+          color = sex) +
+      geom_line(position = "dodge", size = 1) +
+      scale_x_yearmonth(date_labels = "%b \n%Y", 
+                        date_breaks = "2 month") +
+      labs(title    = "Covid Admissions by Gender",
+           subtitle = "January 2020 to February 2022\n",
+           x        = NULL, 
+           y        = "Admissions") +
+      theme_minimal() +
+      theme(legend.position = "bottom",
+            legend.title = element_blank()) +
+      scale_color_manual(values = c("Male"   = "#56B4E9",
+                                    "Female" = "firebrick"))
+    
+  })
+  
+  # Demographic plot Covid age
+  
+  output$demographics_output_covid_age <- renderPlot({
+    
+    covid_age_filter() %>% 
+    ggplot() +
+    aes(x = ym, y = nr_admissions, fill = age_group) + 
+    geom_col(position = "dodge") + 
+    theme_minimal() +
+    labs(
+      title    = "Covid admissions by group age",
+      subtitle = "January of 2020 to January 2022",
+      x = NULL,
+      y = "Adimissions") +
+    scale_fill_brewer(palette = "Accent") +
+    scale_x_yearquarter(date_labels = "%Y \n Q%q", date_breaks = "3 months") +
+    theme(
+      legend.position = "bottom",
+      legend.title = element_blank(),
+      panel.grid.major.x = element_blank()
+    )
   })
   
   key_domain <- reactiveVal()

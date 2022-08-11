@@ -20,6 +20,7 @@ specialty_admissions <- read_csv(here::here("02_cleaned_data/admissions_by_speci
 activity_deprivation <- read_csv(here::here("02_cleaned_data/activity_deprivation.csv")) %>% 
   mutate(year_quarter = make_yearquarter(year, quarter), .after = quarter)
 
+covid_admission_age_sex <- read_csv(here::here("02_cleaned_data/covid_admission_age_sex.csv"))
 
 activity_dep_variables <- activity_deprivation %>% 
   select(contains(c("episode", "stay"))) %>%  names()
