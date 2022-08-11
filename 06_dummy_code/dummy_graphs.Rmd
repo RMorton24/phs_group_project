@@ -18,7 +18,7 @@ hospital_admissions <- read_csv('hospital_covid_data/hospital_admissions_hb_simd
   hospital_demographics <- read_csv('hospital_covid_data/hospital_admissions_hscp_agesex_20220302(2).csv') %>% clean_names()
 waiting_times <- read_csv('hospital_covid_data/monthly_ae_waitingtimes_202206.csv') %>% clean_names()
 hospital_specialty <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
-hospital_impatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv') %>% clean_names()
+hospital_inpatients <- read_csv('hospital_covid_data/inpatient_and_daycase_by_nhs_board_of_treatment_age_and_sex.csv') %>% clean_names()
 ```
 
 ```{r}
@@ -685,15 +685,153 @@ Hospitalisation_differ2
 
 ```{r}
 library(lubridate)
-deaths_by_depriv2 <- deaths_by_depriv %>% 
-  mutate(month_name = month(month))
+deaths_by_depriv2 <- deaths_by_depriv %>%
+  mutate(week_ending = ymd(week_ending))
+
+deaths_by_depriv2 %>% 
+  
+  
+  
 ```
 
 ```{r}
-Final_death_graph1 <- deaths_by_depriv %>% 
+deaths_by_depriv
+deaths_by_age
+deaths_by_hscp
+```
+
+```{r}
+deaths_by_age2 <- deaths_by_age %>% 
+  mutate(week_ending = ymd(week_ending)) %>% 
+  mutate(year = year(week_ending),
+         month = month(week_ending),
+         day = day(week_ending)) %>% 
+  mutate(month_name = month(month, label = TRUE, abbr = FALSE))
+```
+
+```{r}
+Final_death_graph1 <- deaths_by_depriv2 %>% 
   select(week_ending, simd_quintile, deaths, average20152019) %>% 
   filter(simd_quintile == 1) %>% 
-  mutate()
-  group_by(week_ending)
+  group_by(week_ending) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths for SIMD 1")
+Final_death_graph1 
+
+Final_death_graph2 <- deaths_by_depriv2 %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  filter(simd_quintile == 2) %>% 
+  group_by(week_ending) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths for SIMD 2") +
+  labs()
+Final_death_graph2
+
+Final_death_graph3 <- deaths_by_depriv2 %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  #filter(simd_quintile == 1) %>% 
+  group_by(week_ending) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths for SIMDs")
+Final_death_graph3
+
+Final_death_graph4 <- deaths_by_depriv2 %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  filter(simd_quintile == 3) %>% 
+  group_by(week_ending) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths for SIMD 3")
+Final_death_graph4
+
+Final_death_graph5 <- deaths_by_depriv2 %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  filter(simd_quintile == 4) %>% 
+  group_by(week_ending) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths for SIMD 4")
+Final_death_graph5
+```
+
+```{r}
+Death_trends_age_2020 <- deaths_by_age2 %>% 
+  select(year, month_name, deaths, average20152019, age_group) %>% 
+  group_by(month_name, average20152019) %>% 
+  filter(year == 2020) %>% 
+  summarise(avg_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_line(aes(x = month_name, y = avg_deaths), colour = "red") +
+  geom_line(aes(x = month_name, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths by month")
+Death_trends_age_2020
+
+Death_trends_age_2021 <- deaths_by_age2 %>% 
+  select(year, month_name, deaths, average20152019, age_group, week_ending) %>% 
+  group_by(week_ending, average20152019) %>% 
+  filter(year == 2021) %>% 
+  summarise(avg_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = avg_deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  ggtitle("Trend of deaths by week 2021")
+Death_trends_age_2021
+
+Death_trends_age_2022 <- deaths_by_age2 %>% 
+  select(year, month_name, deaths, average20152019, age_group, week_ending, day) %>% 
+  group_by(month_name, average20152019) %>% 
+  filter(year == 2022) %>% 
+  summarise(avg_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = average20152019), fill = "blue") +
+  geom_col(aes(x = month_name, y = avg_deaths), fill = "red") +
+  
+  ggtitle("Trend of deaths by month 2022")
+Death_trends_age_2022
+```
+
+```{r}
+deaths_by_hscp2 <- deaths_by_hscp %>% 
+  mutate(week_ending = ymd(week_ending)) %>% 
+  mutate(year = year(week_ending),
+         month = month(week_ending),
+         day = day(week_ending)) %>% 
+  mutate(month_name = month(month, label = TRUE, abbr = FALSE))
+
+hscp_trends_2020 <- deaths_by_hscp2 %>% 
+  select(week_ending, year, month_name, age_group, deaths, average20152019) %>% 
+  filter(year == 2020) %>% 
+  group_by(month_name, average20152019) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = deaths), fill = "red") + 
+  geom_col(aes(x = month_name, y = average20152019), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of HSCP deaths by month 2020")
+hscp_trends_2020
+
+hscp_trends_2021 <- deaths_by_hscp2 %>% 
+  select(week_ending, year, month_name, age_group, deaths, average20152019) %>% 
+  filter(year == 2021) %>% 
+  group_by(month_name, average20152019) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = deaths), fill = "red") +
+  geom_col(aes(x = month_name, y = average20152019), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of HSCP deaths by month 2021")
+hscp_trends_2021
 ```
 
