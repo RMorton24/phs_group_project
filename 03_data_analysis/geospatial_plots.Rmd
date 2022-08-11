@@ -269,7 +269,7 @@ eval(as.name(inpute$data_select_geo))
 ```
 
 ```{r}
-significance_round(-500.52, round_up = TRUE , 2)
+significance_round(0, round_up = TRUE , 2)
 ```
 
 
@@ -291,5 +291,22 @@ names(activity_dep_variables[str_which()])
 ```{r}
 specialty_admissions %>% 
   distinct(hb_name, hb)
+```
+
+```{r}
+names(which(activity_dep_variables == "stays"))
+case_when(
+  input$data_select_geo == "beds" ~ names(which(activity_dep_variables == input$variable_to_plot_geo))
+  TRUE ~ names(which(activity_dep_variables == input$variable_to_plot_geo))
+)
+```
+
+```{r}
+input <- list(variable_to_plot_geo = "all_staffed_beddays",
+              data_select_geo = "beds")
+
+if_else(input$data_select_geo == "beds",
+                     names(which(beds_variables_selection == input$variable_to_plot_geo)), 
+                     names(which(activity_dep_variables == input$variable_to_plot_geo)))
 ```
 

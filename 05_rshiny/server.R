@@ -21,7 +21,8 @@ shinyServer(function(input, output, session) {
                                                   minZoom = 5.8,
                                                   maxZoom = 5.8)) %>% 
       addMarkers(layerId = "Scotland",lng = -7 ,lat = 58.7,
-                 label = label_scotland, labelOptions = labelOptions(noHide = TRUE, textsize = "15px", direction = "left")) %>% 
+                 label = label_scotland, 
+                 labelOptions = labelOptions(noHide = TRUE, textsize = "15px", direction = "left")) %>% 
       addPolygons(fillColor = ~pal(HBCode),
                   layerId = ~HBCode,
                   fillOpacity = 1,
@@ -382,6 +383,9 @@ shinyServer(function(input, output, session) {
                          str_detect(input$variable_to_plot_geo, "percentage_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
                          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
                        )
+                     
+                     legend_title_heatmap <- names(which(beds_variables_selection == input$variable_to_plot_geo))
+                     
                    }else{
                      geo_data <- quarter_filter() %>% 
                        summarise(plot_this = case_when(
@@ -389,6 +393,8 @@ shinyServer(function(input, output, session) {
                          str_detect(input$variable_to_plot_geo, "th_of_ep") ~ sum(episodes, na.rm = TRUE)/sum(length_of_episode, na.rm = TRUE)*100,
                          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
                        )
+                     
+                     legend_title_heatmap <- names(which(activity_dep_variables == input$variable_to_plot_geo))
                    }              
                    
                    
@@ -406,7 +412,7 @@ shinyServer(function(input, output, session) {
                      bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9) %>% 
                        signif(3)
                      if(length(bins) == 1){
-                       bins <- c(bins, bins)
+                       bins <- c(bins, bins + 1)
                      }
                    }
                    
@@ -417,7 +423,7 @@ shinyServer(function(input, output, session) {
                    
                    hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
                    
-                   
+                  
                    leafletProxy("heatmap2") %>% 
                      clearShapes() %>% 
                      clearControls() %>% 
@@ -431,10 +437,10 @@ shinyServer(function(input, output, session) {
                                  labelOptions = labelOptions()) %>% 
                      addLegend(pal = hot_colour,
                                values = temp_shape$plot_this, 
-                               title = input$variable_to_plot_geo,
+                               title = legend_title_heatmap,
                                position = "bottomright") %>% 
                      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
-                   
+                  
                  })
   
 
