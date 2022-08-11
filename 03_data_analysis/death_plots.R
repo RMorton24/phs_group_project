@@ -37,7 +37,7 @@ deaths_by_age_sex <- deaths_by_age_sex %>%
 death_trends <- deaths_by_age_sex %>% 
   filter(age_group == "All ages", 
          sex == "All",
-         hb == "S92000003") %>% 
+         hb_name == "NHS Scotland") %>% 
   ggplot() +
   geom_line(aes(x = week_ending, y = deaths), colour = "steelblue") +
   labs(title = "Deaths Over Time by Age, Sex and Health Board",
