@@ -221,11 +221,12 @@ post_2020_wait
 ```
 
 ```{r}
-deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %>% clean_names
+deaths_by_age <- read_csv("https://www.opendata.nhs.scot/dataset/5a9ecd07-fcd0-433c-94be-771eb4e0a691/resource/733aad2d-5420-4966-bc34-386a3475623f/download/deaths_hb_agesex_20220302.csv") %>% clean_names()
 
-deaths_by_depriv <- read_csv('hospital_covid_data/deaths_hb_simd_20220302.csv') %>% clean_names
 
-deaths_by_hscp <- read_csv('hospital_covid_data/deaths_hscp_agesex_20220302.csv') %>% clean_names
+deaths_by_depriv <- read_csv('https://www.opendata.nhs.scot/dataset/5a9ecd07-fcd0-433c-94be-771eb4e0a691/resource/98648584-4a34-4374-832c-d3f50b6edd80/download/deaths_hb_simd_20220302.csv') %>% clean_names()
+
+deaths_by_hscp <- read_csv("https://www.opendata.nhs.scot/dataset/5a9ecd07-fcd0-433c-94be-771eb4e0a691/resource/3f8e59f9-6133-46db-b8e6-7efed86a8b7c/download/deaths_hscp_agesex_20220302.csv") %>% clean_names()
 ```
 
 ```{r}
@@ -281,8 +282,6 @@ hospital_trends_full_2020 <- full_demographics %>%
 ggplot(hospital_trends_full_2020) +
   geom_col(aes(x = hb, y = admin_moving_avg), colour = "grey") +
   geom_col(aes(x = hb, y = number_admissions), colour = "red") +
-  
-  
   theme(axis.text.x = element_text(angle = 90))
 ```
 
@@ -596,13 +595,17 @@ Updated_admission_trends_winter
 
 ```{r}
 death_trends <- deaths_by_age %>% 
-  select(week_ending, age_group, deaths, sex, hb) %>% 
-  group_by(week_ending, hb) %>% 
-  summarise(avg_deaths = mean(deaths)) %>% 
-  ggplot(bins = 50) +
-  geom_col(aes(x = week_ending, y = avg_deaths)) +
+  mutate(week_ending = ymd(week_ending)) %>%
+  filter(age_group == "All ages", 
+         sex == "All",
+         hb == "S92000003") %>% 
+  #select(week_ending, age_group, deaths, sex, hb) %>% 
+  #group_by(week_ending, hb) %>% 
+  #mutate(avg_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths)) +
   #scale_x_continuous(breaks = c("20200105")) +
-  theme(axis.text.x = element_text(angle = 90))
+  #theme(axis.text.x = element_text(angle = 90))
 death_trends
 ```
 
