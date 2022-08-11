@@ -22,18 +22,8 @@ shinyServer(function(input, output, session) {
       filter(specialty == input$specialty, 
              hb_name == input$hb,
              admission_type == input$admission)
-    # between(week_ending, as.numeric(input$week_ending[1]), 
-    #         as.numeric(input$week_ending[2])))
     
   })
-  
-  # observe({
-  #   print(paste0(input$demo_age,
-  #                input$demo_hb_name,
-  #                input$demo_admission_type,
-  #                input$demo_location_name))
-  # })
-  # Create Leaflet output (selection map)
   
   output$selection_map <- renderLeaflet({
     leaflet(nhs_borders, options = leafletOptions(zoomControl = FALSE,
@@ -99,15 +89,7 @@ shinyServer(function(input, output, session) {
                    opacity = 1)
     
   })
-  
-  # output$distPlot <- renderPlot({
-  #   
-  #   admissions_filter() %>%  
-  #     ggplot() +
-  #     geom_line(aes(x = week_ending, y = number_admissions)) +
-  #     geom_line(aes(x = week_ending, y = average20182019), colour = "red")
-  #   
-  # })
+
   
   output$katePlot <- renderPlotly({
     
@@ -201,8 +183,7 @@ shinyServer(function(input, output, session) {
   })
   
   output$demographics_output <- renderPlot({
-    # browser()
-    # activity_patient_demographics
+ 
     demographic_filter() %>%
       ggplot() +
       aes(x = age, y = nr_episodes, fill = sex) +
@@ -210,20 +191,6 @@ shinyServer(function(input, output, session) {
       theme_minimal()
     
   })
-  # output$progressBox <- renderValueBox({
-  #   valueBox(
-  #     paste0(25 + input$count, "%"), "Progress", icon = icon("list"),
-  #     color = "purple"
-  #   )
-  # })
-  # 
-  # output$approvalBox <- renderValueBox({
-  #   valueBox(
-  #     "80%", "Approval", icon = icon("fa-solid fa-bed-pulse", lib = "font-awesome"),
-  #     color = "yellow"
-  #   )
-  # })
-  
   
   key_domain <- reactiveVal()
   
@@ -239,15 +206,7 @@ shinyServer(function(input, output, session) {
                         inputId = "speciality_geo",
                         label = "Select Speciality",
                         choices = sort(unique(beds$specialty_name)))
-      
-      # updateSliderTextInput(session,
-      #                       
-      #                       inputId = "year_quarter_geo",
-      #                       label = "Select Year and Quarter:",
-      #                       choices = sort(unique(beds$year_quarter)),
-      #                       selected = c(sort(unique(beds$year_quarter))[1],
-      #                                    sort(unique(beds$year_quarter))[3])
-      # )
+ 
       
       key_domain("specialty_name")
       
@@ -262,13 +221,6 @@ shinyServer(function(input, output, session) {
                         label = "Select Admission Type",
                         choices = sort(unique(activity_deprivation$admission_type)))
       
-      # updateSliderTextInput(session,
-      #                       inputId = "year_quarter_geo",
-      #                       label = "Select Year and Quarter:",
-      #                       choices = sort(unique(activity_deprivation$year_quarter)),
-      #                       selected = c(sort(unique(activity_deprivation$year_quarter))[1],
-      #                                    sort(unique(activity_deprivation$year_quarter))[3])
-      # )
       key_domain("admission_type")
       
     }
@@ -281,14 +233,6 @@ shinyServer(function(input, output, session) {
                year_quarter <= yearquarter(input$year_quarter_geo[2]),
              !!as.name(key_domain()) == input$speciality_geo) %>% 
       group_by(HBCode = hb)
-    #select(!!as.name(input$variable_to_plot_geo), HBCode) %>% 
-    # summarise(plot_this = case_when(
-    #   str_detect(input$variable_to_plot_geo, "_beds") ~ mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE),
-    #   str_detect(input$variable_to_plot_geo, "th_of_st") ~ sum(stays, na.rm = TRUE)/sum(length_of_stay, na.rm = TRUE)*100,
-    #   str_detect(input$variable_to_plot_geo, "th_of_ep") ~ sum(episodes, na.rm = TRUE)/sum(length_of_episode, na.rm = TRUE)*100,
-    #   str_detect(input$variable_to_plot_geo, "percent_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
-    #   TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
-    #   )
   })
   
   
@@ -356,16 +300,4 @@ shinyServer(function(input, output, session) {
                      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
                    
                  })
-  
-  
 })
-  
-  # output$table_test <- renderTable({
-  #   quarter_filter() %>% 
-  #     distinct(as.character(year_quarter))
-  #  
-  #   
-  # })
-  
-
-
