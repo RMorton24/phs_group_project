@@ -1,10 +1,24 @@
 # Public Health Scotland Group Project
 > The following repository is for the CodeClan group project during the 
 Professional Data Analysis Course. This has been completed in week 8 of the
-course.
+course. The aim of the project is to consolidate and expand what has been
+learned so far:
+
+* Data cleaning and wrangling
+* Statistical analysis to identify patterns, trends or relationships 
+* Data visualisation
+* R Shiny
+* Collaborative git
 
 ## Information
-> The project is to create an RShiny app to analys
+> The project is to create an RShiny app to analyse and provide details of
+the effect of Winter/COVID on the NHS. The aspects to be reviewed:
+
+  * Temporal: How has this issue changed over time? (Is it getting better or worse?)  
+  
+  * Geographic: How does this issue differ between areas in Scotland? (Where should efforts be focussed?)  
+  
+  * Demographic: Who is most affected by this issue? (Who should be targeted with efforts?)  
 
 ![](04_images/phs_logo.png) 
 
