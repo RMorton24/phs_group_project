@@ -741,7 +741,9 @@ Final_death_graph3 <- deaths_by_depriv2 %>%
   geom_line(aes(x = week_ending, y = deaths), colour = "red") +
   geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
   theme(axis.text.x = element_text(angle = 90)) +
-  ggtitle("Trend of deaths for SIMDs")
+  ggtitle("Trend of deaths for SIMDs")+
+  xlab("Trend per month") 
+  #scale_x_continuous(labels = month(week_ending, labels = TRUE))
 Final_death_graph3
 
 Final_death_graph4 <- deaths_by_depriv2 %>% 
@@ -877,5 +879,9 @@ deaths_by_age2 %>%
   geom_col(aes(x = hb, y = average20152019), fill = "blue") +
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Trend of deaths per HB")
+```
+
+```{r}
+
 ```
 
