@@ -20,11 +20,15 @@ Chris Glenshaw, George Salisbury, João Neto, Kate Stallibrass & Ross Morton
 
 **George** worked on dummy graphs which were chunks of draft data that were intended to suggest ways of visualising the data.  They were not necessarily intended to be in the final application but were meant to reduce the workload for those working on Shiny.  Once he'd provided the team with a code that they were happy enough with, they could tweak it if required to further fit the needs of the final report.  He also produced some trend graphs were meant to show the impact of Covid on hospital admission over the course of several months.
 
-**João** worked on demographic datasets.  He worked on graphs relating to information such as the SIMD information in deprivation and provided suggestions for the layout of the final shiny dashboard.
+**João** worked on demographic datasets. He worked on graphs relating to information such as the SIMD information in deprivation and provided suggestions for the layout of the final shiny dashboard.
 
-**Kate** worked on data cleaning, data analysis and visualisation, report writing and people wrangling.
+**Kate** worked on data cleaning, data analysis and visualisation, report writing and people wrangling. She created an interactive graph with plotly that tracked admissions over time by health board and specialty. 
 
-**Ross** worked on ...
+**Ross**  worked on the geospatial plots and map picker. The main geospatial
+plot was for presenting the  NHS Scotland regional data for the Quarterly Beds and
+Hospital Activity datasets. He integrated this into RShiny and supported with
+other RShiny issues. Ross also outlined and wrote the README.md file for the
+Github repository.
 
 **Everyone** worked on ...
 
@@ -53,6 +57,7 @@ The dashboard outlines our topic in terms of ...
 * PowerPoint
 * In person stand-ups
 * RStudio
+* Google Docs (storing useful links)
 
 
 
