@@ -48,7 +48,9 @@ demo_graph <- hospital_demographics %>%
   group_by(age_group) %>% 
   ggplot() +
   geom_col(aes(x = age_group, y = number_admissions, fill = sex)) +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Admissions per age and gender")
+demo_graph
 ```
 
 ```{r}
@@ -95,12 +97,12 @@ ggplot(rolling_data_2019) +
 ```
 
 ```{r}
-specialty_graph <- hospital_specialty %>%
-  group_by_key() %>% 
-  group_by(admission_type) %>% 
-  ggplot() +
-  geom_col(x = admission_type, y = episodes, fill = location) +
-  theme(axis.text.x = element_text(angle = 90))  
+# specialty_graph <- hospital_specialty %>%
+#   group_by_key() %>% 
+#   group_by(admission_type) %>% 
+#   ggplot() +
+#   geom_col(x = admission_type, y = episodes, fill = location) +
+#   theme(axis.text.x = element_text(angle = 90))  
   
 ```
 
@@ -108,10 +110,14 @@ specialty_graph <- hospital_specialty %>%
 full_wards <- hospital_beds %>% 
   select(location, specialty_name, quarter, percentage_occupancy) %>% 
   filter(percentage_occupancy == "100") %>% 
+  group_by(quarter, location) %>% 
   summarise(total_full_wards = n()) %>% 
   ggplot() +
-  geom_col(aes(x = specialty_name, y = total_full_wards, fill = location)) +
-  theme(axis.text.x = element_text(angle = 90))
+  geom_col(aes(x = quarter, y = total_full_wards)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Full wards per quarter")
+
+full_wards
 ```
 
 ```{r}
@@ -120,9 +126,10 @@ bed_graph_pre_2020 <- hospital_beds %>%
   group_by(quarter) %>% 
   filter(quarter < "2020") %>% 
   ggplot() +
-  geom_col(aes(x = quarter, y = all_staffed_beddays, fill = specialty_name)) +
-  theme(axis.text.x = element_text(angle = 90))
-  
+  geom_col(aes(x = quarter, y = all_staffed_beddays)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Number of beddays prior to 2020")
+bed_graph_pre_2020  
 ```
 
 ```{r}
@@ -136,15 +143,15 @@ admission_trends
 ```
 
 ```{r}
-elective_v_emergency <- hospital_impatients %>% 
-  # filter(AdmissionType == "Elective Inpatients") %>%
+elective_v_emergency <- hospital_inpatients %>% 
+  filter(admission_type %in% c("Elective Inpatients", "Emergency Inpatients")) %>%
   # filter(AdmissionType == "Emergency Inpatients") %>% 
-  group_by(admissiontype) %>% 
-  summarise(total_admitted = n()) %>% 
-  
+  group_by(admission_type) %>% 
+  summarise(total_stays = sum(stays)) %>% 
   ggplot() +
-  geom_col(aes(x = admissiontype, y = total_admitted)) +
-  theme(axis.text.x = element_text(angle = 90))
+  geom_col(aes(x = admission_type, y = total_stays)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Elective V Emergency inpatients")
 elective_v_emergency
 ```
 
@@ -336,13 +343,14 @@ admin_specialty_data <- read_csv('../02_cleaned_data/admissions_by_speciality_cl
 ```{r}
 specialty_trends <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
-  filter(specialty == "All") %>% 
+  #filter(specialty == "All") %>% 
   group_by(week_ending) %>% 
   summarise(total_admissions = sum(number_admissions)) %>% 
   ggplot() +
   geom_line(aes(x = week_ending, y = total_admissions)) +
-  theme(axis.text.x = element_text(angle = 90))
-
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Admissions per week")
+specialty_trends
 
 specialty_trends_emergency <- admin_specialty_data %>% 
   select(week_ending, specialty, number_admissions) %>% 
@@ -473,7 +481,8 @@ spells_trend <- specialty_data %>%
   group_by(year_quarter) %>% 
   ggplot() +
   geom_col(aes(x = year_quarter, y = spells)) +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Spells per quarter")
 spells_trend
 ```
 
@@ -485,7 +494,8 @@ episodes_per_specialty <- specialty_data %>%
   summarise(total_episodes = sum(episodes)) %>%
   ggplot() +
   geom_col(aes(x = specialty_name, y = total_episodes)) +
-  theme(axis.text.x = element_text(angle = 90))
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Number of episodes per specialty")
 episodes_per_specialty
 ```
 
@@ -639,8 +649,8 @@ demographic_trends <- demographic_activity %>%
 ```
 
 ```{r}
-admission_data2 %>% 
-  distinct(admission_type)
+# admission_data2 %>% 
+#   distinct(admission_type)
 
 Hospitalisation_trends <- admission_data2 %>% 
   select(month_name, hb_name, year, admission_type, month_name, number_admissions) %>% 
@@ -674,6 +684,16 @@ Hospitalisation_differ2
 ```
 
 ```{r}
+library(lubridate)
+deaths_by_depriv2 <- deaths_by_depriv %>% 
+  mutate(month_name = month(month))
+```
 
+```{r}
+Final_death_graph1 <- deaths_by_depriv %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  filter(simd_quintile == 1) %>% 
+  mutate()
+  group_by(week_ending)
 ```
 
