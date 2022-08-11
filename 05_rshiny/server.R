@@ -415,4 +415,31 @@ shinyServer(function(input, output, session) {
                      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
                    
                  })
+  output$deathplot1 <- renderPlot(
+  
+  deaths_by_deprivation %>% 
+    group_by(simd_quintile) %>% 
+    summarise(total_deaths = sum(deaths)) %>% 
+    ggplot() +
+    geom_col(aes(x = simd_quintile, y = total_deaths), fill = "purple") +
+    labs(title = "Number of Deaths Across 2020/2021 by SIMD",
+         x = "SIMD",
+         y = "Total Deaths") 
+  )
+  
+  output$deathplot2 <- renderPlot(
+  
+  deaths_by_deprivation %>% 
+    #select(week_ending, simd_quintile, deaths, average20152019) %>% 
+    #filter(simd_quintile == 1) %>% 
+    group_by(week_ending) %>% 
+    ggplot() +
+    geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+    geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+    facet_wrap(~simd_quintile) +
+    theme(axis.text.x = element_text(angle = 90)) +
+    ggtitle("Trend of Deaths by SIMD over Time") +
+    labs(x = "Date",
+         y = "Number of Deaths")
+  )
 })

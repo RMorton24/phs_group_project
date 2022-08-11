@@ -8,11 +8,11 @@ shinyUI(
     fluidRow(
       tabsetPanel(
         
-        # Map selector ------------------------------------------------------------
-        
+# Admissions trend tab--------------------------------------------------------
         
         tabPanel(
           title = "Admissions Data of NHS HB",
+          br(),
           sidebarLayout(
             sidebarPanel(
               width = 4,
@@ -42,13 +42,8 @@ shinyUI(
             )
           )
         ),
-        
-        # Admissions trend tab--------------------------------------------------------
-        
 
-    
     # Geo map -----------------------------------------------------------------
-    
     
     tabPanel(
       title = "Health Board Activity",
@@ -252,6 +247,18 @@ shinyUI(
             )
           )
         )
+      )
+    ),
+    tabPanel(
+      title = "Death Trends by Deprivation",
+      br(),
+      column(
+        width = 4,
+      plotOutput("deathplot1")
+      ),
+      column(
+        width = 8,
+        plotOutput("deathplot2")
       )
     )
       )
