@@ -119,9 +119,9 @@ shinyUI(
       br(),
       
       tabsetPanel(
-# Episodes by age group ---------------------------------------------------
+# Average stay length  ---------------------------------------------------
         tabPanel(
-          title = "Episodes by Demographic",
+          title = "Average Stay Lengths",
           br(),
 
           dropdown(

@@ -242,7 +242,7 @@ shinyServer(function(input, output, session) {
       aes(x = age, y = avg_stay, fill = sex) +
       geom_col(position = "dodge") +
       theme_minimal() +
-      labs(title = "Activity by Gender and Age Group",
+      labs(title = "Average Stay Length by Gender and Age Group",
            x = NULL,
            y = "Average Stay Length", 
            fill = "Sex") +
@@ -262,7 +262,7 @@ shinyServer(function(input, output, session) {
       ggplot() + 
       aes(x = year, y = avg_length_stays, fill = simd) +
       geom_col(position = "dodge") + 
-      labs(title = "Activity by Board of Treatment and Deprivation",
+      labs(title = "Average Length of Stay by Board of Treatment and Deprivation",
            subtitle = "1 - Most deprived | 5 - least deprived",
            x = NULL) +
       theme_minimal() +
