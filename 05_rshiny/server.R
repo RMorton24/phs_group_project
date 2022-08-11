@@ -22,6 +22,9 @@ shinyServer(function(input, output, session) {
     leaflet(nhs_borders, options = leafletOptions(zoomControl = FALSE,
                                                   minZoom = 5.8,
                                                   maxZoom = 5.8)) %>% 
+      addMarkers(layerId = "Scotland",lng = -7 ,lat = 58.7,
+                 label = label_scotland, 
+                 labelOptions = labelOptions(noHide = TRUE, textsize = "15px", direction = "left")) %>% 
       addPolygons(fillColor = ~pal(HBCode),
                   layerId = ~HBCode,
                   fillOpacity = 1,
@@ -68,16 +71,31 @@ shinyServer(function(input, output, session) {
   
   nhs_region_select <- reactiveVal()
   
+  observeEvent(input$selection_map_marker_click$id,{
+    nhs_region_select("S92000003")
+    
+    leafletProxy("selection_map") %>%
+      removeShape(layerId = c("highlight",nhs_borders$HBName)) %>%
+      addPolylines(data = nhs_borders,
+                   layerId = nhs_borders$HBName,
+                   color = "yellow",
+                   weight = 5,
+                   opacity = 1)
+    
+  })
+  
   # Start event if regions in the map are selected
   observeEvent(input$selection_map_shape_click$id, {
+    
     # Prepare the shape to be highlighted
     poly_region <- which(nhs_borders$HBCode == input$selection_map_shape_click$id)
     region_highlight <- nhs_borders[poly_region, 1]
     nhs_region_select(input$selection_map_shape_click$id)
     
+    
     # Highlight the region on map
     leafletProxy("selection_map") %>%
-      removeShape(layerId = "highlight") %>%
+      removeShape(layerId = c("highlight",nhs_borders$HBName)) %>%
       addPolylines(data = region_highlight,
                    layerId = "highlight",
                    color = "yellow",
@@ -382,6 +400,9 @@ shinyServer(function(input, output, session) {
                          str_detect(input$variable_to_plot_geo, "percentage_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
                          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
                        )
+                     
+                     legend_title_heatmap <- names(which(beds_variables_selection == input$variable_to_plot_geo))
+                     
                    }else{
                      geo_data <- quarter_filter() %>% 
                        summarise(plot_this = case_when(
@@ -389,6 +410,8 @@ shinyServer(function(input, output, session) {
                          str_detect(input$variable_to_plot_geo, "th_of_ep") ~ sum(episodes, na.rm = TRUE)/sum(length_of_episode, na.rm = TRUE)*100,
                          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
                        )
+                     
+                     legend_title_heatmap <- names(which(activity_dep_variables == input$variable_to_plot_geo))
                    }              
                    
                    
@@ -406,7 +429,7 @@ shinyServer(function(input, output, session) {
                      bins <- seq(from = range[1], to = range[2], by = (range[2] - range[1])/9) %>% 
                        signif(3)
                      if(length(bins) == 1){
-                       bins <- c(bins, bins)
+                       bins <- c(bins, bins + 1)
                      }
                    }
                    
@@ -417,7 +440,7 @@ shinyServer(function(input, output, session) {
                    
                    hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
                    
-                   
+                  
                    leafletProxy("heatmap2") %>% 
                      clearShapes() %>% 
                      clearControls() %>% 
@@ -431,10 +454,10 @@ shinyServer(function(input, output, session) {
                                  labelOptions = labelOptions()) %>% 
                      addLegend(pal = hot_colour,
                                values = temp_shape$plot_this, 
-                               title = input$variable_to_plot_geo,
+                               title = legend_title_heatmap,
                                position = "bottomright") %>% 
                      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
-                   
+                  
                  })
   
 

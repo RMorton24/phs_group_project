@@ -56,6 +56,19 @@ bbox <- st_bbox(nhs_borders) %>%
   as.vector()
 
 
+label_scotland <- paste0(
+  "<b>", "Click Marker For", "</b><br>", "NHS Scotland"
+) %>% lapply(htmltools::HTML)
+
+
+# Beds data ---------------------------------------------------------------
+
+beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
+  mutate(year_quarter = yearquarter(year_quarter))
+
+
+
+
 # Plotly plot -------------------------------------------------------------
 
 beds_variables_selection <- beds %>% 
