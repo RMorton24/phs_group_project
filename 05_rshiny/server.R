@@ -2,6 +2,8 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
   
+
+  
   admissions_filter <- reactive({
     if(is.null(nhs_region_select())){
       region <- ""
@@ -188,7 +190,8 @@ shinyServer(function(input, output, session) {
   demographic_simd_filter <- reactive({
     
     activity_deprivation %>%
-      filter(!is.na(hb_name)) %>% 
+      filter(!is.na(hb_name),
+             !is.na(simd)) %>% 
       mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>%
       filter(hb_name %in% input$demo_hb,
              admission_type %in% input$demo_admission_type) %>% 
@@ -225,7 +228,11 @@ shinyServer(function(input, output, session) {
            x = NULL,
            y = "Average Stay Length", 
            fill = "Sex") +
-      theme(legend.position = "right")
+      theme(legend.position = "right",
+            panel.background = element_rect(fill = '#FFFFFF', 
+                                            color = '#F8F8F8')) +
+      scale_fill_manual(values = c("#003087", 
+                                   "#99C7EB"))
     
   })
   
@@ -246,8 +253,12 @@ shinyServer(function(input, output, session) {
         legend.position = "right",
         panel.grid.minor.x = element_blank(),
         panel.grid.minor.y = element_blank(),
-        legend.direction = "horizontal") +
-      scale_fill_brewer(palette = "OrRd", direction = -1) +
+        legend.direction = "horizontal",
+        panel.background = element_rect(fill = '#FFFFFF', 
+                                        color = '#F8F8F8')) +
+      scale_fill_manual(values = c("#003087", "#005EB8", 
+                                   "#99C7EB", "#919EA8", 
+                                   "#DDE1E4")) +
       labs(y = "Average Stay Length")
     
   })
@@ -278,9 +289,11 @@ shinyServer(function(input, output, session) {
            y        = "Admissions") +
       theme_minimal() +
       theme(legend.position = "bottom",
-            legend.title = element_blank()) +
-      scale_color_manual(values = c("Male"   = "#56B4E9",
-                                    "Female" = "firebrick"))
+            legend.title = element_blank(),
+            panel.background = element_rect(fill = '#FFFFFF', 
+                                            color = '#F8F8F8')) +
+      scale_color_manual(values = c("Male"   = "#99C7EB",
+                                    "Female" = "#003087"))
     
   })
   
@@ -298,12 +311,16 @@ shinyServer(function(input, output, session) {
       subtitle = "January of 2020 to January 2022",
       x = NULL,
       y = "Adimissions") +
-    scale_fill_brewer(palette = "Accent") +
+    scale_fill_manual(values = c("#003087", "#005EB8", 
+                                 "#4D7CB9", "#99C7EB", 
+                                 "#919EA8", "#B7C0C6", 
+                                 "#DDE1E4")) +
     scale_x_yearquarter(date_labels = "%Y \n Q%q", date_breaks = "3 months") +
     theme(
       legend.position = "bottom",
       legend.title = element_blank(),
-      panel.grid.major.x = element_blank()
+      panel.grid.major.x = element_blank(),
+      panel.background = element_rect(fill = '#FFFFFF', color = '#F8F8F8')
     )
   })
 
@@ -430,10 +447,11 @@ shinyServer(function(input, output, session) {
     group_by(simd_quintile) %>% 
     summarise(total_deaths = sum(deaths)) %>% 
     ggplot() +
-    geom_col(aes(x = simd_quintile, y = total_deaths), fill = "purple") +
+    geom_col(aes(x = simd_quintile, y = total_deaths), fill = "#003087") +
     labs(title = "Number of Deaths Across 2020/2021 by SIMD",
          x = "SIMD",
-         y = "Total Deaths") 
+         y = "Total Deaths") +
+    theme(panel.background = element_rect(fill = '#FFFFFF', color = '#F8F8F8'))
   )
   
   output$deathplot2 <- renderPlot(
@@ -441,11 +459,12 @@ shinyServer(function(input, output, session) {
   deaths_by_deprivation %>% 
     group_by(week_ending) %>% 
     ggplot() +
-    geom_line(aes(x = week_ending, y = deaths, linetype = "2020/2021"), colour = "red", show.legend = TRUE) +
-    geom_line(aes(x = week_ending, y = average20152019, linetype = "2015-2019"), colour = "blue", show.legend = TRUE) +
+    geom_line(aes(x = week_ending, y = deaths, linetype = "2020/2021"), colour = "#003087", show.legend = TRUE) +
+    geom_line(aes(x = week_ending, y = average20152019, linetype = "2015-2019"), colour = "#DDE1E4", show.legend = TRUE) +
     facet_wrap(~simd_quintile) +
     theme(axis.text.x = element_text(angle = 90),
-          legend.position = "bottom") +
+          legend.position = "bottom",
+          panel.background = element_rect(fill = '#FFFFFF', color = '#F8F8F8')) +
     ggtitle("Trend of Deaths by SIMD over Time") +
     labs(x = "Date",
          y = "Number of Deaths") +

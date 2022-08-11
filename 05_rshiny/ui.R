@@ -1,11 +1,16 @@
 
 
 shinyUI(
-  fluidPage(
+  
+  fluidPage(theme = shinytheme("cerulean"),
+            
     fluidRow(
+      
       titlePanel("PHS Data"),
+      
     ),
     fluidRow(
+      
       tabsetPanel(
         
 # Admissions trend tab--------------------------------------------------------
@@ -13,10 +18,13 @@ shinyUI(
         tabPanel(
           title = "Admissions Data of NHS HB",
           br(),
+          
           sidebarLayout(
+            
             sidebarPanel(
               width = 4,
               "Select NHS Health Board",
+              
               leafletOutput("selection_map", width = "100%", height = 475),
               
               pickerInput(
@@ -36,6 +44,7 @@ shinyUI(
                 selected = "All"
               )
             ),
+            
             mainPanel(
               plotlyOutput("katePlot", width = "100%")
               
@@ -48,6 +57,7 @@ shinyUI(
     tabPanel(
       title = "Health Board Activity",
       br(),
+      
       fluidRow(
         
         sidebarLayout(
@@ -87,9 +97,11 @@ shinyUI(
             )
           ),
           mainPanel(
+            
             column(
               offset = 1,
               width = 11,
+              
               leafletOutput("heatmap2", width = "100%", height = "550px")
             )
           )
@@ -105,19 +117,20 @@ shinyUI(
     tabPanel(
       title = "Demographics",
       br(),
+      
       tabsetPanel(
 # Episodes by age group ---------------------------------------------------
         tabPanel(
-          
           title = "Episodes by Demographic",
           br(),
+
           dropdown(
             
             circle = TRUE,
             status = "info",
             icon = icon("gear"),
             width = "350px",
-            tooltip = tooltipOptions(title = "Click to see inputs !"),
+            tooltip = tooltipOptions(title = "Click for inputs"),
             animate = FALSE,
             
             pickerInput(
@@ -151,14 +164,17 @@ shinyUI(
             ),
             
           ),
+          
           mainPanel(
             
             column(
               offset = 4,
               width = 8,
+              
               plotOutput("demographics_output", width = "120%", height = "250px"),
               
               plotOutput("demographics_simd_output", width = "120%", height = "250px")
+              
             )
           )
         ),
@@ -168,15 +184,17 @@ shinyUI(
         
         
         tabPanel(
+          
           title = "Covid Admissions by Gender",
           br(),
+          
           dropdown(
             
             circle = TRUE,
             status = "info",
             icon = icon("gear"),
             width = "350px",
-            tooltip = tooltipOptions(title = "Click to see inputs !"),
+            tooltip = tooltipOptions(title = "Click for inputs"),
             animate = FALSE,
             
             pickerInput(
@@ -189,7 +207,6 @@ shinyUI(
               multiple = TRUE
             ),
             
-            
             radioGroupButtons(
               inputId = "demo_admission_type_covid",
               label = "Select/deselect Type of Admission",
@@ -199,12 +216,15 @@ shinyUI(
             ),
             
           ),
+          
           mainPanel(
+            
             column(
               width = 5,
               offset = 1,
               
               plotOutput("demographics_output_covid", width = "350%", height = "450px")
+              
             )
           )
         ),
@@ -212,15 +232,17 @@ shinyUI(
 # Covid Admissions by Age Group -------------------------------------------
 
         tabPanel(
+          
           title = "Covid Admissions by Age Group",
           br(),
+          
           dropdown(
             
             circle = TRUE,
             status = "info",
             icon = icon("gear"),
             width = "350px",
-            tooltip = tooltipOptions(title = "Click to see inputs !"),
+            tooltip = tooltipOptions(title = "Click for inputs"),
             animate = FALSE,
             
             pickerInput(
@@ -241,9 +263,10 @@ shinyUI(
               choices = unique(covid_admission_age_sex$admission_type),
               direction = "horizontal"
             ),
-            
           ),
+          
           mainPanel(
+            
             column(
               width = 5,
               offset = 1,
@@ -261,12 +284,16 @@ shinyUI(
     tabPanel(
       title = "Death Trends by Deprivation",
       br(),
+      
       column(
         width = 4,
+        
       plotOutput("deathplot1")
       ),
+      
       column(
         width = 8,
+        
         plotOutput("deathplot2")
       )
     )

@@ -5,6 +5,7 @@ library(sf)
 library(htmlwidgets)
 library(shinydashboard)
 library(shinyWidgets)
+library(shinythemes)
 library(bslib)
 library(tsibble)
 library(plotly)
@@ -12,6 +13,8 @@ library(plotly)
 
 
 # Load relevant data sets
+beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
+  mutate(year_quarter = yearquarter(year_quarter))
 
 activity_patient_demographics <- read_csv(here::here("02_cleaned_data/activity_patient_demographics.csv")) 
 
@@ -53,15 +56,6 @@ bbox <- st_bbox(nhs_borders) %>%
   as.vector()
 
 
-
-
-# Beds data ---------------------------------------------------------------
-
-beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
-  mutate(year_quarter = yearquarter(year_quarter))
-
-
-
 # Plotly plot -------------------------------------------------------------
 
 beds_variables_selection <- beds %>% 
@@ -76,4 +70,7 @@ names(beds_variables_selection) <- str_to_title(
 # Load Functions ----------------------------------------------------------
 
 source(here::here("08_functions/significance_round_function.R"))
+
+
+# NHS theme ---------------------------------------------------------------
 

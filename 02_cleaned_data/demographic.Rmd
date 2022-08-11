@@ -231,7 +231,7 @@ scale_fill_brewer(palette = "OrRd", direction = -1)
   scale_fill_brewer(palette = 7, direction = 0)
 
 
-           panel.grid.minor.y = element_blank())
+           panel.grid.minor.y = element_blank()
 ```
 
 ```{r}
