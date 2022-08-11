@@ -687,11 +687,6 @@ Hospitalisation_differ2
 library(lubridate)
 deaths_by_depriv2 <- deaths_by_depriv %>%
   mutate(week_ending = ymd(week_ending))
-
-deaths_by_depriv2 %>% 
-  
-  
-  
 ```
 
 ```{r}
@@ -924,5 +919,24 @@ deaths_by_hscp2 %>%
   geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Mean deaths by month")
+```
+
+```{r}
+deaths_by_depriv3 <- deaths_by_depriv2 %>% 
+  mutate(week_ending = ymd(week_ending)) %>% 
+  mutate(year = year(week_ending),
+         month = month(week_ending),
+         day = day(week_ending)) %>% 
+  mutate(month_name = month(month, label = TRUE, abbr = FALSE))
+deaths_by_depriv3
+
+deaths_by_depriv3 %>% 
+  select(year, average20152019, deaths, month_name, simd_quintile) %>% 
+  group_by(month_name, simd_quintile, deaths) %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = simd_quintile)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Quintile deaths per month")
 ```
 
