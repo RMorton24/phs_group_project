@@ -846,3 +846,7 @@ deaths_by_hscp2 %>%
   ggtitle("Trend of deaths per hscp")
 ```
 
+```{r}
+
+```
+
