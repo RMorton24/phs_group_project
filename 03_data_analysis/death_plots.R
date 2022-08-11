@@ -58,3 +58,20 @@ death_deprivation_plot <- deaths_by_deprivation %>%
        y = "Total Deaths") 
   
 death_deprivation_plot
+
+# Create plot of number of deaths per month by SIMD
+
+death_deprivation_month <- deaths_by_deprivation %>% 
+  mutate(year = year(week_ending),
+         month = month(week_ending),
+         day = day(week_ending)) %>% 
+  mutate(month_name = month(month, label = TRUE, abbr = FALSE))
+
+death_deprivation_month %>% 
+  select(year, average20152019, deaths, month_name, simd_quintile) %>% 
+  group_by(month_name, simd_quintile, deaths) %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = simd_quintile)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Quintile deaths per month")
