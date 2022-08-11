@@ -134,10 +134,6 @@ shinyServer(function(input, output) {
       summarise(plot_this = mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
   })
   
-  # observeEvent(input$year_quarter,{
-  #   print(paste(input$year_quarter, class(input$year_quarter)))
-  # })
-  
   
   observeEvent(quarter_filter(),{
     
@@ -155,7 +151,7 @@ shinyServer(function(input, output) {
     ) %>% lapply(htmltools::HTML)
     
     hot_colour <- colorBin(palette = "YlOrRd", domain = temp_shape$plot_this, bins = bins)
-     # browser()
+
     leafletProxy("heatmap2") %>% 
       clearShapes() %>% 
       clearControls() %>% 

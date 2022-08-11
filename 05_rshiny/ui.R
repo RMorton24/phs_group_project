@@ -4,19 +4,6 @@ shinyUI(
   fluidPage(
     fluidRow(
       titlePanel("PHS Data"),
-      # column(
-      #   width = 3,
-      #   offset = 5,
-      #   br(),
-      #   fluidRow(
-      #     valueBox(10 * 2, "New Orders", icon = icon("bed")),
-      #     
-      #     valueBoxOutput("progressBox"),
-      #     
-      #     valueBoxOutput("approvalBox")
-      #   ),
-      #   br(),
-      # )
     ),
     fluidRow(
       tabsetPanel(
@@ -28,6 +15,19 @@ shinyUI(
               leafletOutput("selection_map", width = "100%", height = 475)
             ),
             mainPanel(
+              # column(
+              #   width = 3,
+              #   offset = 5,
+              #   br(),
+              #   fluidRow(
+              #     valueBox(10 * 2, "New Orders", icon = icon("bed")),
+              #     
+              #     valueBoxOutput("progressBox"),
+              #     
+              #     valueBoxOutput("approvalBox")
+              #   ),
+              #   br(),
+              # )
               plotOutput("distPlot1"),
             )
           )
@@ -97,7 +97,18 @@ shinyUI(
       br(),
       fluidRow(
         column(
-          width = 3,
+          11,
+          offset = 1,
+      dropdown(
+        
+        circle = TRUE, 
+        status = "info",
+        icon = icon("gear"), 
+        width = "350px",
+        tooltip = tooltipOptions(title = "Click to see inputs !"),
+        
+      
+        
           sliderTextInput(
             inputId = "year_quarter_geo",
             label = "Select Year and Quarter:",
@@ -105,26 +116,27 @@ shinyUI(
             selected = c(sort(unique(beds$year_quarter))[1],
                          sort(unique(beds$year_quarter))[3]),
             grid = TRUE
-          )
-        ),
-        column(
-          width = 3,
+          ),
+        
+        
           selectInput(
             inputId = "speciality_geo",
             label = "Select Speciality",
-            choices = sort(unique(beds$specialty_name)))
-        ),
-        column(
-          width = 3,
+            choices = sort(unique(beds$specialty_name))
+            ),
+        
           selectInput(
             inputId = "variable_to_plot_geo",
             label = "Select Variable to Plot",
             choices = variables_selection
           )
-        )
+      )
       ),
       mainPanel(
-        leafletOutput("heatmap2", width = "150%", height = "750px")
+      
+        leafletOutput("heatmap2", width = "125%", height = "750px")
+      )
+      
       )
     ),
     tabPanel(
