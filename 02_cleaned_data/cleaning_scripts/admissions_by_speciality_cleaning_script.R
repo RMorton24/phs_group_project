@@ -25,7 +25,13 @@ admissions_by_specialty <- admissions_by_specialty %>%
   select(-contains("qf"), 
          -id, 
          -hb_date_enacted,
-         -hb_date_archived)
+         -hb_date_archived)  
+  
+  admissions_by_specialty <- admissions_by_specialty %>% 
+  mutate(hb_name = case_when(
+    hb == "S92000003" ~ "NHS Scotland",
+    TRUE ~ hb_name
+  )) 
 
 # Write csv
 

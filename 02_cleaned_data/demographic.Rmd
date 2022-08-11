@@ -17,7 +17,11 @@ library(stringr)
 ## hospital activity
 ```{r}
  hospital_ativity_and_patient_demographics <- 
+
     read_csv("../01_data/hospital_ativity_and_patient_demographics.csv") %>% 
+
+    read_csv(here::here("01_data/hospital_ativity_and_patient_demographics.csv")) %>% 
+
     clean_names()
   # remove_empty(c("rows", "cols"))
   
@@ -39,6 +43,7 @@ covid_admission_hb_deprivation <-
 
 ##extra data set
 ```{r}
+
 hospitals <- read_csv(("../01_data/healt_board/hospitals.csv")) %>% 
   clean_names()
 
@@ -46,6 +51,15 @@ hb <- read_csv("../01_data/healt_board/health_board.csv") %>%
   clean_names()
 
 shb <- read_csv("../01_data/healt_board/special_health_boards.csv") %>% 
+
+hospitals <- read_csv(here::here("01_data/healt_board/hospitals.csv")) %>% 
+  clean_names()
+
+hb <- read_csv(here::here("01_data/healt_board/health_board.csv")) %>% 
+  clean_names()
+
+shb <- read_csv(here::here("01_data/healt_board/special_health_boards.csv")) %>% 
+
   clean_names()
 
 ```
@@ -95,9 +109,27 @@ The main dataset (hospital_ativity_and_patient_demographics) was joined with
 
 
 ```{r}
+
+activity_patient_demographics <- read_csv("activity_patient_demographics.csv")
+
+
+filter(age %in% input$demo_age,
+      hb_name %in% input$demo_hb_name,
+             admission_type %in% input$demo_admission_type,
+             location_name %in% input$demo_location_name)
+
 activity_patient_demographics %>% 
+
   # drop_na(average_length_of_stay) %>% 
   filter(hb_name == "NHS Fife") %>% 
+
+  # filter(sex == "") %>% 
+  # filter(age == "20-29") %>% 
+  filter(admission_type == "Transfers",
+         hb_name == "NHS Fife",
+#         location_name == "Golden Jubilee National Hospital",
+         age == "10-19") %>% 
+
   group_by(sex, year, age) %>% 
   summarise(nr_episodes = sum(average_length_of_stay, na.rm = TRUE)) %>% 
   #           count_length_episode = sum(length_of_episode),
@@ -105,9 +137,22 @@ activity_patient_demographics %>%
   ggplot() + 
   aes(x = age, y = nr_episodes, fill = sex) +
    geom_col(position = "dodge") + 
-  geom_smooth(show.legend = FALSE, size = 1) +
   theme_minimal()
+
 ```
+```{r}
+input <- list(
+  demo_age = "10-19",
+  demo_hb_name = "NHS Ayrshire and Arran",
+  demo_admission_type = "Elective Inpatients"
+)
+
+activity_patient_demographics %>% 
+  filter(age == input$demo_age,
+         hb_name == input$demo_hb_name,
+         admission_type == input$demo_admission_type)
+```
+
 
 
 ### hospital_ativity_and_deprivation
@@ -177,12 +222,41 @@ activity_deprivation %>%
      theme(
            legend.position = "bottom",
            panel.grid.minor.x = element_blank(),
+
            panel.grid.minor.y = element_blank(),
            legend.direction = "horizontal"
            ) +
 scale_fill_brewer(palette = "OrRd", direction = -1)
 
   scale_fill_brewer(palette = 7, direction = 0)
+
+
+           panel.grid.minor.y = element_blank())
+```
+
+```{r}
+activity_deprivation %>% 
+  mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>% 
+  filter(!is.na(simd)) %>% 
+  filter(admission_type == "Elective Inpatients") %>% 
+  filter(hb_name == "NHS Ayrshire and Arran") %>% 
+  group_by(year, simd, location_name) %>% 
+  summarise(nr_episodes = sum(episodes)) %>% 
+  slice_max(nr_episodes, n = 10) %>% 
+  ggplot() + 
+  aes(x = year, y = nr_episodes, fill = simd) +
+  geom_col(position = "dodge") + 
+  labs(title = "Activity by Board of Treatment and Deprivation",
+       subtitle = "1 - Most deprived | 5 - least deprived",
+       x = NULL
+       ) +
+  theme_minimal() +
+  scale_x_continuous(breaks = seq(2016, 2021, 1)) +
+     theme(legend.title = element_blank(),
+           legend.position = "bottom",
+           panel.grid.minor.x = element_blank(),
+           panel.grid.minor.y = element_blank()) +
+  facet_wrap(~location_name, nrow = 5, ncol = 1)
 
 ```
 
