@@ -15,25 +15,12 @@ shinyUI(
               leafletOutput("selection_map", width = "100%", height = 475)
             ),
             mainPanel(
-              # column(
-              #   width = 3,
-              #   offset = 5,
-              #   br(),
-              #   fluidRow(
-              #     valueBox(10 * 2, "New Orders", icon = icon("bed")),
-              #     
-              #     valueBoxOutput("progressBox"),
-              #     
-              #     valueBoxOutput("approvalBox")
-              #   ),
-              #   br(),
-              # )
               plotOutput("distPlot1"),
             )
           )
         ),
         tabPanel(
-          title = "Tab 2",
+          title = "Admissions Trend",
           br(),
           dropdown(
             
@@ -50,7 +37,7 @@ shinyUI(
               choices = unique(specialty_admissions$specialty),
               options = list(
                 `actions-box` = TRUE), 
-              multiple = TRUE
+              multiple = FALSE
             ),
             
             pickerInput(
@@ -60,15 +47,15 @@ shinyUI(
               choices = unique(specialty_admissions$hb_name),
               options = list(
                 `actions-box` = TRUE), 
-              multiple = TRUE
+              multiple = FALSE
             ),
             
-            sliderInput(inputId = 'week_ending',
-                        label = 'Time Span',
-                        value = c(min(specialty_admissions$week_ending),
-                                  max(specialty_admissions$week_ending)),
-                        min = min(specialty_admissions$week_ending),
-                        max = max(specialty_admissions$week_ending)),
+            # sliderInput(inputId = 'week_ending',
+            #             label = 'Time Span',
+            #             value = c(min(specialty_admissions$week_ending),
+            #                       max(specialty_admissions$week_ending)),
+            #             min = min(specialty_admissions$week_ending),
+            #             max = max(specialty_admissions$week_ending)),
             
             radioGroupButtons(
               inputId = "admission",
@@ -88,62 +75,66 @@ shinyUI(
       }
     ")),
     
-    plotOutput("distPlot", width = "150%")
+    # plotOutput("distPlot", width = "150%"),
+    
+    plotlyOutput("katePlot", width = "150%")
             )
           )
         ),
     tabPanel(
-      title = "Tab 3",
+      title = "HB Map",
       br(),
       fluidRow(
-        column(
-          11,
-          offset = 1,
-      dropdown(
         
-        circle = TRUE, 
-        status = "info",
-        icon = icon("gear"), 
-        width = "350px",
-        tooltip = tooltipOptions(title = "Click to see inputs !"),
-        
-      
-        
-          sliderTextInput(
-            inputId = "year_quarter_geo",
-            label = "Select Year and Quarter:",
-            choices = sort(unique(beds$year_quarter)),
-            selected = c(sort(unique(beds$year_quarter))[1],
-                         sort(unique(beds$year_quarter))[3]),
-            grid = TRUE
-          ),
-        
-        
-          selectInput(
-            inputId = "speciality_geo",
-            label = "Select Speciality",
-            choices = sort(unique(beds$specialty_name))
+        sidebarLayout(
+          
+          # dropbox(
+          # circle = TRUE, 
+          # status = "info",
+          # icon = icon("gear"), 
+          # width = "350px",
+          # tooltip = tooltipOptions(title = "Click to see inputs !"),
+          
+          sidebarPanel(
+            
+            width = 3,
+            
+            sliderTextInput(
+              inputId = "year_quarter_geo",
+              label = "Select Year and Quarter:",
+              choices = sort(unique(beds$year_quarter)),
+              selected = c(sort(unique(beds$year_quarter))[1],
+                           sort(unique(beds$year_quarter))[3]),
+              grid = TRUE
             ),
-        
-          selectInput(
-            inputId = "variable_to_plot_geo",
-            label = "Select Variable to Plot",
-            choices = variables_selection
+            
+            
+            selectInput(
+              inputId = "speciality_geo",
+              label = "Select Speciality",
+              choices = sort(unique(beds$specialty_name))
+            ),
+            
+            selectInput(
+              inputId = "variable_to_plot_geo",
+              label = "Select Variable to Plot",
+              choices = variables_selection
+            )
+            
+          ),
+          mainPanel(
+            
+            leafletOutput("heatmap2", width = "110%", height = "750px")
+            
           )
-      )
-      ),
-      mainPanel(
-      
-        leafletOutput("heatmap2", width = "125%", height = "750px")
-      )
-      
+        )
       )
     ),
     tabPanel(
       title = "Demographics",
       br(),
       dropdown(
-
+        
         circle = TRUE,
         status = "info",
         icon = icon("gear"),
@@ -170,7 +161,7 @@ shinyUI(
             `actions-box` = TRUE), 
           multiple = TRUE
         ),
-
+        
         pickerInput(
           inputId = "demo_age",
           label = "Select/deselect Age Group", 
@@ -196,13 +187,13 @@ shinyUI(
         column(
           width = 10,
           offset = 1,
-        
-        plotOutput("demographics_output")
+          
+          plotOutput("demographics_output")
+        )
       )
     )
       )
     )
   )
-)
 )
 

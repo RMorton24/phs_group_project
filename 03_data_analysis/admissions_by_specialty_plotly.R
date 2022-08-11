@@ -88,3 +88,4 @@ plot_admissions <- add_trace(
 )
 
 plot_admissions
+

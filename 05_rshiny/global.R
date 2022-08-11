@@ -7,7 +7,7 @@ library(shinydashboard)
 library(shinyWidgets)
 library(bslib)
 library(tsibble)
-
+library(plotly)
 
 
 
@@ -47,3 +47,8 @@ beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>%
 
 variables_selection <- beds %>% 
   select(contains(c("bed", "occup"))) %>%  names()
+
+
+# Plotly plot -------------------------------------------------------------
+
+
