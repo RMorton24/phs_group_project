@@ -835,3 +835,14 @@ hscp_trends_2021 <- deaths_by_hscp2 %>%
 hscp_trends_2021
 ```
 
+```{r}
+deaths_by_hscp2 %>% 
+  select(week_ending, year, month_name, age_group, deaths, hscp, average20152019) %>% 
+  group_by(month_name, hscp, average20152019) %>% 
+  ggplot() +
+  geom_col(aes(x = hscp, y = deaths), fill = "red") +
+  geom_col(aes(x = hscp, y = average20152019), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths per hscp")
+```
+
