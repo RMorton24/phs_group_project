@@ -12,10 +12,11 @@ shinyUI(
         
         
         tabPanel(
-          title = "Tab 1",
+          title = "Admissions Data of NHS HB",
           sidebarLayout(
             sidebarPanel(
               width = 4,
+              "Select NHS Health Board",
               leafletOutput("selection_map", width = "100%", height = 475),
               
               pickerInput(
@@ -50,7 +51,7 @@ shinyUI(
     
     
     tabPanel(
-      title = "HB Map",
+      title = "Health Board Activity",
       br(),
       fluidRow(
         
