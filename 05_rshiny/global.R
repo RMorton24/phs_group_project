@@ -17,7 +17,19 @@ activity_patient_demographics <- read_csv(here::here("02_cleaned_data/activity_p
 
 specialty_admissions <- read_csv(here::here("02_cleaned_data/admissions_by_speciality_clean.csv"))
 
-activity_deprivation <- read_csv(here::here("02_cleaned_data/activity_deprivation.csv"))
+activity_deprivation <- read_csv(here::here("02_cleaned_data/activity_deprivation.csv")) %>% 
+  mutate(year_quarter = make_yearquarter(year, quarter), .after = quarter)
+
+
+activity_dep_variables <- activity_deprivation %>% 
+  select(contains(c("episode", "stay"))) %>%  names()
+
+names(activity_dep_variables) <- str_to_title(
+  str_replace_all(
+    str_replace(
+      str_replace(activity_dep_variables, 
+                  "^e", "number of e"), "^s", "number of s"), "_", " "))
+  
 
 # Load variables/functions for Leaflet Plots ------------------------------
 
@@ -45,10 +57,20 @@ bbox <- st_bbox(nhs_borders) %>%
 beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
   mutate(year_quarter = yearquarter(year_quarter))
 
-variables_selection <- beds %>% 
-  select(contains(c("bed", "occup"))) %>%  names()
 
 
 # Plotly plot -------------------------------------------------------------
 
+beds_variables_selection <- beds %>% 
+  select(contains(c("bed", "occup"))) %>%  names()
+
+# Apply titles
+names(beds_variables_selection) <- str_to_title(
+  str_replace_all(beds_variables_selection, "_", " "))
+
+
+
+# Load Functions ----------------------------------------------------------
+
+source(here::here("08_functions/significance_round_function.R"))
 

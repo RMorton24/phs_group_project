@@ -127,7 +127,51 @@ shinyUI(
             leafletOutput("heatmap2", width = "110%", height = "750px")
             
           )
+        ),
+
+        column(
+          width = 3,
+          sliderTextInput(
+            inputId = "year_quarter_geo",
+            label = "Select Year and Quarter:",
+            choices = sort(unique(beds$year_quarter)),
+            selected = c(sort(unique(beds$year_quarter))[1],
+                         sort(unique(beds$year_quarter))[3]),
+            grid = TRUE
+          )
+        ),
+        column(
+          width = 3,
+          selectInput(
+            inputId = "speciality_geo",
+            label = "Select Speciality",
+            choices = sort(unique(beds$specialty_name)))
+        ),
+        column(
+          width = 3,
+          selectInput(
+            inputId = "variable_to_plot_geo",
+            label = "Select Variable to Plot",
+            choices = beds_variables_selection
+          )
+        ),
+        
+        column(
+          
+          width = 3,
+          
+          radioButtons(
+            inputId = "data_select_geo",
+            label = "Select Data to review",
+            choices = c("Beds" = "beds", "Hospital Activity" = "activity_deprivation"),#c("Beds","Hospital Activity")#
+            
+          )
         )
+      ),
+      mainPanel(
+        
+        leafletOutput("heatmap2", width = "150%", height = "750px")
+
       )
     ),
     tabPanel(
