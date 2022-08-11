@@ -22,7 +22,7 @@ shinyServer(function(input, output, session) {
     leaflet(nhs_borders, options = leafletOptions(zoomControl = FALSE,
                                                   minZoom = 5.8,
                                                   maxZoom = 5.8)) %>% 
-      addMarkers(layerId = "Scotland",lng = -7 ,lat = 58.7,
+      addMarkers(layerId = "Scotland",lng = -4.75 ,lat = 59.5,
                  label = label_scotland, 
                  labelOptions = labelOptions(noHide = TRUE, textsize = "15px", direction = "left")) %>% 
       addPolygons(fillColor = ~pal(HBCode),

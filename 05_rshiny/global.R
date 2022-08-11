@@ -58,7 +58,7 @@ bbox <- st_bbox(nhs_borders) %>%
 
 label_scotland <- paste0(
   "<b>", "Click Marker For", "</b><br>", "NHS Scotland"
-) %>% lapply(htmltools::HTML)
+  ) %>% lapply(htmltools::HTML)
 
 
 # Beds data ---------------------------------------------------------------
