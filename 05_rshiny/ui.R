@@ -119,11 +119,23 @@ shinyUI(
           selectInput(
             inputId = "variable_to_plot_geo",
             label = "Select Variable to Plot",
-            choices = variables_selection
+            choices = beds_variables_selection
+          )
+          
+          
+        ),
+        column(
+          width = 3,
+          radioButtons(
+            inputId = "data_select_geo",
+            label = "Select Data to review",
+            choices = c("Beds" = "beds", "Hospital Activity" = "activity_deprivation"),#c("Beds","Hospital Activity")#
+            
           )
         )
       ),
       mainPanel(
+        tableOutput("delete"),
         leafletOutput("heatmap2", width = "150%", height = "750px")
       )
     ),
@@ -131,7 +143,7 @@ shinyUI(
       title = "Demographics",
       br(),
       dropdown(
-
+        
         circle = TRUE,
         status = "info",
         icon = icon("gear"),
@@ -158,7 +170,7 @@ shinyUI(
             `actions-box` = TRUE), 
           multiple = TRUE
         ),
-
+        
         pickerInput(
           inputId = "demo_age",
           label = "Select/deselect Age Group", 
@@ -184,13 +196,13 @@ shinyUI(
         column(
           width = 10,
           offset = 1,
-        
-        plotOutput("demographics_output")
+          
+          plotOutput("demographics_output")
+        )
       )
     )
       )
     )
   )
-)
 )
 
