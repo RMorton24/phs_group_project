@@ -1,3 +1,4 @@
+# Required packages ####
 ```{r}
 library(prob)
 library(tidyverse)
@@ -11,7 +12,7 @@ library(leaflet)
 library(infer)
 library(shiny)
 ```
-
+# Required datasets ####
 ```{r}
 hospital_beds <- read_csv('hospital_covid_data/beds_by_nhs_board_of_treatment_and_specialty.csv') %>% clean_names()
 hospital_admissions <- read_csv('hospital_covid_data/hospital_admissions_hb_simd_20220302.csv') %>% clean_names()
@@ -30,7 +31,7 @@ full_bed_data <- left_join(locations, hospital_beds, by = c("location"))
 ```{r}
 waiting_times_update <- read_csv('hospital_covid_data/a&e_waiting_times.csv') %>% clean_names()
 ```
-
+# First graph for bed data ####
 ```{r}
 bed_graph <- hospital_beds %>% 
   select(quarter, all_staffed_beddays) %>% 
@@ -41,7 +42,7 @@ bed_graph <- hospital_beds %>%
   theme(axis.text.x = element_text(angle = 90))
 bed_graph
 ```
-
+# First graph for demographic data ####
 ```{r}
 demo_graph <- hospital_demographics %>% 
   select(age_group, sex, number_admissions) %>% 
@@ -63,7 +64,7 @@ demo_graph
 #   theme(axis.text.x = element_text(angle = 90))
   
 ```
-
+# First attempt at rolling data graph ####
 ```{r}
 library(slider)
 rolling_data <- hospital_admissions %>% 
@@ -183,10 +184,11 @@ hb_admissions <- hospital_admissions %>%
   theme(axis.text.x = element_text(angle = 90))
 ```
 
+# Joined datasets with location info ####
 ```{r}
 full_admissions <- right_join(locations, hospital_admissions, by = c("hb"))
 
-full_impatients <- right_join(locations, hospital_impatients, by = c("hb"))
+full_inpatients <- right_join(locations, hospital_inpatients, by = c("hb"))
 
 full_demographics <- right_join(locations, hospital_demographics, by = c("hscp"))
 
@@ -219,7 +221,7 @@ post_2020_wait <- full_wait_times %>%
     theme(axis.text.x = element_text(angle = 90))
 post_2020_wait  
 ```
-
+# Death Data ####
 ```{r}
 deaths_by_age <- read_csv('hospital_covid_data/deaths_hb_agesex_20220302.csv') %>% clean_names
 
@@ -417,7 +419,7 @@ specialty_trends_differ2 <- admin_specialty_data %>%
 specialty_trends_differ
 specialty_trends_differ2
 ```
-
+# Updated, cleaned datasets for beds and specialties ####
 ```{r}
 bed_data <- read_csv('../02_cleaned_data/bed_clean.csv')
 
@@ -448,7 +450,7 @@ bed_trends_occu <- bed_data %>%
 
 bed_trends_occu  
 ```
-
+# Specialty dataset graphs ####
 ```{r}
 admin_trends <- specialty_data %>% 
   select(year, hb, admission_type, specialty_name, episodes, spells) %>% 
@@ -508,6 +510,7 @@ variations <- full_demographics %>%
   theme(axis.text.x = element_text(angle = 90))
 variations
 ```
+
 ```{r}
 deaths_by_hscp %>% 
   select(age_group, deaths, sex, hscp) %>% 
@@ -518,7 +521,7 @@ deaths_by_hscp %>%
     theme(axis.text.x = element_text(angle = 90))
 
 ```
-
+# Updated datasets with cleaned data ####
 ```{r}
 admission_data <- read_csv('hospital_covid_data/covid_admission_age_sex.csv')
 
@@ -682,7 +685,7 @@ Hospitalisation_differ2 <- admission_data2 %>%
   ggtitle("Trend of average variation from norm")
 Hospitalisation_differ2
 ```
-
+# Lubridated death datasets ####
 ```{r}
 library(lubridate)
 deaths_by_depriv2 <- deaths_by_depriv %>%
@@ -896,7 +899,7 @@ deaths_by_hscp2 %>%
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Mean deaths by month")
 ```
-
+# HSCP death graphs ####
 ```{r}
 deaths_by_hscp2 %>% 
   select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
@@ -918,7 +921,7 @@ deaths_by_hscp2 %>%
   ggplot() +
   geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
   theme(axis.text.x = element_text(angle = 90)) +
-  ggtitle("Mean deaths by month")
+  ggtitle("Mean deaths by month - Male")
 ```
 
 ```{r}
@@ -938,5 +941,21 @@ deaths_by_depriv3 %>%
   geom_col(aes(x = month_name, y = mean_deaths, fill = simd_quintile)) +
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Quintile deaths per month")
+```
+
+```{r}
+rolling_deaths <- deaths_by_age2 %>% 
+  mutate(
+    moving_avg_death = slide_dbl(
+      .x = deaths,
+      .f = ~mean(.x),
+      before = 1000, 
+      after = 1000
+    )
+  )
+ggplot(rolling_deaths) + 
+  geom_line(aes(x = week_ending, y = moving_avg_death), colour = "grey") + 
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") 
+ 
 ```
 
