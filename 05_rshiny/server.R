@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
       summarise(avg_length_stays = mean(average_length_of_stay, na.rm = TRUE))
     
   })
-  
+  # Covid Age
   covid_age_filter <- reactive({
     
     covid_admission_age_sex %>%
@@ -306,6 +306,10 @@ shinyServer(function(input, output, session) {
       panel.grid.major.x = element_blank()
     )
   })
+
+
+# Geo leaflet plot --------------------------------------------------------
+
   
   key_domain <- reactiveVal()
   
@@ -415,6 +419,11 @@ shinyServer(function(input, output, session) {
                      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
                    
                  })
+  
+
+# Death plots -------------------------------------------------------------
+
+  
   output$deathplot1 <- renderPlot(
   
   deaths_by_deprivation %>% 
@@ -430,16 +439,16 @@ shinyServer(function(input, output, session) {
   output$deathplot2 <- renderPlot(
   
   deaths_by_deprivation %>% 
-    #select(week_ending, simd_quintile, deaths, average20152019) %>% 
-    #filter(simd_quintile == 1) %>% 
     group_by(week_ending) %>% 
     ggplot() +
-    geom_line(aes(x = week_ending, y = deaths), colour = "red") +
-    geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+    geom_line(aes(x = week_ending, y = deaths, linetype = "2020/2021"), colour = "red", show.legend = TRUE) +
+    geom_line(aes(x = week_ending, y = average20152019, linetype = "2015-2019"), colour = "blue", show.legend = TRUE) +
     facet_wrap(~simd_quintile) +
-    theme(axis.text.x = element_text(angle = 90)) +
+    theme(axis.text.x = element_text(angle = 90),
+          legend.position = "bottom") +
     ggtitle("Trend of Deaths by SIMD over Time") +
     labs(x = "Date",
-         y = "Number of Deaths")
+         y = "Number of Deaths") +
+    guides(linetype = guide_legend(title = NULL))
   )
 })

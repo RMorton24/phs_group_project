@@ -43,7 +43,7 @@ shinyUI(
           )
         ),
 
-    # Geo map -----------------------------------------------------------------
+# Geo map -----------------------------------------------------------------
     
     tabPanel(
       title = "Health Board Activity",
@@ -99,17 +99,18 @@ shinyUI(
     ),
     
     
-    # Demographics tab --------------------------------------------------------
+# Demographics tab --------------------------------------------------------
     
     
     tabPanel(
       title = "Demographics",
       br(),
       tabsetPanel(
-        # Episodes by age group ---------------------------------------------------
+# Episodes by age group ---------------------------------------------------
         tabPanel(
           
           title = "Episodes by Demographic",
+          br(),
           dropdown(
             
             circle = TRUE,
@@ -163,11 +164,12 @@ shinyUI(
         ),
         
         
-        # Covid Admissions tab ----------------------------------------------------
+# Covid Admissions by Gender tab ----------------------------------------------------
         
         
         tabPanel(
           title = "Covid Admissions by Gender",
+          br(),
           dropdown(
             
             circle = TRUE,
@@ -206,9 +208,12 @@ shinyUI(
             )
           )
         ),
-        
+
+# Covid Admissions by Age Group -------------------------------------------
+
         tabPanel(
           title = "Covid Admissions by Age Group",
+          br(),
           dropdown(
             
             circle = TRUE,
@@ -249,6 +254,10 @@ shinyUI(
         )
       )
     ),
+
+# Death trends by deprivation level ---------------------------------------
+
+
     tabPanel(
       title = "Death Trends by Deprivation",
       br(),
