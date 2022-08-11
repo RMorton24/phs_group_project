@@ -16,11 +16,11 @@ Chris Glenshaw, George Salisbury, João Neto, Kate Stallibrass & Ross Morton
 
 ### Roles & responsibilities of each member
 
-**Chris** worked on ...
+**Chris** worked on the skeleton of the Shiny dashboard and the assembly of the Shiny dashboard alongside Kate...
 
 **George** worked on dummy graphs which were chunks of draft data that were intended to suggest ways of visualising the data.  They were not necessarily intended to be in the final application but were meant to reduce the workload for those working on Shiny.  Once he'd provided the team with a code that they were happy enough with, they could tweak it if required to further fit the needs of the final report.  He also produced some trend graphs were meant to show the impact of Covid on hospital admission over the course of several months.
 
-**João** worked on ...
+**João** worked on demographic datasets.  He worked on graphs relating to information such as the SIMD information in deprivation and provided suggestions for the layout of the final shiny dashboard.
 
 **Kate** worked on data cleaning/wrangling, data analysis and graphs, report writing.
 
@@ -32,7 +32,7 @@ Chris Glenshaw, George Salisbury, João Neto, Kate Stallibrass & Ross Morton
 
 Our dashboard contains ...
 
-Our topic is ...
+Our topic is the impact of Covid on hospitalisations and other relevant information, and the trends of hospitalizations following 2020.  ...
 
 The dashboard outlines our topic in terms of ...
 
@@ -52,6 +52,7 @@ The dashboard outlines our topic in terms of ...
 * Git/GitHub (collaboration & version control) 
 * PowerPoint
 * In person stand-ups
+* RStudio
 
 
 
