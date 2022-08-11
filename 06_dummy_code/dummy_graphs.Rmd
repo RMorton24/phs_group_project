@@ -765,6 +765,17 @@ Final_death_graph5 <- deaths_by_depriv2 %>%
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Trend of deaths for SIMD 4")
 Final_death_graph5
+
+Final_death_graph6 <- deaths_by_depriv2 %>% 
+  select(week_ending, simd_quintile, deaths, average20152019) %>% 
+  filter(simd_quintile == 5) %>% 
+  group_by(week_ending) %>% 
+  ggplot() +
+  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths for SIMD 5")
+Final_death_graph6
 ```
 
 ```{r}
@@ -802,6 +813,16 @@ Death_trends_age_2022 <- deaths_by_age2 %>%
   
   ggtitle("Trend of deaths by month 2022")
 Death_trends_age_2022
+
+Death_trends_per_age <- deaths_by_age2 %>% 
+  select(year, month_name, deaths, average20152019, age_group, day) %>% 
+  group_by(age_group, average20152019) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = age_group, y = total_deaths), fill = "red") +
+  geom_col(aes(x = age_group, y = average20152019), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths per age group")
 ```
 
 ```{r}
@@ -847,6 +868,14 @@ deaths_by_hscp2 %>%
 ```
 
 ```{r}
-
+deaths_by_age2 %>% 
+  select(age_group, deaths, average20152019, hb, year, month_name) %>% 
+  group_by(age_group, hb, average20152019) %>% 
+  summarise(total_deaths = sum(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = hb, y = total_deaths), fill = "red") +
+  geom_col(aes(x = hb, y = average20152019), fill = "blue") +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of deaths per HB")
 ```
 
