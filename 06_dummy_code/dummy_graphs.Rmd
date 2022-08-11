@@ -687,11 +687,6 @@ Hospitalisation_differ2
 library(lubridate)
 deaths_by_depriv2 <- deaths_by_depriv %>%
   mutate(week_ending = ymd(week_ending))
-
-deaths_by_depriv2 %>% 
-  
-  
-  
 ```
 
 ```{r}
@@ -741,7 +736,9 @@ Final_death_graph3 <- deaths_by_depriv2 %>%
   geom_line(aes(x = week_ending, y = deaths), colour = "red") +
   geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
   theme(axis.text.x = element_text(angle = 90)) +
-  ggtitle("Trend of deaths for SIMDs")
+  ggtitle("Trend of deaths for SIMDs")+
+  xlab("Trend per month") 
+  #scale_x_continuous(labels = month(week_ending, labels = TRUE))
 Final_death_graph3
 
 Final_death_graph4 <- deaths_by_depriv2 %>% 
@@ -877,5 +874,69 @@ deaths_by_age2 %>%
   geom_col(aes(x = hb, y = average20152019), fill = "blue") +
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Trend of deaths per HB")
+```
+
+```{r}
+deaths_by_age2 %>% 
+  select(percent_variation, year, month_name, age_group, hb, sex) %>% 
+  group_by(month_name, percent_variation, sex) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = percent_variation, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Trend of death variation")
+```
+
+```{r}
+deaths_by_hscp2 %>% 
+  select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
+  group_by(month_name, sex, hscp) %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Mean deaths by month")
+```
+
+```{r}
+deaths_by_hscp2 %>% 
+  select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
+  group_by(month_name, sex, hscp) %>% 
+  filter(sex == "Female") %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Mean deaths by month - Female")
+```
+
+```{r}
+deaths_by_hscp2 %>% 
+  select(hscp, sex, deaths, average20152019, age_group, year, month_name) %>% 
+  group_by(month_name, sex, hscp) %>% 
+  filter(sex == "Male") %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = sex)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Mean deaths by month")
+```
+
+```{r}
+deaths_by_depriv3 <- deaths_by_depriv2 %>% 
+  mutate(week_ending = ymd(week_ending)) %>% 
+  mutate(year = year(week_ending),
+         month = month(week_ending),
+         day = day(week_ending)) %>% 
+  mutate(month_name = month(month, label = TRUE, abbr = FALSE))
+deaths_by_depriv3
+
+deaths_by_depriv3 %>% 
+  select(year, average20152019, deaths, month_name, simd_quintile) %>% 
+  group_by(month_name, simd_quintile, deaths) %>% 
+  summarise(mean_deaths = mean(deaths)) %>% 
+  ggplot() +
+  geom_col(aes(x = month_name, y = mean_deaths, fill = simd_quintile)) +
+  theme(axis.text.x = element_text(angle = 90)) +
+  ggtitle("Quintile deaths per month")
 ```
 
