@@ -36,7 +36,9 @@ shinyServer(function(input, output, session) {
   # Create Leaflet output (selection map)
   
   output$selection_map <- renderLeaflet({
-    leaflet(nhs_borders) %>% 
+    leaflet(nhs_borders, options = leafletOptions(zoomControl = FALSE,
+                                                  minZoom = 5.8,
+                                                  maxZoom = 5.8)) %>% 
       addPolygons(fillColor = ~pal(HBCode),
                   layerId = ~HBCode,
                   fillOpacity = 1,
@@ -50,18 +52,20 @@ shinyServer(function(input, output, session) {
       setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4]) %>% 
       setView(lng = mean(bbox[1], bbox[3]), 
               lat = mean(bbox[2], bbox[4]),
-              zoom = 5.5) %>% 
-      onRender(
-        "function(el, x) {
-          L.control.zoom({
-            position:'bottomright'
-          }).addTo(this);
-        }")
+              zoom = 5.5)#  %>%
+      # onRender(
+      #   "function(el, x) {
+      #     L.control.zoom({
+      #       position:'bottomright'
+      #     }).addTo(this);
+      #   }")
   })
   
   # Create heatmap plot
   output$heatmap2 <- renderLeaflet({
-    leaflet(nhs_borders) %>% 
+    leaflet(nhs_borders, options = leafletOptions(zoomControl = FALSE,
+                                                  minZoom = 6,
+                                                  maxZoom = 6)) %>% 
       addTiles() %>% 
       addPolygons(fillColor = ~pal(HBCode),
                   layerId = ~HBCode,
@@ -295,7 +299,7 @@ shinyServer(function(input, output, session) {
                      geo_data <- quarter_filter() %>% 
                        summarise(plot_this = case_when(
                          str_detect(input$variable_to_plot_geo, "_beds") ~ mean(!!as.name(input$variable_to_plot_geo), na.rm = TRUE),
-                         str_detect(input$variable_to_plot_geo, "percent_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
+                         str_detect(input$variable_to_plot_geo, "percentage_occ") ~ 100*sum(total_occupied_beddays, na.rm = TRUE)/sum(all_staffed_beddays, na.rm = TRUE),
                          TRUE ~ sum(!!as.name(input$variable_to_plot_geo), na.rm = TRUE))
                        )
                    }else{

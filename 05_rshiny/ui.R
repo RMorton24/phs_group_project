@@ -87,7 +87,7 @@ shinyUI(
       fluidRow(
         
         sidebarLayout(
-          
+          position = "right",
           # dropbox(
           # circle = TRUE, 
           # status = "info",
@@ -98,6 +98,12 @@ shinyUI(
           sidebarPanel(
             
             width = 3,
+            
+            radioButtons(
+              inputId = "data_select_geo",
+              label = "Select Data to review",
+              choices = c("Beds" = "beds", "Hospital Activity" = "activity_deprivation"),
+            ),
             
             sliderTextInput(
               inputId = "year_quarter_geo",
@@ -115,63 +121,22 @@ shinyUI(
               choices = sort(unique(beds$specialty_name))
             ),
             
+            
             selectInput(
               inputId = "variable_to_plot_geo",
               label = "Select Variable to Plot",
-              choices = variables_selection
+              choices = beds_variables_selection
             )
-            
           ),
           mainPanel(
-            
-            leafletOutput("heatmap2", width = "110%", height = "750px")
-            
-          )
-        ),
-
-        column(
-          width = 3,
-          sliderTextInput(
-            inputId = "year_quarter_geo",
-            label = "Select Year and Quarter:",
-            choices = sort(unique(beds$year_quarter)),
-            selected = c(sort(unique(beds$year_quarter))[1],
-                         sort(unique(beds$year_quarter))[3]),
-            grid = TRUE
-          )
-        ),
-        column(
-          width = 3,
-          selectInput(
-            inputId = "speciality_geo",
-            label = "Select Speciality",
-            choices = sort(unique(beds$specialty_name)))
-        ),
-        column(
-          width = 3,
-          selectInput(
-            inputId = "variable_to_plot_geo",
-            label = "Select Variable to Plot",
-            choices = beds_variables_selection
-          )
-        ),
-        
-        column(
-          
-          width = 3,
-          
-          radioButtons(
-            inputId = "data_select_geo",
-            label = "Select Data to review",
-            choices = c("Beds" = "beds", "Hospital Activity" = "activity_deprivation"),#c("Beds","Hospital Activity")#
-            
+            column(
+            offset = 1,
+            width = 11,
+            leafletOutput("heatmap2", width = "100%", height = "550px")
+            )
           )
         )
-      ),
-      mainPanel(
-        
-        leafletOutput("heatmap2", width = "150%", height = "750px")
-
+       
       )
     ),
     tabPanel(
@@ -184,12 +149,12 @@ shinyUI(
         icon = icon("gear"),
         width = "350px",
         tooltip = tooltipOptions(title = "Click to see inputs !"),
-        animate = TRUE,
+        animate = FALSE,
         
         pickerInput(
           inputId = "demo_hb",
           label = "Select/deselect HealthBoard",
-          selected = head(activity_patient_demographics$hb_name),
+          selected = unique(activity_patient_demographics$hb_name),
           choices = unique(activity_patient_demographics$hb_name),
           options = list(
             `actions-box` = TRUE), 
@@ -199,7 +164,7 @@ shinyUI(
         pickerInput(
           inputId = "demo_location",
           label = "Select/deselect Location", 
-          selected = "All",
+          selected = unique(activity_patient_demographics$location_name),
           choices = unique(activity_patient_demographics$location_name),
           options = list(
             `actions-box` = TRUE), 
@@ -209,7 +174,7 @@ shinyUI(
         pickerInput(
           inputId = "demo_age",
           label = "Select/deselect Age Group", 
-          selected = "All",
+          selected = unique(activity_patient_demographics$age),
           choices = unique(activity_patient_demographics$age),
           options = list(
             `actions-box` = TRUE), 
@@ -232,7 +197,7 @@ shinyUI(
           width = 10,
           offset = 1,
           
-          plotOutput("demographics_output")
+          plotOutput("demographics_output", width = "150%", height = "450px")
         )
       )
     )
