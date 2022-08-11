@@ -3,10 +3,15 @@
 shinyServer(function(input, output, session) {
   
   admissions_filter <- reactive({
+    if(is.null(nhs_region_select())){
+      region <- ""
+    }else{
+      region <- nhs_region_select()
+    }
     
     specialty_admissions %>% 
       filter(specialty == input$specialty, 
-             hb_name == input$hb,
+             hb == region,
              admission_type == input$admission)
     
   })
@@ -59,11 +64,14 @@ shinyServer(function(input, output, session) {
         }")
   })
   
+  nhs_region_select <- reactiveVal()
+  
   # Start event if regions in the map are selected
   observeEvent(input$selection_map_shape_click$id, {
     # Prepare the shape to be highlighted
     poly_region <- which(nhs_borders$HBCode == input$selection_map_shape_click$id)
     region_highlight <- nhs_borders[poly_region, 1]
+    nhs_region_select(input$selection_map_shape_click$id)
     
     # Highlight the region on map
     leafletProxy("selection_map") %>%
@@ -139,7 +147,7 @@ shinyServer(function(input, output, session) {
       layout(title = "Number of Admissions per Week by Health Board, Specialty and Admission Type", 
              xaxis = list(title = "Month", type = "date", tickformat = "%B"),
              yaxis = list(title = "Number of Admissions"),
-             legend = list(title = list(text="<br> Year </br>")),
+             legend = list(title = list(text="<br> Year </br>"), orientation = "h"),
              shapes = list(vline_1("2020-03-29"), vline_1("2021-01-10"), 
                            vline_2("2020-07-12"), vline_2("2021-05-02")),
              annotations = list(annotation_1, annotation_2, annotation_3, annotation_4))
@@ -188,7 +196,7 @@ shinyServer(function(input, output, session) {
       summarise(avg_length_stays = mean(average_length_of_stay, na.rm = TRUE))
     
   })
-  
+  # Covid Age
   covid_age_filter <- reactive({
     
     covid_admission_age_sex %>%
@@ -298,6 +306,10 @@ shinyServer(function(input, output, session) {
       panel.grid.major.x = element_blank()
     )
   })
+
+
+# Geo leaflet plot --------------------------------------------------------
+
   
   key_domain <- reactiveVal()
   
@@ -407,4 +419,36 @@ shinyServer(function(input, output, session) {
                      setMaxBounds(bbox[1], bbox[2], bbox[3], bbox[4])
                    
                  })
+  
+
+# Death plots -------------------------------------------------------------
+
+  
+  output$deathplot1 <- renderPlot(
+  
+  deaths_by_deprivation %>% 
+    group_by(simd_quintile) %>% 
+    summarise(total_deaths = sum(deaths)) %>% 
+    ggplot() +
+    geom_col(aes(x = simd_quintile, y = total_deaths), fill = "purple") +
+    labs(title = "Number of Deaths Across 2020/2021 by SIMD",
+         x = "SIMD",
+         y = "Total Deaths") 
+  )
+  
+  output$deathplot2 <- renderPlot(
+  
+  deaths_by_deprivation %>% 
+    group_by(week_ending) %>% 
+    ggplot() +
+    geom_line(aes(x = week_ending, y = deaths, linetype = "2020/2021"), colour = "red", show.legend = TRUE) +
+    geom_line(aes(x = week_ending, y = average20152019, linetype = "2015-2019"), colour = "blue", show.legend = TRUE) +
+    facet_wrap(~simd_quintile) +
+    theme(axis.text.x = element_text(angle = 90),
+          legend.position = "bottom") +
+    ggtitle("Trend of Deaths by SIMD over Time") +
+    labs(x = "Date",
+         y = "Number of Deaths") +
+    guides(linetype = guide_legend(title = NULL))
+  )
 })

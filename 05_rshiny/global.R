@@ -25,6 +25,8 @@ covid_admission_age_sex <- read_csv(here::here("02_cleaned_data/covid_admission_
 activity_dep_variables <- activity_deprivation %>% 
   select(contains(c("episode", "stay"))) %>%  names()
 
+deaths_by_deprivation <- read_csv(here::here("02_cleaned_data/deaths_by_deprivation.csv"))
+
 names(activity_dep_variables) <- str_to_title(
   str_replace_all(
     str_replace(

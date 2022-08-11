@@ -17,11 +17,15 @@ library(stringr)
 ## hospital activity
 ```{r}
  hospital_ativity_and_patient_demographics <- 
+
+    read_csv("../01_data/hospital_ativity_and_patient_demographics.csv") %>% 
+
     read_csv(here::here("01_data/hospital_ativity_and_patient_demographics.csv")) %>% 
+
     clean_names()
   # remove_empty(c("rows", "cols"))
   
-  hospital_activity_and_deprivation <- read_csv("01_data/hospital_activity_and_deprivation.csv") %>% 
+  hospital_activity_and_deprivation <- read_csv("../01_data/hospital_activity_and_deprivation.csv") %>% 
     clean_names()
 ```
 
@@ -29,16 +33,25 @@ library(stringr)
 ```{r}
 # by health_board
 covid_admission_hb_age_sex <-
-  read_csv("01_data/hospitalisations_due_to_covid_19/admissions_by_health_board_age_and_sex.csv") %>% 
+  read_csv("../01_data/hospitalisations_due_to_covid_19/admissions_by_health_board_age_and_sex.csv") %>% 
   clean_names()
 
 covid_admission_hb_deprivation <- 
-  read_csv("01_data/hospitalisations_due_to_covid_19/admissions_by_health_board_and_deprivation.csv") %>% 
+  read_csv("../01_data/hospitalisations_due_to_covid_19/admissions_by_health_board_and_deprivation.csv") %>% 
   clean_names()
 ```
 
 ##extra data set
 ```{r}
+
+hospitals <- read_csv(("../01_data/healt_board/hospitals.csv")) %>% 
+  clean_names()
+
+hb <- read_csv("../01_data/healt_board/health_board.csv") %>% 
+  clean_names()
+
+shb <- read_csv("../01_data/healt_board/special_health_boards.csv") %>% 
+
 hospitals <- read_csv(here::here("01_data/healt_board/hospitals.csv")) %>% 
   clean_names()
 
@@ -46,6 +59,7 @@ hb <- read_csv(here::here("01_data/healt_board/health_board.csv")) %>%
   clean_names()
 
 shb <- read_csv(here::here("01_data/healt_board/special_health_boards.csv")) %>% 
+
   clean_names()
 
 ```
@@ -81,9 +95,16 @@ activity_patient_demographics <- hospital_ativity_and_patient_demographics %>%
   select(c(1:22))
 ```
 
+The main dataset (hospital_ativity_and_patient_demographics) was joined with 
+
+
+
+
+
+
 ```{r}
-activity_patient_demographics %>% 
-  write.csv("../02_cleaned_data/activity_patient_demographics.csv")
+# activity_patient_demographics %>% 
+  # write.csv("../02_cleaned_data/activity_patient_demographics.csv")
 ```
 
 
@@ -98,15 +119,19 @@ filter(age %in% input$demo_age,
              location_name %in% input$demo_location_name)
 
 activity_patient_demographics %>% 
+
+  # drop_na(average_length_of_stay) %>% 
+  filter(hb_name == "NHS Fife") %>% 
+
   # filter(sex == "") %>% 
   # filter(age == "20-29") %>% 
   filter(admission_type == "Transfers",
          hb_name == "NHS Fife",
 #         location_name == "Golden Jubilee National Hospital",
          age == "10-19") %>% 
+
   group_by(sex, year, age) %>% 
-  summarise(nr_episodes          = sum(episodes), 
-             nr_stays             = sum(stays)) %>% 
+  summarise(nr_episodes = sum(average_length_of_stay, na.rm = TRUE)) %>% 
   #           count_length_episode = sum(length_of_episode),
   #           count_length_stays   = sum(length_of_stay)) %>% 
   ggplot() + 
@@ -156,12 +181,24 @@ activity_deprivation <- hospital_activity_and_deprivation %>%
   relocate(c(19:22, 27:28), .after = 15) %>% 
   select(c(1:21))
 ```
+hospital_ativity_and_patient_demographics
+hospital_ativity_and_deprivation
 
+The variable quarter was splited in a year and quarter. The variable hb did not have just information/codes from health board, but had special health board (shb) and location codes too. That way, variable hb was cleaned to just have hb values, and one column called shb was created to have shb codes from hb variable and the location values were shifted to location variable. 
+The criteria to clean the hb variable was :
+ - values with  9 digits and started by "S08" was signed as hb value;
+- values with a length of 6 digits were considered as shb values;
+- values with a length of 5 digits were considered as location values.
+
+The variable hb just had the the code and did not have the name the same for the variables like shb and location, for that reason three auxiliar dataset were joined:
+ - healthboard (hb variable as key);
+ - special health board (shb variable as key); and
+- hospitals (location variable as key)
 
 
 ```{r}
-activity_deprivation %>% 
-  write.csv("../02_cleaned_data/activity_deprivation.csv")
+# activity_deprivation %>% 
+#   write.csv("../02_cleaned_data/activity_deprivation.csv")
 ```
 
 
@@ -169,12 +206,12 @@ activity_deprivation %>%
 activity_deprivation %>% 
   mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>% 
   filter(!is.na(simd)) %>% 
-  filter(admission_type == "Transfers") %>% 
-  filter(hb_name == "NHS Fife") %>% 
+  # filter(admission_type == "Transfers") %>% 
+  # filter(hb_name == "NHS Fife") %>% 
   group_by(year, simd) %>% 
-  summarise(nr_episodes = sum(episodes)) %>% 
+  summarise(avg_length_stays = sum(average_length_of_stay, na.rm = TRUE)) %>% 
   ggplot() + 
-  aes(x = year, y = nr_episodes, fill = simd) +
+  aes(x = year, y = avg_length_stays, fill = simd) +
   geom_col(position = "dodge") + 
   labs(title = "Activity by Board of Treatment and Deprivation",
        subtitle = "1 - Most deprived | 5 - least deprived",
@@ -182,9 +219,18 @@ activity_deprivation %>%
        ) +
   theme_minimal() +
   scale_x_continuous(breaks = seq(2016, 2021, 1)) +
-     theme(legend.title = element_blank(),
+     theme(
            legend.position = "bottom",
            panel.grid.minor.x = element_blank(),
+
+           panel.grid.minor.y = element_blank(),
+           legend.direction = "horizontal"
+           ) +
+scale_fill_brewer(palette = "OrRd", direction = -1)
+
+  scale_fill_brewer(palette = 7, direction = 0)
+
+
            panel.grid.minor.y = element_blank())
 ```
 
@@ -211,6 +257,7 @@ activity_deprivation %>%
            panel.grid.minor.x = element_blank(),
            panel.grid.minor.y = element_blank()) +
   facet_wrap(~location_name, nrow = 5, ncol = 1)
+
 ```
 
 ```{r}
@@ -239,8 +286,6 @@ mutate(simd = factor(simd, levels = c(1, 2, 3, 4, 5))) %>%
 ```
 
 
-
-
 Do people have longer lengths of stay from elective or emergency admissions?
 Are there any demographic groups that are driving the activity?
 How significant is deprivation as a driver of hospital activity?
@@ -255,7 +300,153 @@ covid_admission_age_sex <- covid_admission_hb_age_sex %>%
          month   = month(date),   
          day     = day(date),     
          quarter = quarter(date),
+         week    = week(date),
          hb       = if_else(nchar(hb) == 9 & str_detect(hb, '^S08'), hb, NA_character_)) %>% 
+  left_join(x = .,
+            y = hb, 
+            by = "hb", 
+            suffix = c("", "_hb_suffix")) %>% 
+  relocate(hb_name, .after = hb) %>% 
+  select(!ends_with("qf"), -week_ending) %>% 
+  select(c(1:"percent_variation"))
+```
+The variable week_ending was splited in a year, month, day, quarter and week. The variable hb did not have just information/codes from health board, but had special health board (shb) and location codes too. That way, variable hb was cleaned to just have hb values (just were considered as hb values the ones that has 9 digits and started by "S08"). The dataset covid_admission_hb_age_sex was joined to a dataset hb (hb variable was used as key to join) to have the names by health board too.
+
+```{r}
+# covid_admission_age_sex %>% 
+#   write.csv("../02_cleaned_data/covid_admission_age_sex.csv")
+```
+
+
+
+#GRAPH admission_covid ###############################################
+```{r}
+covid_admission_age_sex %>%
+  filter(!sex == "All") %>% 
+  mutate(year_month = yearmonth(date)) %>% 
+  group_by(year_month, 
+           sex, admission_type) %>% 
+  summarise(nr_admissions = sum(number_admissions)) %>% 
+  ggplot() + 
+  aes(x = year_month,
+      y = nr_admissions, 
+      fill = sex, 
+      color = sex) +
+  # geom_line(position = "dodge", size = 1) +
+  geom_smooth(span = 0.1) +
+  scale_x_yearmonth(date_labels = "%b %Y", 
+                    date_breaks = "3 month") +
+  labs(title    = "Covid admissions per gender",
+       subtitle = "January 2020 to January 2022",
+       x        = NULL, 
+       y        = "number of episodes") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank()) +
+  scale_color_manual(values = c("Male"   = "blue",
+                                "Female" = "red")) +
+  scale_fill_manual(values = c("Male"    = "blue",
+                                "Female" = "pink"))
+```
+```{r}
+covid_admission_age_sex %>%
+  # filter(admission_type == "") %>% 
+  # filter(hb_name        == "") %>% 
+  filter(!sex == "All") %>% 
+  mutate(year_month = yearmonth(date)) %>% 
+  group_by(year_month, 
+           sex) %>% 
+  summarise(nr_admissions = sum(number_admissions)) %>% 
+  ggplot() + 
+  aes(x = year_month,
+      y = nr_admissions, 
+      fill = sex, 
+      color = sex) +
+  geom_line(position = "dodge", size = 1) +
+  # geom_smooth(span = 0.1) +
+  scale_x_yearmonth(date_labels = "%b \n%Y", 
+                    date_breaks = "2 month") +
+  labs(title    = "Covid admissions per gender",
+       subtitle = "January 2020 to February 2022\n",
+       x        = NULL, 
+       y        = "number of episodes") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank()) +
+  scale_color_manual(values = c("Male"   = "#56B4E9",
+                                "Female" = "firebrick"))
+
+```
+
+
+
+```{r}
+covid_admission_age_sex %>% 
+  mutate(ym = yearquarter(date),
+         age_group =  case_when(
+                      age_group == "Under 5" ~  "0 - 04",
+                      age_group == "5 - 14" ~  "05 - 14",
+                      TRUE ~ age_group)) %>% 
+  filter(!age_group == "All ages") %>% 
+  group_by(age_group, ym, number_admissions) %>% 
+  summarise(nr_admissions = sum(number_admissions)) %>% 
+  ggplot() +
+  aes(x = ym, y = nr_admissions, fill = age_group) + 
+  geom_col(position = "dodge") + 
+  theme_minimal() +
+  labs(
+    title    = "Covid admissions by group age",
+    subtitle = "January of 2020 to January 2022",
+    x = NULL,
+    y = "Adimissions") +
+scale_fill_brewer(palette = "Accent") +
+scale_x_yearquarter(date_labels = "%Y \n Q%q", date_breaks = "3 months") +
+  theme(
+    legend.position = "bottom",
+    legend.title = element_blank(),
+    panel.grid.major.x = element_blank()
+    )
+
+```
+```{r}
+covid_admission_age_sex %>% 
+  filter(!age_group == "All ages") %>% 
+    pivot_longer(c("number_admissions", "average20182019"),
+               names_to = "admissions", 
+               values_to = "number") %>% 
+  group_by(age_group, admissions) %>% 
+  summarise(nr_admissions = mean(number)) %>% 
+  ggplot() +
+  aes(x = fct_relevel(age_group, c("Under 5", "5 - 14")),
+      y = nr_admissions, 
+      fill = admissions) +  
+  geom_col(position = "dodge") +
+  # geom_text(aes(label = nr_admissions), size = 4, vjust = -0.3) +
+  labs(
+    title    = "Covid admissions by group age",
+    subtitle = "January of 2020 to January 2022",
+    x = NULL,
+    y = "total adimissions") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank()) +
+  scale_fill_manual(values = c("grey70", "steelblue"))
+```
+
+## covid_admission_hb_deprivation
+```{r}
+covid_admission_deprivation <- covid_admission_hb_deprivation %>% 
+  mutate(date    = ymd(week_ending), .before = 1,
+         year    = year(date),     
+         month   = month(date),   
+         day     = day(date),     
+         quarter = quarter(date),
+         week    = week(date),
+         hb       = if_else(nchar(hb) == 9 & str_detect(hb, '^S08'), 
+                            hb, 
+                            NA_character_)) %>% 
   left_join(x = .,
             y = hb, 
             by = "hb", 
@@ -267,19 +458,56 @@ covid_admission_age_sex <- covid_admission_hb_age_sex %>%
 
 
 ```{r}
-covid_admission_age_sex %>% 
-  write.csv("../02_cleaned_data/covid_admission_age_sex.csv")
+covid_admission_deprivation %>% 
+   write.csv("../02_cleaned_data/covid_admission_deprivation.csv")
 ```
 
 
 
-Do people have longer lengths of stay from elective or emergency admissions?
-Are there any demographic groups that are driving the activity?
-How significant is deprivation as a driver of hospital activity?
-
-
 
 ```{r}
+covid_admission_deprivation %>% 
+  mutate(simd_quintile = factor(simd_quintile, levels = c(1, 2, 3, 4, 5))) %>% 
+  mutate(ym = yearquarter(date)) %>% 
+  filter(!is.na(simd_quintile)) %>% 
+  filter(!admission_type == "All") %>% 
+  group_by(ym, simd_quintile) %>% 
+  summarise(nr_admissions = sum(number_admissions, na.rm = TRUE))  %>% 
+  ggplot() +
+  aes(x = ym, y = nr_admissions, color = simd_quintile) +
+  geom_line(position = "dodge") +
+  geom_point(size = 1, show.legend = FALSE) +
+  geom_text(aes(label = nr_admissions),  size = 3, vjust = -0.9, hjust = 0) +
+  scale_x_yearmonth(date_labels = "%m %Y",
+                    date_breaks = "3 months") +
+  theme_minimal() +
+  theme(panel.grid.minor.x = element_blank())
+```
 
+```{r}
+covid_admission_deprivation %>% 
+  # filter(admission_type == "") %>% 
+  # filter(hb_name        == "") %>% 
+  group_by(simd_quintile) %>% 
+  summarise(nr_admissions = sum(number_admissions, na.rm = TRUE))  %>% 
+  ggplot() +
+  aes(x = simd_quintile, 
+      y = nr_admissions,
+      fill = nr_admissions == max(nr_admissions)) +
+  geom_col(show.legend = FALSE) +
+  geom_text(aes(label = nr_admissions), vjust = -0.3) +
+  theme_minimal() +
+  labs(
+    title    = "Depravation level by covid adimission",
+    subtitle = "January 2020 to February 2022\n",
+    x = NULL,
+    y = "total admissions"
+  ) +
+  theme(panel.grid.minor.x = element_blank(),
+        panel.grid.major.x = element_blank(), 
+        axis.ticks.length.x = unit(0.2, "cm"),
+        axis.ticks.x = element_line(size = 0.5)
+        ) +
+  scale_fill_manual(values = c("grey40", "firebrick4"))
 ```
 
