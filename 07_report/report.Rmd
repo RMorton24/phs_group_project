@@ -43,7 +43,7 @@ The dashboard outlines our topic in terms of ...
 * Choosing datasets
 * Data cleaning
 * Data analysis
-*
+* Publishing dashboard
 
 
 ### Which tools were used in the project
