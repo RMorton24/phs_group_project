@@ -4,22 +4,13 @@ shinyUI(
   fluidPage(
     fluidRow(
       titlePanel("PHS Data"),
-      # column(
-      #   width = 3,
-      #   offset = 5,
-      #   br(),
-      #   fluidRow(
-      #     valueBox(10 * 2, "New Orders", icon = icon("bed")),
-      #     
-      #     valueBoxOutput("progressBox"),
-      #     
-      #     valueBoxOutput("approvalBox")
-      #   ),
-      #   br(),
-      # )
     ),
     fluidRow(
       tabsetPanel(
+        
+        # Map selector ------------------------------------------------------------
+        
+        
         tabPanel(
           title = "Tab 1",
           sidebarLayout(
@@ -32,8 +23,11 @@ shinyUI(
             )
           )
         ),
+        
+        # Admissions trend tab--------------------------------------------------------
+        
         tabPanel(
-          title = "Tab 2",
+          title = "Admissions Trend",
           br(),
           dropdown(
             
@@ -50,7 +44,7 @@ shinyUI(
               choices = unique(specialty_admissions$specialty),
               options = list(
                 `actions-box` = TRUE), 
-              multiple = TRUE
+              multiple = FALSE
             ),
             
             pickerInput(
@@ -60,15 +54,8 @@ shinyUI(
               choices = unique(specialty_admissions$hb_name),
               options = list(
                 `actions-box` = TRUE), 
-              multiple = TRUE
+              multiple = FALSE
             ),
-            
-            sliderInput(inputId = 'week_ending',
-                        label = 'Time Span',
-                        value = c(min(specialty_admissions$week_ending),
-                                  max(specialty_admissions$week_ending)),
-                        min = min(specialty_admissions$week_ending),
-                        max = max(specialty_admissions$week_ending)),
             
             radioGroupButtons(
               inputId = "admission",
@@ -88,116 +75,217 @@ shinyUI(
       }
     ")),
     
-    plotOutput("distPlot", width = "150%")
+    # plotOutput("distPlot", width = "150%"),
+    
+    plotlyOutput("katePlot", width = "150%")
             )
           )
         ),
+    
+    # Geo map -----------------------------------------------------------------
+    
+    
     tabPanel(
-      title = "Tab 3",
+      title = "HB Map",
       br(),
       fluidRow(
-        column(
-          width = 3,
-          sliderTextInput(
-            inputId = "year_quarter_geo",
-            label = "Select Year and Quarter:",
-            choices = sort(unique(beds$year_quarter)),
-            selected = c(sort(unique(beds$year_quarter))[1],
-                         sort(unique(beds$year_quarter))[3]),
-            grid = TRUE
-          )
-        ),
-        column(
-          width = 3,
-          selectInput(
-            inputId = "speciality_geo",
-            label = "Select Speciality",
-            choices = sort(unique(beds$specialty_name)))
-        ),
-        column(
-          width = 3,
-          selectInput(
-            inputId = "variable_to_plot_geo",
-            label = "Select Variable to Plot",
-            choices = beds_variables_selection
-          )
+        
+        sidebarLayout(
+          position = "right",
           
-          
-        ),
-        column(
-          width = 3,
-          radioButtons(
-            inputId = "data_select_geo",
-            label = "Select Data to review",
-            choices = c("Beds" = "beds", "Hospital Activity" = "activity_deprivation"),#c("Beds","Hospital Activity")#
+          sidebarPanel(
             
+            width = 3,
+            
+            radioButtons(
+              inputId = "data_select_geo",
+              label = "Select Data to review",
+              choices = c("Beds" = "beds", "Hospital Activity" = "activity_deprivation"),
+            ),
+            
+            sliderTextInput(
+              inputId = "year_quarter_geo",
+              label = "Select Year and Quarter:",
+              choices = sort(unique(beds$year_quarter)),
+              selected = c(sort(unique(beds$year_quarter))[1],
+                           sort(unique(beds$year_quarter))[3]),
+              grid = TRUE
+            ),
+            
+            
+            selectInput(
+              inputId = "speciality_geo",
+              label = "Select Speciality",
+              choices = sort(unique(beds$specialty_name))
+            ),
+            
+            
+            selectInput(
+              inputId = "variable_to_plot_geo",
+              label = "Select Variable to Plot",
+              choices = beds_variables_selection
+            )
+          ),
+          mainPanel(
+            column(
+              offset = 1,
+              width = 11,
+              leafletOutput("heatmap2", width = "100%", height = "550px")
+            )
           )
         )
-      ),
-      mainPanel(
-        tableOutput("delete"),
-        leafletOutput("heatmap2", width = "150%", height = "750px")
+        
       )
     ),
+    
+    
+    # Demographics tab --------------------------------------------------------
+    
+    
     tabPanel(
       title = "Demographics",
       br(),
-      dropdown(
-        
-        circle = TRUE,
-        status = "info",
-        icon = icon("gear"),
-        width = "350px",
-        tooltip = tooltipOptions(title = "Click to see inputs !"),
-        animate = TRUE,
-        
-        pickerInput(
-          inputId = "demo_hb",
-          label = "Select/deselect HealthBoard",
-          selected = head(activity_patient_demographics$hb_name),
-          choices = unique(activity_patient_demographics$hb_name),
-          options = list(
-            `actions-box` = TRUE), 
-          multiple = TRUE
-        ),
-        
-        pickerInput(
-          inputId = "demo_location",
-          label = "Select/deselect Location", 
-          selected = "All",
-          choices = unique(activity_patient_demographics$location_name),
-          options = list(
-            `actions-box` = TRUE), 
-          multiple = TRUE
-        ),
-        
-        pickerInput(
-          inputId = "demo_age",
-          label = "Select/deselect Age Group", 
-          selected = "All",
-          choices = unique(activity_patient_demographics$age),
-          options = list(
-            `actions-box` = TRUE), 
-          multiple = TRUE
-        ),
-        
-        pickerInput(
-          inputId = "demo_admission_type",
-          label = "Select/deselect Type of Admission",
-          selected = head(activity_patient_demographics$admission_type),
-          choices = unique(activity_patient_demographics$admission_type),
-          options = list(
-            `actions-box` = TRUE), 
-          multiple = TRUE
-        ),
-        
-      ),
-      mainPanel(
-        column(
-          width = 10,
-          offset = 1,
+      tabsetPanel(
+        # Episodes by age group ---------------------------------------------------
+        tabPanel(
           
-          plotOutput("demographics_output")
+          title = "Episodes by Demographic",
+          dropdown(
+            
+            circle = TRUE,
+            status = "info",
+            icon = icon("gear"),
+            width = "350px",
+            tooltip = tooltipOptions(title = "Click to see inputs !"),
+            animate = FALSE,
+            
+            pickerInput(
+              inputId = "demo_hb",
+              label = "Select/deselect HealthBoard",
+              selected = unique(activity_patient_demographics$hb_name),
+              choices = unique(activity_patient_demographics$hb_name),
+              options = list(
+                `actions-box` = TRUE), 
+              multiple = TRUE
+            ),
+            
+            pickerInput(
+              inputId = "demo_age",
+              label = "Select/deselect Age Group", 
+              selected = unique(activity_patient_demographics$age),
+              choices = unique(activity_patient_demographics$age),
+              options = list(
+                `actions-box` = TRUE), 
+              multiple = TRUE
+            ),
+            
+            pickerInput(
+              inputId = "demo_admission_type",
+              label = "Select/deselect Type of Admission",
+              selected = head(activity_patient_demographics$admission_type),
+              choices = unique(activity_patient_demographics$admission_type),
+              options = list(
+                `actions-box` = TRUE), 
+              multiple = TRUE
+            ),
+            
+          ),
+          mainPanel(
+            
+            column(
+              offset = 4,
+              width = 8,
+              plotOutput("demographics_output", width = "120%", height = "250px"),
+              
+              plotOutput("demographics_simd_output", width = "120%", height = "250px")
+            )
+          )
+        ),
+        
+        
+        # Covid Admissions tab ----------------------------------------------------
+        
+        
+        tabPanel(
+          title = "Covid Admissions by Gender",
+          dropdown(
+            
+            circle = TRUE,
+            status = "info",
+            icon = icon("gear"),
+            width = "350px",
+            tooltip = tooltipOptions(title = "Click to see inputs !"),
+            animate = FALSE,
+            
+            pickerInput(
+              inputId = "demo_hb_covid",
+              label = "Select/deselect HealthBoard",
+              selected = unique(covid_admission_age_sex$hb_name),
+              choices = unique(covid_admission_age_sex$hb_name),
+              options = list(
+                `actions-box` = TRUE), 
+              multiple = TRUE
+            ),
+            
+            
+            radioGroupButtons(
+              inputId = "demo_admission_type_covid",
+              label = "Select/deselect Type of Admission",
+              selected = "All",
+              choices = unique(covid_admission_age_sex$admission_type),
+              direction = "horizontal"
+            ),
+            
+          ),
+          mainPanel(
+            column(
+              width = 5,
+              offset = 1,
+              
+              plotOutput("demographics_output_covid", width = "350%", height = "450px")
+            )
+          )
+        ),
+        
+        tabPanel(
+          title = "Covid Admissions by Age Group",
+          dropdown(
+            
+            circle = TRUE,
+            status = "info",
+            icon = icon("gear"),
+            width = "350px",
+            tooltip = tooltipOptions(title = "Click to see inputs !"),
+            animate = FALSE,
+            
+            pickerInput(
+              inputId = "demo_hb_covid_age",
+              label = "Select/deselect HealthBoard",
+              selected = unique(covid_admission_age_sex$hb_name),
+              choices = unique(covid_admission_age_sex$hb_name),
+              options = list(
+                `actions-box` = TRUE), 
+              multiple = TRUE
+            ),
+            
+            
+            radioGroupButtons(
+              inputId = "demo_admission_type_covid_age",
+              label = "Select/deselect Type of Admission",
+              selected = "All",
+              choices = unique(covid_admission_age_sex$admission_type),
+              direction = "horizontal"
+            ),
+            
+          ),
+          mainPanel(
+            column(
+              width = 5,
+              offset = 1,
+              
+              plotOutput("demographics_output_covid_age", width = "350%", height = "450px")
+            )
+          )
         )
       )
     )

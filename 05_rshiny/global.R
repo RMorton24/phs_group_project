@@ -7,7 +7,7 @@ library(shinydashboard)
 library(shinyWidgets)
 library(bslib)
 library(tsibble)
-
+library(plotly)
 
 
 
@@ -20,6 +20,7 @@ specialty_admissions <- read_csv(here::here("02_cleaned_data/admissions_by_speci
 activity_deprivation <- read_csv(here::here("02_cleaned_data/activity_deprivation.csv")) %>% 
   mutate(year_quarter = make_yearquarter(year, quarter), .after = quarter)
 
+covid_admission_age_sex <- read_csv(here::here("02_cleaned_data/covid_admission_age_sex.csv"))
 
 activity_dep_variables <- activity_deprivation %>% 
   select(contains(c("episode", "stay"))) %>%  names()
@@ -56,6 +57,10 @@ bbox <- st_bbox(nhs_borders) %>%
 
 beds <- read_csv(here::here("02_cleaned_data/bed_clean.csv")) %>% 
   mutate(year_quarter = yearquarter(year_quarter))
+
+
+
+# Plotly plot -------------------------------------------------------------
 
 beds_variables_selection <- beds %>% 
   select(contains(c("bed", "occup"))) %>%  names()
