@@ -89,13 +89,14 @@ deaths_deprivation_time <- deaths_by_deprivation %>%
   #filter(simd_quintile == 1) %>% 
   group_by(week_ending) %>% 
   ggplot() +
-  geom_line(aes(x = week_ending, y = deaths), colour = "red") +
-  geom_line(aes(x = week_ending, y = average20152019), colour = "blue") +
-  facet_wrap(~simd_quintile)
+  geom_line(aes(x = week_ending, y = deaths, linetype = "2020/2021"), colour = "red") +
+  geom_line(aes(x = week_ending, y = average20152019, linetype = "2015-2019"), colour = "blue") +
+  facet_wrap(~simd_quintile) +
   theme(axis.text.x = element_text(angle = 90)) +
   ggtitle("Trend of Deaths by SIMD over Time") +
   labs(x = "Date",
-       y = "Number of Deaths")
+       y = "Number of Deaths") +
+  guides(linetype = guide_legend(title = NULL))
   
   deaths_deprivation_time
 

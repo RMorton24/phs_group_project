@@ -16,25 +16,32 @@ Chris Glenshaw, George Salisbury, João Neto, Kate Stallibrass & Ross Morton
 
 ### Roles & responsibilities of each member
 
-**Chris** worked on the skeleton of the Shiny dashboard and the assembly of the Shiny dashboard alongside Ross...
+**Chris** worked on the skeleton of the Shiny dashboard and the assembly of the Shiny dashboard alongside Ross.
 
 **George** worked on dummy graphs which were chunks of draft data that were intended to suggest ways of visualising the data.  They were not necessarily intended to be in the final application but were meant to reduce the workload for those working on Shiny.  Once he'd provided the team with a code that they were happy enough with, they could tweak it if required to further fit the needs of the final report.  He also produced some trend graphs were meant to show the impact of Covid on hospital admission over the course of several months.
 
-**João** worked on demographic datasets.  He worked on graphs relating to information such as the SIMD information in deprivation and provided suggestions for the layout of the final shiny dashboard.
+**João** worked on demographic datasets. He worked on graphs relating to information such as the SIMD information in deprivation and provided suggestions for the layout of the final shiny dashboard.
 
-**Kate** worked on data cleaning, data analysis and visualisation, report writing and people wrangling.
+**Kate** worked on data cleaning, data analysis and visualisation, report writing and people wrangling. She created an interactive graph with plotly that tracked admissions over time by health board and specialty. 
 
-**Ross** worked on ...
+**Ross**  worked on the geospatial plots and map picker. The main geospatial
+plot was for presenting the  NHS Scotland regional data for the Quarterly Beds and
+Hospital Activity datasets. He integrated this into RShiny and supported with
+other RShiny issues. Ross also outlined and wrote the README.md file for the
+Github repository.
 
-**Everyone** worked on ...
+**Everyone** contributed to the design of the dashboard. All group members provided input on the choice of visualisations used. 
 
 ### Brief description of dashboard topic
 
-Our dashboard contains several interactive elements, including...
+Our topic is the impact of Covid on secondary care in Scotland. Our investigation looks at data from before, during and after the Covid-19 pandemic in Scotland. The data includes information on hospital admissions, bed occupancy, length of stay and number of deaths from across Scottish health boards which can be analysed by sex, age and level of deprivation (SIMD). 
 
-Our topic is the impact of Covid on hospitalisations and other relevant information, and the trends of hospitalizations following 2020.  ...
+Our dashboard contains several interactive elements, including a picker map, a heat map, and interactive graphs where the user can choose the variables visualised.
 
-The dashboard outlines our topic in terms of ...
+The dashboard outlines our topic in terms of:
+* temporal change: how has Covid affected trends in secondary care over time? 
+* geographic variation: do things change by location?
+* demographic difference: how are different demographics affected by Covid? 
 
 ### Stages of the project
 
@@ -44,50 +51,67 @@ The dashboard outlines our topic in terms of ...
 * Data cleaning
 * Data analysis
 * Publishing dashboard
+* Creating documentation, including presentation for clients
 
 
 ### Which tools were used in the project
 
 * Trello (planning & task allocation)
 * Git/GitHub (collaboration & version control) 
-* PowerPoint
 * In person stand-ups
-* RStudio
-
+* RStudio (data cleaning/analysis/visualisation)
+* Google Docs (storing useful links)
+* PowerPoint (presentation)
 
 
 ### How did you gather and synthesise requirements for the project?
 
-We synthesised the information given in the brief by ...
+We synthesised the information given in the brief by discussing the data we collected and our initial insights and questions. Regular meetings and check-ins made sure that we were all on task and focused on answering the brief. 
 
-We prioritised ...
+We prioritised cleaning, analysing and visualising data that answered our three main aims:
+- temporal change,
+- geographic variation, and
+- demographic difference.
 
 ### Motivations for using the data you have chosen
 
-We used the dataset on ... to answer ... and because it was ...
+We used the dataset on hospital admissions by specialty to answer how Covid has affected secondary care over time as it was possible to pinpoint changes in trend during periods of lockdown versus times when restrictions were eased.
+
+Datasets on bed occupancy and hospital activity were used to visualise how these factors vary across health board in Scotland. 
+
+Data about activity and admissions were used to answer questions about how Covid has affected people according to their sex, age or deprivation level (SIMD). 
+
+Open data about all deaths (not only Covid) registered in Scotland for the period of 2020/2021, provided an insight to how Covid deaths varied by depivation level (SIMD).
 
 ### Data quality and potential bias, including a brief summary of data cleaning and transformations
 
-According to the About tab on the dataset page/dedicated page online, the data quality ...
+According to the publication 'Acute hospital activity and NHS beds information: Quarter ending 31 December 2021', the datasets concerning bed occupancy and hospital activity are limited in that they **cannot**:
+The data cannot be used to:
 
-The dataset may/may not be biased because ...
+* directly compare with other UK countries (England, Wales and Northern Ireland)
+* combine quarterly data to approximate annual figures
+* compare averages across different time periods
+* identify numbers of patients (only stays or episodes)
+* identify areas of affluence
+* identify how much more deprived one area is than another
 
-To clean the datasets we ...
+(https://www.publichealthscotland.scot/publications/acute-hospital-activity-and-nhs-beds-information-quarterly/acute-hospital-activity-and-nhs-beds-information-quarterly-quarter-ending-31-december-2021/data-summary/ [accessed: 11/08/2022]). 
+
+Data on hospital activity are overall 98% complete for the last quarter of 2021, with some variation between health boards. Issues with duplicated data in the bed occupancy dataset have been found, but determined to not be significant. 
+
+Data submissions concerning hospital admissions are only required for large acute hospitals, although some health boards submit more complete data (https://www.opendata.nhs.scot/dataset/covid-19-wider-impacts-hospital-admissions, [accessed: 11/08/2022]). The data may be biased in that there is more data available for those health boards that choose to submit more information. 
+
+To clean the datasets we made sure that all variables were a suitable class and followed the CodeClan naming conventions. Any variables with superfluous information were dropped. 
 
 ### How is the data stored and structured
 
-[**Hint**: This page offers a good starting point for understanding the data structure: https://guides.statistics.gov.scot/article/34-understanding-the-data-structure]
+The data is accessed from the Public Health Scotland database.
 
-The data is in the form of ...
+The data is in the form of Linked Data. The data is structured in "triples", that form a subject-predicate-object arrangement. This means that the structure of the database is contained within the data, so there is no need for a database schema. See https://guides.statistics.gov.scot/article/34-understanding-the-data-structure [accessed: 11/08/2022] for more. 
 
-This means ...
-
-Benefits of storing the data like this are ...
 
 ### Ethical and legal considerations of the data
 
-[**Hint:** this page contains information on the Open Government License which covers most datasets on statistics.gov.scot: http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/]
+There may be ethical considerations, as data relates to sensitive health information. However, all datasets followed disclosure protocols to ensure privacy and no individuals can be discerned from the data.
 
-There are no/There may be ethical considerations, because ...
-
-The datasets are covered by the Open Government License, which means ...
+The datasets are covered by the Open Government License, which means that users are free to analyse the data but must acknowledge the source of the information. See http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/ [accessed: 11/08/2022] for more. 
