@@ -97,7 +97,7 @@ The data cannot be used to:
 
 (https://www.publichealthscotland.scot/publications/acute-hospital-activity-and-nhs-beds-information-quarterly/acute-hospital-activity-and-nhs-beds-information-quarterly-quarter-ending-31-december-2021/data-summary/ [accessed: 11/08/2022]). 
 
-Data on hospital activity are overall 98% complete for the last quarter of 2021, with some variation between health boards. Issues with duplicated data in the bed occupancy dataset have been found, but determined to not be significant. 
+Data on hospital activity are overall 98% complete for the last quarter of 2021, with some variation between health boards. Issues with duplicated data in the bed occupancy dataset have been found, but determined to not be significant. It should also be noted that data by quarter cannot be used to make inferences about years as health boards deliver data at different paces. 
 
 Data submissions concerning hospital admissions are only required for large acute hospitals, although some health boards submit more complete data (https://www.opendata.nhs.scot/dataset/covid-19-wider-impacts-hospital-admissions, [accessed: 11/08/2022]). The data may be biased in that there is more data available for those health boards that choose to submit more information. 
 
