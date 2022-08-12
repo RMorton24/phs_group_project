@@ -124,12 +124,41 @@ loading in to RShiny app.
 
 The RShiny app visualises the data in a dashboard.
 
-### Tab 1 - 
+### Admissions Data of NHS HB - 
+Tab shows the admission data of the each NHS healthboard. 
 
-### Tab 2 - 
+* Click on the region/marker on the map for different healthboard data 
+* Select the speciality and admission type
 
-### Tab 3 - 
+![](04_images/admissions_tab.PNG)
 
+### Health Board Activity - 
+The healthboard activity shows a choropleth of the Quarterly beds data and the hospital
+activity (episodes and stays).
+
+* Select the data set to review (Beds or Hospital Activity)
+* Select the time period (can be an individual quarter or across a few)
+* Select the speciality and the variable to plot
+
+![](04_images/geo_tab.PNG)
+
+### Demographics - 
+Demographics tab showing the length of stay, covid admission by gender and 
+Covid admissions by age group.
+
+* Select the tab of data to review
+* Click on the cog/settings symbol and sele
+    * Healthboard
+    * Age group
+    * Admission type
+
+![](04_images/demographics_tab.PNG)
+
+### Death Trends by Deprivation
+Shows the number of deaths split by deprivation (1 being the worst and 5 being the 
+most well off).
+
+![](04_images/death_by_deprivation_tab.PNG)
 
 ## Report
 
