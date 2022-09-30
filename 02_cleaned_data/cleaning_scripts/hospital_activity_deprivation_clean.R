@@ -1,11 +1,28 @@
 ## Script Information -------------------------------------------------------
 ##
-## Script name:  hospital_activity_deprivation_clean.R
+## Script name:  hospital_activity_pat_clean.R
 ##
 ## Purpose of script: 
 ##  The purpose of this script is to clean the hospital activity deprivation
 ##  data. This is then joined on to the main data with more information on the
 ##  healthboard regions/hospital locations.
+##
+##  The variable quarter was splitted in a year and quarter. The variable hb did
+##  not have just information/codes from health board, but had special health 
+##  board (shb) and location codes too. That way, variable hb was cleaned to 
+##  just have hb values, and one column called shb was created to have shb codes
+##  from hb variable and the location values were shifted to location variable. 
+##  The criteria to clean the hb variable was :
+##    - values with  9 digits and started by "S08" was signed as hb value;
+##    - values with a length of 6 digits were considered as shb values;
+##    - values with a length of 5 digits were considered as location values.
+##  
+##  The variable hb just had the the code and did not have the name the same 
+##  for the variables like shb and location, for that reason three auxiliar 
+##  dataset were joined:
+##  - healthboard (hb variable as key);
+##  - special health board (shb variable as key); and
+##  - hospitals (location variable as key)
 ##
 ## Author: Joao Neto
 ##
